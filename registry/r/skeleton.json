@@ -6,6 +6,7 @@
   "description": "Placeholder block shown while content is loading.",
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/live-region-context.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
   ],
   "files": [

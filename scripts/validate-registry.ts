@@ -275,6 +275,34 @@ async function main(): Promise<void> {
         }
       }
     }
+
+    // Drift guard (M-D): every `@/lib/<x>` or `@/components/<layer>/<x>` import in a
+    // built item MUST be declared in registryDependencies — else `shadcn add` ships a
+    // consumer with an unresolvable import. Added after a skeleton bug slipped past.
+    for (const descriptor of descriptors.values()) {
+      const built = await readJson<RegistryDescriptor>(join(OUT_DIR, `${descriptor.name}.json`));
+      const declared = new Set(
+        (descriptor.registryDependencies ?? []).map(
+          (d) =>
+            d
+              .split("/")
+              .pop()
+              ?.replace(/\.json$/, "") ?? d,
+        ),
+      );
+      for (const file of built.files ?? []) {
+        if (!file.content) continue;
+        for (const spec of importSpecifiers(file.content)) {
+          const m = spec.match(/^@\/(?:lib|components\/(?:primitives|composites))\/([a-z0-9-]+)/);
+          if (m && m[1] !== descriptor.name && !declared.has(m[1])) {
+            addFailure(
+              `${descriptor.name}.json`,
+              `imports "@/.../${m[1]}" but registryDependencies is missing "${m[1]}"`,
+            );
+          }
+        }
+      }
+    }
   } finally {
     await rm(fixtureRoot, { recursive: true, force: true });
   }
