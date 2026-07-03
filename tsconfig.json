@@ -23,9 +23,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
-      "@theokit/ui": ["./src/index.ts"],
-      "@theokit/ui/whiteboard": ["./src/components/primitives/whiteboard/index.ts"],
-      "@theokit/ui/*": ["./src/*"]
+      "@usetheo/ui": ["./src/index.ts"],
+      "@usetheo/ui/*": ["./src/*"]
     }
   },
   "include": [

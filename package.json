@@ -13,7 +13,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./preset": "./dist/tailwind-preset.js"
+    "./preset": {
+      "types": "./dist/styles/tailwind-preset.d.ts",
+      "import": "./dist/tailwind-preset.js"
+    }
   },
   "engines": {
     "node": ">=20"
@@ -25,7 +28,8 @@
     "format:check": "biome format src",
     "test": "vitest run",
     "test:run": "vitest run",
-    "build": "tsup && tsc -p tsconfig.dts.json"
+    "build": "tsup && tsc -p tsconfig.dts.json",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -62,7 +66,6 @@
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.7.0",
     "happy-dom": "^20.9.0",
-    "jsdom": "latest",
     "react": ">=18.2.0 <20",
     "react-dom": ">=18.2.0 <20",
     "tailwindcss": "^4.0.0",
