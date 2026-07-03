@@ -1,9 +1,9 @@
 {
   "name": "@usetheo/ui",
-  "version": "0.1.0",
+  "version": "0.14.0",
   "type": "module",
   "license": "Apache-2.0",
-  "description": "Violet Forge design system \u2014 generic React components + primitives (the non-AI foundation of @theokit/ui).",
+  "description": "Violet Forge design system — generic React components + primitives (the non-AI foundation of @theokit/ui).",
   "sideEffects": false,
   "files": [
     "dist"
