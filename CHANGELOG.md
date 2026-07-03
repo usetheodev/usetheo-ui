@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-07-03
+
 ### Added
 - GitHub Actions workflow (`deploy-registry.yml`) that publishes `registry/r/*.json` to GitHub
   Pages on every push to `main`, so the shadcn copy-paste path
