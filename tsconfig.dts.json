@@ -15,6 +15,7 @@
     "dist",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
+    "src/**/*.test-d.tsx",
     "src/**/*.stories.tsx"
   ]
 }

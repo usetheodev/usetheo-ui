@@ -294,7 +294,7 @@ async function main(): Promise<void> {
         if (!file.content) continue;
         for (const spec of importSpecifiers(file.content)) {
           const m = spec.match(/^@\/(?:lib|components\/(?:primitives|composites))\/([a-z0-9-]+)/);
-          if (m && m[1] !== descriptor.name && !declared.has(m[1])) {
+          if (m?.[1] && m[1] !== descriptor.name && !declared.has(m[1])) {
             addFailure(
               `${descriptor.name}.json`,
               `imports "@/.../${m[1]}" but registryDependencies is missing "${m[1]}"`,

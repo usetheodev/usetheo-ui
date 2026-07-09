@@ -28,7 +28,8 @@ import { cn } from "../../../lib/cn.js";
 
 export type PlanTier = "free" | "hobby" | "pro" | "team" | "enterprise";
 
-export interface PlanBadgeProps extends HTMLAttributes<HTMLSpanElement> {
+// `children` Omitted (M87): fixed-slot primitive (renders its computed label); passing children silently dropped them (#175 class).
+export interface PlanBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Plan tier identifier. */
   plan: PlanTier;
   /** Override the display label. Defaults to the capitalized tier name. */

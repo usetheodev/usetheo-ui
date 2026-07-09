@@ -3,7 +3,9 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/cn.js";
 import type { IconComponent } from "../../../lib/types.js";
 
-interface EmptyStateProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+// `children` Omitted (M87): EmptyState renders only its fixed slots (icon/title/description/action);
+// passing children silently dropped them. Rejecting at the type level makes the #175 bug class a compile error.
+interface EmptyStateProps extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "children"> {
   /** Icon shown above the title. */
   icon?: IconComponent;
   title: ReactNode;

@@ -34,7 +34,8 @@ export interface MetricCardDelta {
   trend: MetricCardTrend;
 }
 
-export interface MetricCardProps extends HTMLAttributes<HTMLDivElement> {
+// `children` Omitted (M87): fixed-slot primitive (title/value/delta); passing children silently dropped them (#175 class).
+export interface MetricCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   /** Metric label (e.g., "Revenue", "Active Users"). */
   title: string;
   /** Headline value (e.g., "$12,345", "1,234"). */

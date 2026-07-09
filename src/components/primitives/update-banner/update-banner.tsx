@@ -10,7 +10,9 @@ import { cn } from "../../../lib/cn.js";
  * responsibility (per EC-16 DOCUMENT). Component just fires `onDismiss`.
  */
 
-export interface UpdateBannerProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+// `children` Omitted (M87): fixed-slot primitive; passing children silently dropped them (#175 class).
+export interface UpdateBannerProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "children"> {
   currentVersion: string;
   latestVersion: string;
   onUpdate: () => void;

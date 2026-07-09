@@ -25,7 +25,11 @@ import { cn } from "../../../lib/cn.js";
  */
 export type AlertIntent = "info" | "success" | "warning" | "destructive";
 
-export interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "role"> {
+// `children` is Omitted (M87): Alert renders only its fixed slots (title/description/action). It never
+// renders children — passing them silently dropped the body (#175). Rejecting `children` at the type
+// level makes that whole bug class a compile error instead of a runtime data loss.
+export interface AlertProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "title" | "role" | "children"> {
   intent?: AlertIntent;
   title?: ReactNode;
   description?: ReactNode;
