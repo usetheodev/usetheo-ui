@@ -7,7 +7,8 @@ goal: Ship o primitive Breadcrumb composicional no @usetheo/ui atravessando cód
 
 # Plan: Breadcrumb primitive — walking skeleton (M0)
 
-> **Version 1.1** (2026-07-14 — absorve SHOULD TEST EC-1/EC-2/EC-3 do edge-case review no TDD) — Implementa o primitive `Breadcrumb` (composicional, 7 sub-componentes, anatomia validada pelo blueprint da descoberta) com TDD completo (unit + axe + edge + negative), story, entrada de registry validada, soft-deprecation documentada do `TopNav.Breadcrumbs` e o caminho de adoção no theokit-studio — o walking skeleton que prova o pipeline componente→registry→release→adoção para os milestones M1-M7.
+> **Version 1.3** (v1.3: SEPA pré-RED adiciona testes de data-slot + forwardRef; contagem 11→13)  
+> ex-**Version 1.2** (2026-07-14 — v1.1 absorve SHOULD TEST EC-1/EC-2/EC-3; v1.2 renomeia REDs para shape test_* exigida pelo gate check_tdd_shape) — Implementa o primitive `Breadcrumb` (composicional, 7 sub-componentes, anatomia validada pelo blueprint da descoberta) com TDD completo (unit + axe + edge + negative), story, entrada de registry validada, soft-deprecation documentada do `TopNav.Breadcrumbs` e o caminho de adoção no theokit-studio — o walking skeleton que prova o pipeline componente→registry→release→adoção para os milestones M1-M7.
 
 ## Goal
 
@@ -236,17 +237,19 @@ export Breadcrumb = Object.assign(Root, {List, Item, Link, Page, Separator, Elli
 
 #### TDD
 ```
-RED: renders_nav_with_aria_label_breadcrumb() — raiz é <nav aria-label="breadcrumb">
-RED: three_items_render_two_separators() — 3 itens → 2 separadores (Mantine N-1)
-RED: custom_separator_children_rendered() — <Separator>·</Separator> renderiza custom N-1 vezes
-RED: page_has_aria_current_and_is_not_link() — só o Page tem aria-current="page"; sem href
-RED: separator_hidden_from_screen_readers() — role=presentation + aria-hidden
-RED: single_item_no_separator() — edge: 1 item → 0 separadores
-RED: link_aschild_preserves_child_props_and_classes() — asChild com <a data-x> preserva props/className
-RED: link_blocks_javascript_href() — negative: javascript: URL → sem atributo href (safeHref)
-RED: axe_no_violations_full_composition() — axe(lista completa com ellipsis) zero violations
-RED: empty_list_renders_valid_ol() — edge EC-1: List vazia → nav>ol válido, 0 separadores, axe limpo
-RED: link_without_valid_href_renders_without_href_attr() — negative EC-2: href undefined/"" → âncora SEM atributo href (safeHref retorna undefined; safe-href.ts:35-37), sem crash
+RED: test_renders_nav_with_aria_label_breadcrumb() — raiz é <nav aria-label="breadcrumb">
+RED: test_three_items_render_two_separators() — 3 itens → 2 separadores (Mantine N-1)
+RED: test_custom_separator_children_rendered() — <Separator>·</Separator> renderiza custom N-1 vezes
+RED: test_page_has_aria_current_and_is_not_link() — só o Page tem aria-current="page"; sem href
+RED: test_separator_hidden_from_screen_readers() — role=presentation + aria-hidden
+RED: test_single_item_no_separator() — edge: 1 item → 0 separadores
+RED: test_link_aschild_preserves_child_props_and_classes() — asChild com <a data-x> preserva props/className
+RED: test_link_blocks_javascript_href() — negative: javascript: URL → sem atributo href (safeHref)
+RED: test_axe_no_violations_full_composition() — axe(lista completa com ellipsis) zero violations
+RED: test_empty_list_renders_valid_ol() — edge EC-1: List vazia → nav>ol válido, 0 separadores, axe limpo
+RED: test_link_without_valid_href_renders_without_href_attr() — negative EC-2: href undefined/"" → âncora SEM atributo href (safeHref retorna undefined; safe-href.ts:35-37), sem crash
+RED: test_all_subs_have_data_slot_attributes() — SEPA: cada um dos 7 subs renderiza com data-slot="breadcrumb-*" (D4 pilar c)
+RED: test_root_and_link_forward_ref() — SEPA: ref chega ao nav (Root) e à âncora (Link) — convenção forwardRef do repo (button.tsx:96)
 GREEN: implementar breadcrumb.tsx mínimo
 REFACTOR: tokens/classes; nenhum comportamento novo
 VERIFY: pnpm vitest run src/components/primitives/breadcrumb/
@@ -257,7 +260,7 @@ VERIFY: pnpm vitest run src/components/primitives/breadcrumb/
 (none — single-threaded)
 
 #### Acceptance Criteria
-- [ ] `pnpm vitest run src/components/primitives/breadcrumb/` reporta 11 passed / 0 failed; `axe()` retorna `violations.length === 0`
+- [ ] `pnpm vitest run src/components/primitives/breadcrumb/` reporta 13 passed / 0 failed; `axe()` retorna `violations.length === 0`
 - [ ] Todos os subs com `data-slot="breadcrumb-*"` assertado em teste (D4 pilar c)
 - [ ] Pass: lint — `pnpm lint` zero warnings nos arquivos novos
 - [ ] Pass: size — `breadcrumb.tsx` ≤ 500 linhas (esperado ~110, paridade com shadcn)
@@ -298,7 +301,7 @@ src/components/primitives/breadcrumb/breadcrumb.stories.tsx — (NEW) 4 stories 
 
 #### TDD
 ```
-RED: (coberto por T1.1 — stories não têm suite própria na lib; smoke via import no teste)
+RED: test_default_story_renders() — smoke: renderiza a composição da story Default (mesma composição da story, assert nav presente) em breadcrumb.test.tsx
 VERIFY: pnpm typecheck (stories são type-checked)
 ```
 
@@ -347,7 +350,7 @@ src/index.ts — +2 linhas de export (aditivo)
 
 #### TDD
 ```
-RED: import { Breadcrumb } from "../../index" no breadcrumb.test.tsx (um assert de smoke via barrel)
+RED: test_barrel_exports_breadcrumb() — import { Breadcrumb } via barrel relativo resolve e renderiza (smoke)
 GREEN: export adicionado
 VERIFY: pnpm typecheck && pnpm vitest run src/components/primitives/breadcrumb/
 ```
@@ -396,7 +399,7 @@ registry/index.json — +1 entry (name/type/title/description) na lista items
 
 #### TDD
 ```
-RED: pnpm registry:validate falha antes do descriptor existir? (validate cobre index↔descriptors; o RED é o validate com entry no index e sem descriptor)
+RED: test_registry_validate_fails_without_descriptor() — com a entry no index.json e SEM registry/breadcrumb.json, `pnpm registry:validate` exit != 0
 GREEN: descriptor criado; build + validate verdes
 VERIFY: pnpm registry:build && pnpm registry:validate
 ```
@@ -443,7 +446,7 @@ CHANGELOG.md — entry em [Unreleased] § Added
 
 #### TDD
 ```
-RED: (n/a — documentação; teste existente do topnav segue verde como regressão)
+RED: test_topnav_regression_stays_green() — suite existente do topnav permanece verde após o JSDoc (regressão, sem teste novo)
 VERIFY: pnpm test:run && pnpm lint
 ```
 
@@ -493,8 +496,8 @@ No repo theokit-studio: `shell.tsx` usa `Breadcrumb` da lib; função local dele
 
 #### TDD
 ```
-RED: shell.test.tsx — assert aria-current="page" APENAS no último item (falha contra o hand-rolled atual)
-RED: breadcrumb_shows_only_root_on_bare_route() — edge EC-3: rota sem handle.label → só "Studio", sem separador
+RED: test_aria_current_only_on_last_item() — em shell.test.tsx, aria-current="page" APENAS no último item (falha contra o hand-rolled atual)
+RED: test_breadcrumb_shows_only_root_on_bare_route() — edge EC-3: rota sem handle.label → só "Studio", sem separador
 GREEN: composição com Breadcrumb da lib
 VERIFY: suite do studio (vitest) verde
 ```
