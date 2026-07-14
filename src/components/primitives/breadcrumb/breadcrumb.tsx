@@ -88,7 +88,10 @@ const Link = forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
         data-slot="breadcrumb-link"
         ref={ref}
         className={cn("transition-colors hover:text-foreground", className)}
-        {...(asChild ? {} : { href: safeHref(href) })}
+        // Native anchors get the safe-href guard; with asChild the href is
+        // forwarded to the consumer's element, whose own props win on merge
+        // (sanitization is the consumer's responsibility — plan ADR D3).
+        href={asChild ? href : safeHref(href)}
         {...props}
       />
     );

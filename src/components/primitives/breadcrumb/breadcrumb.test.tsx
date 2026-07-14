@@ -77,30 +77,46 @@ describe("Breadcrumb — rendering", () => {
     expect(container.querySelectorAll('[data-slot="breadcrumb-separator"]')).toHaveLength(0);
   });
 
-  it("empty list renders valid ol without crash", () => {
+  it("empty list renders valid ol without crash", async () => {
     const { container } = renderTrail();
     const list = container.querySelector("ol");
     expect(list).not.toBeNull();
     expect(list?.childElementCount).toBe(0);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });
 
 describe("Breadcrumb — link boundaries", () => {
-  it("asChild preserves child props and classes", () => {
+  const renderAsChildLink = (linkProps: object, child: ReactNode) =>
     renderTrail(
       <Breadcrumb.Item>
-        <Breadcrumb.Link asChild className="from-lib">
-          <a href="/spa" data-router-link="true" className="from-consumer">
-            Spa
-          </a>
+        <Breadcrumb.Link asChild {...linkProps}>
+          {child}
         </Breadcrumb.Link>
       </Breadcrumb.Item>,
+    );
+
+  it("asChild preserves child props and classes", () => {
+    renderAsChildLink(
+      { className: "from-lib" },
+      <a href="/spa" data-router-link="true" className="from-consumer">
+        Spa
+      </a>,
     );
     const link = screen.getByRole("link", { name: "Spa" });
     expect(link).toHaveAttribute("data-router-link", "true");
     expect(link).toHaveAttribute("href", "/spa");
     expect(link.className).toContain("from-consumer");
     expect(link.className).toContain("from-lib");
+  });
+
+  it("asChild forwards href to the consumer's element (ADR D3: consumer owns sanitization)", () => {
+    renderAsChildLink(
+      { href: "/from-link" },
+      // biome-ignore lint/a11y/useValidAnchor: fixture asserts the href is forwarded by Slot merge
+      <a data-testid="child">Child</a>,
+    );
+    expect(screen.getByTestId("child")).toHaveAttribute("href", "/from-link");
   });
 
   it("blocks javascript: href (safeHref)", () => {
