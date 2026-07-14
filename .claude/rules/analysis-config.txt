@@ -58,3 +58,10 @@
 # scale_edges = 100_000_000
 # scale_concurrent_readers = 100
 # scale_p99_latency_ms = 10
+
+# ─── Active config (usetheo-ui) ──────────────────────────────────────
+# Enabled 2026-07-14. Profile 'library' (React component lib; no benchmark
+# hard-gate). A2 complexity + A3 API-surface (component/export surface) + A4
+# bundle/allocation run without a benchmark_dir.
+enabled = true
+profile = library
