@@ -1,0 +1,90 @@
+{
+  "slug": "breadcrumb-walking-skeleton",
+  "tasks": [
+    {
+      "id": "T1.1",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "5017db2b",
+      "files": [
+        "src/components/primitives/breadcrumb/breadcrumb.tsx",
+        "src/components/primitives/breadcrumb/breadcrumb.test.tsx",
+        "src/components/primitives/breadcrumb/index.ts"
+      ],
+      "wiring": {
+        "a": "pending-T2.1-story-and-barrel",
+        "b": "pass-composition-tests",
+        "c": "pass-data-slot-asserted"
+      }
+    },
+    {
+      "id": "T1.2",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "0eeed798",
+      "files": [
+        "src/components/primitives/breadcrumb/breadcrumb.stories.tsx",
+        "src/components/primitives/breadcrumb/breadcrumb.test.tsx"
+      ],
+      "wiring": {
+        "a": "story-is-caller (plan D4)",
+        "b": "story smoke test",
+        "c": "n/a"
+      }
+    },
+    {
+      "id": "T2.1",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "107eecb7",
+      "files": [
+        "src/index.ts",
+        "src/components/primitives/breadcrumb/breadcrumb.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass (check_wiring: story+barrel caller)",
+        "b": "pass-per-ADR-D4 (co-located composition tests; checker expects tests/integration/ dir absent in this lib)",
+        "c": "n/a (no metric declared)"
+      }
+    },
+    {
+      "id": "T2.2",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "bd3fe0e4",
+      "files": [
+        "registry/breadcrumb.json",
+        "registry/index.json",
+        "registry/r/breadcrumb.json",
+        "registry/r/index.json"
+      ],
+      "wiring": {
+        "a": "registry consumers via shadcn add",
+        "b": "registry:validate",
+        "c": "n/a"
+      }
+    },
+    {
+      "id": "T2.3",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "3330fadf",
+      "files": [
+        "src/components/primitives/topnav/topnav.tsx",
+        "CHANGELOG.md"
+      ],
+      "wiring": {
+        "a": "n/a (docs)",
+        "b": "topnav regression 11/11",
+        "c": "n/a"
+      }
+    },
+    {
+      "id": "T3.1",
+      "phase": 3,
+      "status": "blocked",
+      "note": "gated on release (cross-repo, plan Dependency Graph)",
+      "reason": "gated on release by design — executes in theokit-studio repo after the M0 release PR merges (plan Dependency Graph + Drawback 2 mitigation); tracked in roadmap-runs/M0-2026-07-14.md"
+    }
+  ]
+}
