@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+import { Breadcrumb as BreadcrumbFromBarrel } from "../../../index.js";
 import { Breadcrumb } from "./breadcrumb.js";
 import { Default as DefaultStory } from "./breadcrumb.stories.js";
 
@@ -164,6 +165,11 @@ describe("Breadcrumb — wiring conventions", () => {
   it("axe: no violations on full composition with ellipsis", async () => {
     const { container } = renderTrail(ellipsisTrail);
     expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("barrel exports Breadcrumb with the full namespace", () => {
+    expect(BreadcrumbFromBarrel).toBe(Breadcrumb);
+    expect(BreadcrumbFromBarrel.List).toBeDefined();
   });
 
   it("default story renders the canonical trail", () => {
