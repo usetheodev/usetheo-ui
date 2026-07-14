@@ -15,3 +15,4 @@ coverage
 .claude/knowledge-base/tools/**
 .claude/knowledge-base/discoveries/snapshots/**
 .claude/agents/**
+.claude/.attestations/
