@@ -62,7 +62,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 > Each milestone has a checkbox in its header. Flip `[ ]` → `[x]` as you complete it. Status lives in this document; no external tracker required.
 
-### M0 — [ ] Walking skeleton: Breadcrumb ponta a ponta
+### M0 — [x] Walking skeleton: Breadcrumb ponta a ponta
 
 **Objective:** Entregar o menor componente do escopo (Breadcrumb) atravessando o pipeline inteiro — código → testes → story → registry → release → consumido pelo theokit-studio — provando o fluxo componente-até-adoção que os demais milestones repetem.
 
