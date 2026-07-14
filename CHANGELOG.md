@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Added
+- `Breadcrumb` primitive — composable hierarchical navigation trail
+  (`Breadcrumb.List/Item/Link/Page/Separator/Ellipsis`): semantic `nav>ol>li` anatomy,
+  `aria-current="page"` on the current page, presentation-role separators, collapsed
+  levels via `Ellipsis`, SPA router links via `asChild`, and `javascript:`-style hrefs
+  neutralized by the safe-href guard. Ships with 15 behavior tests (axe: zero violations),
+  4 Ladle stories and a shadcn-compatible registry item (`registry/r/breadcrumb.json`).
+  First component of the data-UI expansion roadmap (M0). (usetheo-ui#M0)
+
+### Changed
+- `TopNav.Breadcrumbs` is soft-deprecated in docs: prefer the standalone `Breadcrumb`
+  primitive for new code. No API or runtime change — the sub stays backward-compatible
+  and will be reimplemented on top of the primitive in a future minor. (usetheo-ui#M0)
+
 ## [0.15.0] - 2026-07-09
 
 ### Changed
