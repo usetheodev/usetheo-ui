@@ -4,6 +4,7 @@ import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import { Breadcrumb } from "./breadcrumb.js";
+import { Default as DefaultStory } from "./breadcrumb.stories.js";
 
 /** Renders children inside the canonical nav>ol shell. */
 function renderTrail(children?: ReactNode) {
@@ -163,5 +164,11 @@ describe("Breadcrumb — wiring conventions", () => {
   it("axe: no violations on full composition with ellipsis", async () => {
     const { container } = renderTrail(ellipsisTrail);
     expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("default story renders the canonical trail", () => {
+    render(<DefaultStory />);
+    expect(screen.getByRole("navigation")).toHaveAttribute("aria-label", "breadcrumb");
+    expect(screen.getByText("Violet Forge")).toHaveAttribute("aria-current", "page");
   });
 });
