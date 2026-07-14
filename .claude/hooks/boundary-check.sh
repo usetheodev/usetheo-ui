@@ -24,6 +24,11 @@ fi
 
 # --- knowledge-base/{references,tools}/ are read-only ---
 # Matches both standalone (knowledge-base/) and plugin install (.claude/knowledge-base/) layouts.
+# Exception: references/_catalog.md is kit-authored metadata (mandated by /roadmap-init),
+# not third-party study material — the read-only rule protects the clones, not the ledger.
+if echo "$FILE_PATH" | grep -qE '(^|/)(\.claude/)?knowledge-base/references/_catalog\.md$'; then
+  exit 0
+fi
 if echo "$FILE_PATH" | grep -qE '(^|/)(\.claude/)?knowledge-base/(references|tools)/'; then
   echo '{"decision":"block","reason":"BOUNDARY VIOLATION: knowledge-base/references/ (similar projects — inspiration) and knowledge-base/tools/ (tools we depend on) are read-only. Never edit/create files there. Capture findings in knowledge-base/discoveries/blueprints/."}' >&2
   exit 2

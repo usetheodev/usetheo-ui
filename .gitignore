@@ -11,6 +11,7 @@ coverage
 .claude/**/__pycache__/
 .claude/**/*.pyc
 .claude/knowledge-base/references/**
+!.claude/knowledge-base/references/_catalog.md
 .claude/knowledge-base/tools/**
 .claude/knowledge-base/discoveries/snapshots/**
 .claude/agents/**
