@@ -12,10 +12,11 @@
         "src/components/primitives/breadcrumb/index.ts"
       ],
       "wiring": {
-        "a": "pending-T2.1-story-and-barrel",
-        "b": "pass-composition-tests",
-        "c": "pass-data-slot-asserted"
-      }
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: caller via story+barrel (T2.1); b: co-located composition tests (ADR D4); c: data-slot asserted"
     },
     {
       "id": "T1.2",
@@ -27,10 +28,11 @@
         "src/components/primitives/breadcrumb/breadcrumb.test.tsx"
       ],
       "wiring": {
-        "a": "story-is-caller (plan D4)",
-        "b": "story smoke test",
-        "c": "n/a"
-      }
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "a: story é o caller (D4); b: story smoke test; c: sem métrica declarada"
     },
     {
       "id": "T2.1",
@@ -42,10 +44,11 @@
         "src/components/primitives/breadcrumb/breadcrumb.test.tsx"
       ],
       "wiring": {
-        "a": "pass (check_wiring: story+barrel caller)",
-        "b": "pass-per-ADR-D4 (co-located composition tests; checker expects tests/integration/ dir absent in this lib)",
-        "c": "n/a (no metric declared)"
-      }
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "check_wiring: a PASS; b per ADR D4 (co-located); c sem métrica"
     },
     {
       "id": "T2.2",
@@ -59,10 +62,11 @@
         "registry/r/index.json"
       ],
       "wiring": {
-        "a": "registry consumers via shadcn add",
-        "b": "registry:validate",
-        "c": "n/a"
-      }
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "a: consumidores do registry; b: registry:validate; c sem métrica"
     },
     {
       "id": "T2.3",
@@ -74,10 +78,11 @@
         "CHANGELOG.md"
       ],
       "wiring": {
-        "a": "n/a (docs)",
-        "b": "topnav regression 11/11",
-        "c": "n/a"
-      }
+        "a": "defer",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "docs-only; b: regressão topnav 11/11"
     },
     {
       "id": "T3.1",
