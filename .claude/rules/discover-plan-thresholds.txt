@@ -25,3 +25,11 @@ band.shippable = 90
 band.shippable_with_caveats = 70
 band.needs_revision = 50
 band.invalid = 0
+
+# Verdict bands — pipe format consumed by run_discover_plan_score.py::_parse_thresholds
+# (the KEY = VALUE lines above are documentation-shaped; the parser splits on '|').
+# Added 2026-07-14 — without these the bands dict is empty and every verdict collapses to INVALID.
+SHIPPABLE | 90
+SHIPPABLE_WITH_CAVEATS | 70
+NEEDS_REVISION | 50
+INVALID | 0
