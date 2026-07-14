@@ -4,3 +4,15 @@ dist
 coverage
 .DS_Store
 *.log
+.npmrc.local
+
+# Claude Code cycle kit — versioned (skills/rules/hooks/commands/scripts + settings).
+# Only caches and large/generated artifacts underneath are ignored.
+.claude/**/__pycache__/
+.claude/**/*.pyc
+.claude/knowledge-base/references/**
+!.claude/knowledge-base/references/_catalog.md
+.claude/knowledge-base/tools/**
+.claude/knowledge-base/discoveries/snapshots/**
+.claude/agents/**
+.claude/.attestations/

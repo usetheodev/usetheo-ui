@@ -78,6 +78,16 @@ interface BreadcrumbsProps extends HTMLAttributes<HTMLElement> {
   items: BreadcrumbItem[];
 }
 
+/**
+ * TopNav.Breadcrumbs — data-driven trail embedded in the app bar.
+ *
+ * Prefer the standalone `Breadcrumb` primitive for new code: it composes
+ * router links via `asChild`, models the current page (`Breadcrumb.Page`)
+ * and collapsed levels (`Breadcrumb.Ellipsis`), and guards hrefs via
+ * safe-href. This sub stays for backward compatibility (plan ADR D2,
+ * M0 breadcrumb-walking-skeleton) and will be reimplemented on top of the
+ * primitive in a future minor without API change.
+ */
 const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(
   ({ className, items, ...props }, ref) => (
     <nav

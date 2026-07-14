@@ -20,7 +20,9 @@ import { cn } from "../../../lib/cn.js";
  *             delta={{ value: "+12%", trend: "up" }} onClick={openBilling} />
  */
 export interface StatTileProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "value"> {
+  // `children` Omitted (M87): fixed-slot primitive (value/label/delta); passing children silently dropped
+  // them (#175 class). The previous `children: _children` runtime-discard hack is now a compile-time reject.
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "value" | "children"> {
   value: ReactNode;
   label: ReactNode;
   icon?: ElementType;
@@ -34,7 +36,7 @@ const TREND: Record<"up" | "down" | "flat", { icon: ElementType; color: string }
 };
 
 const StatTile = forwardRef<HTMLElement, StatTileProps>(
-  ({ className, value, label, icon: Icon, delta, onClick, children: _children, ...props }, ref) => {
+  ({ className, value, label, icon: Icon, delta, onClick, ...props }, ref) => {
     const isInteractive = onClick !== undefined;
     const TrendIcon = delta !== undefined ? TREND[delta.trend].icon : null;
     const trendColor = delta !== undefined ? TREND[delta.trend].color : "";

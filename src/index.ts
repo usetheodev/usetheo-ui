@@ -4,6 +4,10 @@ export { cn } from "./lib/cn.js";
 export { Button, buttonVariants, type ButtonProps } from "./components/primitives/button/index.js";
 export { Badge, badgeVariants, type BadgeProps } from "./components/primitives/badge/index.js";
 export {
+  Breadcrumb,
+  type BreadcrumbLinkProps,
+} from "./components/primitives/breadcrumb/index.js";
+export {
   UpdateBanner,
   type UpdateBannerProps,
 } from "./components/primitives/update-banner/index.js";

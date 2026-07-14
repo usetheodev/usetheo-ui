@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "type": "registry:ui",
+  "title": "Breadcrumb",
+  "description": "Hierarchical navigation trail primitive. Composable nav>ol>li anatomy (List/Item/Link/Page/Separator/Ellipsis) with aria-current on the current page, presentation-role separators, asChild router links and safe-href guarding.",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "cn",
+    "safe-href",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/primitives/breadcrumb/breadcrumb.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/breadcrumb.tsx"
+    }
+  ]
+}

@@ -43,6 +43,12 @@
       "description": "Small status / tag indicator with semantic variants (default, primary, success, warning, destructive, info)."
     },
     {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Hierarchical navigation trail primitive. Composable nav>ol>li anatomy (List/Item/Link/Page/Separator/Ellipsis) with aria-current on the current page, presentation-role separators, asChild router links and safe-href guarding."
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
