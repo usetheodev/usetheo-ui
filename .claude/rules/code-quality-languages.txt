@@ -12,8 +12,8 @@
 #
 # go
 # python
-# typescript
-# javascript
+typescript
+javascript
 # rust
 # java
 # kotlin
