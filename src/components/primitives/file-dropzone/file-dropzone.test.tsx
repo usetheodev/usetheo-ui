@@ -96,6 +96,39 @@ describe("validateFiles — pure helper", () => {
     expect(accepted).toHaveLength(1);
   });
 
+  it("test_validatefiles_multiple_false_rejects_all", () => {
+    // F-tests-2: metade !multiple da regra coletiva
+    const files = [file("a.pdf", "application/pdf"), file("b.pdf", "application/pdf")];
+    const { accepted, rejections } = validateFiles(files, { multiple: false });
+    expect(accepted).toHaveLength(0);
+    expect(rejections).toHaveLength(2);
+    expect(rejections[0]?.errors[0]?.code).toBe("too-many-files");
+    expect(rejections[0]?.errors[0]?.message).toContain("1");
+  });
+
+  it("test_validatefiles_collective_rule_posthoc_preserves_perfile_errors", () => {
+    // F-dom-2: fidelidade à referência — coletiva conta os ACEITOS pós-validação;
+    // 4 files (2 inválidos) com maxFiles 3 → 2 aceitos + 2 rejeições de TIPO
+    const files = [
+      file("a.pdf", "application/pdf"),
+      file("b.pdf", "application/pdf"),
+      file("x.txt", "text/plain"),
+      file("y.txt", "text/plain"),
+    ];
+    const { accepted, rejections } = validateFiles(files, { accept: PDF_ACCEPT, maxFiles: 3 });
+    expect(accepted).toHaveLength(2);
+    expect(rejections).toHaveLength(2);
+    for (const r of rejections) {
+      expect(r.errors[0]?.code).toBe("file-invalid-type");
+    }
+  });
+
+  it("test_validatefiles_size_equal_to_min_accepts", () => {
+    // F-tests-7: boundary exato do minSize (< estrito)
+    const { accepted } = validateFiles([file("edge.pdf", "application/pdf", 10)], { minSize: 10 });
+    expect(accepted).toHaveLength(1);
+  });
+
   it("test_validatefiles_custom_validator_accumulates", () => {
     const { rejections } = validateFiles([file("big.pdf", "application/pdf", 200)], {
       maxSize: 150,
@@ -115,11 +148,16 @@ import { vi } from "vitest";
 import { axe } from "vitest-axe";
 import { FileDropzone } from "./file-dropzone.js";
 
-function dtWithFiles(files: File[], types: string[] = ["Files"]) {
+function dtWithFiles(files: File[], types: string[] = ["Files"], emptyTypes = false) {
   return {
     dataTransfer: {
       files,
-      items: files.map((f) => ({ kind: "file", type: f.type, getAsFile: () => f })),
+      items: files.map((f) => ({
+        kind: "file",
+        type: emptyTypes ? "" : f.type,
+        // protected mode real: getAsFile() é null durante dragenter
+        getAsFile: () => (emptyTypes ? null : f),
+      })),
       types,
     },
   };
@@ -194,10 +232,13 @@ describe("FileDropzone — picker e teclado", () => {
 
   it("test_click_opens_picker_with_value_reset", () => {
     const { root, input } = renderZone();
-    const click = vi.spyOn(input, "click").mockImplementation(() => {});
+    let valueAtClickTime = "unset";
+    const click = vi.spyOn(input, "click").mockImplementation(() => {
+      valueAtClickTime = input.value;
+    });
     Object.defineProperty(input, "value", { writable: true, value: "stale" });
     fireEvent.click(root);
-    expect(input.value).toBe("");
+    expect(valueAtClickTime).toBe("");
     expect(click).toHaveBeenCalledTimes(1);
   });
 
@@ -213,10 +254,12 @@ describe("FileDropzone — picker e teclado", () => {
 describe("FileDropzone — drag & drop", () => {
   it("test_drop_accepted_calls_on_files_accepted", () => {
     const onFilesAccepted = vi.fn();
-    const { root } = renderZone({ onFilesAccepted, accept: PDF_ACCEPT });
+    const onFilesRejected = vi.fn();
+    const { root } = renderZone({ onFilesAccepted, onFilesRejected, accept: PDF_ACCEPT });
     const f = file("r.pdf", "application/pdf");
     fireEvent.drop(root, dtWithFiles([f]));
     expect(onFilesAccepted).toHaveBeenCalledWith([f]);
+    expect(onFilesRejected).not.toHaveBeenCalled();
   });
 
   it("test_drop_rejected_calls_on_files_rejected_with_typed_code", () => {
@@ -262,6 +305,51 @@ describe("FileDropzone — drag & drop", () => {
     fireEvent.dragEnter(root, { dataTransfer: { files: [], items: [], types: ["text/plain"] } });
     expect(root.getAttribute("data-state")).toBe("idle");
     fireEvent.drop(root, { dataTransfer: { files: [], items: [], types: ["text/plain"] } });
+    expect(onFilesAccepted).not.toHaveBeenCalled();
+  });
+
+  it("test_dragenter_with_empty_item_type_stays_drag_over", () => {
+    // F-dom-1 HIGH: drag real no Chrome — item type "" + getAsFile null NÃO pode virar drag-reject
+    const { root } = renderZone({ accept: { "text/markdown": [".md"] } });
+    fireEvent.dragEnter(root, dtWithFiles([file("notes.md", "text/markdown")], ["Files"], true));
+    expect(root.getAttribute("data-state")).toBe("drag-over");
+  });
+
+  it("test_double_dragenter_same_target_balanced_by_double_dragleave", () => {
+    // F-tests-3: double-fire do Firefox no MESMO elemento
+    const { root } = renderZone();
+    const data = dtWithFiles([file("r.pdf", "application/pdf")]);
+    fireEvent.dragEnter(root, data);
+    fireEvent.dragEnter(root, data);
+    fireEvent.dragLeave(root, data);
+    expect(root.getAttribute("data-state")).toBe("drag-over");
+    fireEvent.dragLeave(root, data);
+    expect(root.getAttribute("data-state")).toBe("idle");
+  });
+
+  it("test_change_with_invalid_file_rejects_with_typed_code", () => {
+    // F-tests-1: o caminho do picker passa pela MESMA validação do drop
+    const onFilesAccepted = vi.fn();
+    const onFilesRejected = vi.fn();
+    const { input, container } = renderZone({
+      onFilesAccepted,
+      onFilesRejected,
+      accept: PDF_ACCEPT,
+    });
+    fireEvent.change(input, { target: { files: [file("a.txt", "text/plain")] } });
+    expect(onFilesRejected.mock.calls[0]?.[0]?.[0]?.errors[0]?.code).toBe("file-invalid-type");
+    expect(onFilesAccepted).not.toHaveBeenCalled();
+    expect(container.querySelector('[data-slot="file-dropzone-rejections"]')).not.toBeNull();
+  });
+
+  it("test_disabled_ignores_drag_and_drop", () => {
+    // F-tests-5: handlers inertes quando disabled
+    const onFilesAccepted = vi.fn();
+    const { root } = renderZone({ disabled: true, onFilesAccepted });
+    const data = dtWithFiles([file("r.pdf", "application/pdf")]);
+    fireEvent.dragEnter(root, data);
+    expect(root.getAttribute("data-state")).toBe("disabled");
+    fireEvent.drop(root, data);
     expect(onFilesAccepted).not.toHaveBeenCalled();
   });
 

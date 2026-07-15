@@ -71,25 +71,6 @@ export function validateFiles(
 ): { accepted: File[]; rejections: FileRejection[] } {
   const { accept, maxSize, minSize, maxFiles, multiple = true, validator } = options;
 
-  const tooMany =
-    (!multiple && files.length > 1) ||
-    (maxFiles !== undefined && maxFiles >= 1 && files.length > maxFiles);
-  if (tooMany) {
-    const limit = !multiple ? 1 : maxFiles;
-    return {
-      accepted: [],
-      rejections: files.map((file) => ({
-        file,
-        errors: [
-          {
-            code: "too-many-files",
-            message: `Too many files — at most ${limit} allowed`,
-          },
-        ],
-      })),
-    };
-  }
-
   const accepted: File[] = [];
   const rejections: FileRejection[] = [];
   for (const file of files) {
@@ -114,6 +95,21 @@ export function validateFiles(
     } else {
       accepted.push(file);
     }
+  }
+  // Collective rule is POST-HOC on the ACCEPTED count (reference fidelity):
+  // per-file errors above are preserved; only the accepted overflow converts.
+  const tooMany =
+    (!multiple && accepted.length > 1) ||
+    (maxFiles !== undefined && maxFiles >= 1 && accepted.length > maxFiles);
+  if (tooMany) {
+    const limit = !multiple ? 1 : maxFiles;
+    for (const file of accepted) {
+      rejections.push({
+        file,
+        errors: [{ code: "too-many-files", message: `Too many files — at most ${limit} allowed` }],
+      });
+    }
+    accepted.length = 0;
   }
   return { accepted, rejections };
 }

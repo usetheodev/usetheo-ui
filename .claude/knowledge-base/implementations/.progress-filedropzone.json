@@ -27,7 +27,6 @@
         "src/components/primitives/file-dropzone/file-dropzone.tsx",
         "src/components/primitives/file-dropzone/validate.ts",
         "src/components/primitives/file-dropzone/file-dropzone.test.tsx",
-        "src/components/primitives/file-dropzone/index.ts",
         "biome.json"
       ],
       "wiring": {

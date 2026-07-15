@@ -70,7 +70,6 @@ const FileDropzone = forwardRef<HTMLDivElement, FileDropzoneProps>(
     const [dragState, setDragState] = useState<"idle" | "drag-over" | "drag-reject">("idle");
     const [rejections, setRejections] = useState<FileRejection[]>([]);
 
-    // prettier-ignore — kept on one line: mirrors the destructured props 1:1
     const validateOptions: ValidateFilesOptions = {
       accept,
       maxSize,
@@ -112,11 +111,15 @@ const FileDropzone = forwardRef<HTMLDivElement, FileDropzoneProps>(
       const items = Array.from(event.dataTransfer?.items ?? []).filter(
         (item) => item.kind === "file",
       );
+      // Reference fidelity: an item with empty type during drag is ALWAYS
+      // acceptable (Chrome reports "" for e.g. .md, and getAsFile() is null
+      // in protected mode) — real validation happens on drop.
       const reject =
         accept !== undefined &&
         items.length > 0 &&
         items.some(
           (item) =>
+            item.type !== "" &&
             !matchesAccept(
               new File([], item.getAsFile?.()?.name ?? "", { type: item.type }),
               accept,
@@ -158,13 +161,11 @@ const FileDropzone = forwardRef<HTMLDivElement, FileDropzoneProps>(
 
     return (
       <div className="space-y-2">
-        {/* div+role=button (não <button> nativo): a superfície de drop hospeda conteúdo
-            em bloco e estados visuais de drag; o contrato completo de teclado/ARIA de botão
-            está implementado acima. Regra desligada só para este arquivo em biome.json. */}
         <div
           data-slot="file-dropzone"
           data-state={state}
           ref={ref}
+          // biome-ignore lint/a11y/useSemanticElements: native <button> cannot host the drop surface (block content + drag-state styling); this div implements the full keyboard/ARIA button contract (Enter/Space, tabIndex, aria-label, aria-disabled)
           role="button"
           aria-label={label}
           aria-disabled={disabled || undefined}
@@ -197,7 +198,7 @@ const FileDropzone = forwardRef<HTMLDivElement, FileDropzoneProps>(
           data-slot="file-dropzone-input"
           ref={inputRef}
           type="file"
-          aria-label={label}
+          aria-hidden="true"
           tabIndex={-1}
           multiple={multiple}
           accept={
