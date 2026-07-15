@@ -35,7 +35,7 @@ export const BuildPipelineFailed = stepperStory("Build pipeline", [
   {
     id: "pushing",
     label: "Pushing image",
-    description: "Uploading container to registry.",
+    description: "registry: 401 Unauthorized — check the robot account token.",
     status: "failed",
     retry: (
       <button

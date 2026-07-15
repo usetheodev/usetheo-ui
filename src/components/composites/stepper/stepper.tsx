@@ -28,6 +28,7 @@ export interface StepperStepData {
   /** Unique key for the step (consumer contract: no duplicates). */
   id: string;
   label: string;
+  /** For failed steps, pass the failure cause here — it is read by screen readers inside the same item (F-dom-3). */
   description?: string;
   status: StepStatus;
   /** Optional slot — prefer `<Timestamp value={...} />` from this library. */
@@ -80,6 +81,15 @@ const LABEL_TONE: Record<StepStatus, string> = {
   pending: "font-medium text-muted-foreground",
 };
 
+// F-dom-1: every non-active state is spoken, not just colored; the active
+// step is announced by aria-current="step" instead of a text suffix.
+const SR_STATE_TEXT: Record<StepStatus, string | null> = {
+  done: " — completed",
+  active: null,
+  failed: " — failed",
+  pending: " — not started",
+};
+
 const Stepper = forwardRef<HTMLOListElement, StepperProps>(
   ({ label, steps, orientation = "vertical", className, ...props }, ref) => (
     <ol
@@ -95,15 +105,18 @@ const Stepper = forwardRef<HTMLOListElement, StepperProps>(
     >
       {steps.map((s) => {
         // EC-1: unknown status at runtime (untyped consumer) degrades to the
-        // pending visual instead of rendering an icon-less step.
-        const status: StepStatus = s.status in ICON ? s.status : "pending";
+        // pending visual. Object.hasOwn — the `in` operator would accept
+        // prototype-chain keys like "toString" (F-arch-1). The sanitized
+        // status drives EVERYTHING (data-state included), so CSS hooks and
+        // visuals never diverge (F-arch-2).
+        const status: StepStatus = Object.hasOwn(ICON, s.status) ? s.status : "pending";
         const Icon = ICON[status];
         return (
           <li
             key={s.id}
             data-slot="stepper-step"
-            data-state={s.status}
-            aria-current={s.status === "active" ? "step" : undefined}
+            data-state={status}
+            aria-current={status === "active" ? "step" : undefined}
             className="flex items-start gap-3"
           >
             <span
@@ -120,7 +133,7 @@ const Stepper = forwardRef<HTMLOListElement, StepperProps>(
                 className={cn("truncate text-body-sm", LABEL_TONE[status])}
               >
                 {s.label}
-                {s.status === "failed" && <span className="sr-only"> — failed</span>}
+                {SR_STATE_TEXT[status] && <span className="sr-only">{SR_STATE_TEXT[status]}</span>}
               </p>
               {s.description && <p className="text-label text-muted-foreground">{s.description}</p>}
               {s.timestamp && (
@@ -128,7 +141,7 @@ const Stepper = forwardRef<HTMLOListElement, StepperProps>(
                   {s.timestamp}
                 </p>
               )}
-              {s.status === "failed" && s.retry && (
+              {status === "failed" && s.retry && (
                 <div data-slot="stepper-retry" className="mt-1">
                   {s.retry}
                 </div>

@@ -59,10 +59,12 @@ describe("Stepper — estados e anatomia", () => {
     const { container } = renderStepper(withStates("done", "active", "failed", "pending"));
     const icons = slots(container, "stepper-icon");
     expect(icons).toHaveLength(4);
-    for (const icon of icons) {
+    // F-tests-1: pina o MAPA estado→glifo, não só "tem svg"
+    const glyphs = ["lucide-check", "lucide-loader-circle", "lucide-x", "lucide-circle-dashed"];
+    [...icons].forEach((icon, i) => {
       expect(icon.getAttribute("aria-hidden")).toBe("true");
-      expect(icon.querySelector("svg")).not.toBeNull();
-    }
+      expect(icon.querySelector("svg")?.getAttribute("class")).toContain(glyphs[i]);
+    });
   });
 
   it("test_active_step_has_aria_current_step", () => {
@@ -91,8 +93,27 @@ describe("Stepper — estados e anatomia", () => {
 
   it("test_failed_state_communicated_in_text", () => {
     const { container } = renderStepper([step("deploy", "failed")]);
-    const li = slots(container, "stepper-step")[0];
-    expect(li?.textContent?.toLowerCase()).toContain("failed");
+    // F-tests-3: o texto de estado fica DENTRO do label (uma frase acessível única)
+    const label = slots(container, "stepper-label")[0];
+    expect(label?.textContent?.toLowerCase()).toContain("failed");
+  });
+
+  it("test_done_and_pending_states_communicated_in_text", () => {
+    // F-dom-1: leitor de tela distingue done/pending sem depender de cor/ícone
+    const { container } = renderStepper(withStates("done", "pending"));
+    const labels = slots(container, "stepper-label");
+    expect(labels[0]?.textContent?.toLowerCase()).toContain("completed");
+    expect(labels[1]?.textContent?.toLowerCase()).toContain("not started");
+  });
+
+  it("test_description_rendered_when_present", () => {
+    const { container } = renderStepper([step("a", "done", { description: "cloning repo" })]);
+    expect(slots(container, "stepper-step")[0]?.textContent).toContain("cloning repo");
+  });
+
+  it("test_description_absent_renders_no_extra_paragraph", () => {
+    const { container } = renderStepper([step("a", "done")]);
+    expect(slots(container, "stepper-step")[0]?.querySelectorAll("p")).toHaveLength(1);
   });
 
   it("test_timestamp_slot_rendered_when_present", () => {
@@ -153,11 +174,24 @@ describe("Stepper — edges e negatives", () => {
     expect(container.querySelectorAll('[role="button"]')).toHaveLength(0);
   });
 
-  it("test_unknown_status_falls_back_to_pending_visual", () => {
-    const bogus = [{ id: "x", label: "X", status: "running" as StepperStepData["status"] }];
-    const { container } = renderStepper(bogus);
+  // F-tests-2 + F-arch-2: fallback é ESPECIFICAMENTE o visual pending e o
+  // data-state normalizado acompanha o que foi renderizado
+  const expectPendingDegradation = (bogusStatus: string) => {
+    const { container } = renderStepper([
+      { id: "x", label: "X", status: bogusStatus as StepperStepData["status"] },
+    ]);
     const icon = slots(container, "stepper-icon")[0];
-    expect(icon?.querySelector("svg")).not.toBeNull();
+    expect(icon?.querySelector("svg")?.getAttribute("class")).toContain("lucide-circle-dashed");
+    expect(slots(container, "stepper-step")[0]?.getAttribute("data-state")).toBe("pending");
+  };
+
+  it("test_unknown_status_falls_back_to_pending_visual", () => {
+    expectPendingDegradation("running");
+  });
+
+  it("test_prototype_key_status_degrades_safely", () => {
+    // F-arch-1/F-dom-2: "toString" passa no guard `in` (prototype chain); Object.hasOwn não
+    expectPendingDegradation("toString");
   });
 
   it("test_multiple_active_steps_each_get_aria_current", () => {
