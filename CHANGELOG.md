@@ -3,6 +3,20 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.18.0] - 2026-07-15
+
+### Added
 - `DescriptionList` primitive — semantic key/value pairs on native `dl/dt/dd`
   (`DescriptionList.Item/Term/Detail`): vertical and horizontal (grid) layouts, `dense`
   mode, valid multi-detail terms. 11 behavior tests (axe: zero violations on both
@@ -14,16 +28,6 @@
   not handle circular references). Per-node copy via `CopyButton`. 21 behavior tests
   (axe: zero violations), 3 Ladle stories including the DetailPanel composition with
   DescriptionList, registry item `json-viewer`. (usetheo-ui#M2)
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.17.0] - 2026-07-15
 
