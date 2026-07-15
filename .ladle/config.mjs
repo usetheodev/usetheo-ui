@@ -5,7 +5,7 @@ export default {
   // @tailwindcss/vite nunca roda e as utilities não são geradas.
   viteConfig: ".ladle/vite.config.mjs",
   appendToHead:
-    '<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />',
+    '<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" />',
   addons: {
     theme: { enabled: true, defaultState: "dark" },
     width: {

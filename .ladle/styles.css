@@ -1,32 +1,14 @@
 /* Ladle-only entry (dev tooling — não é shipped no pacote).
  *
- * Ordem: tokens (valores OKLCH Violet Forge) → tailwind v4 core →
- * config JS (carrega o theoUIPreset deste repo: cores via
- * `oklch(from var(--x) …)`, typescale Geist, radii, shadows, motion,
- * tailwindcss-animate). O preset é a fonte única (DRY) — nada de
- * duplicar tema aqui.
+ * global-v4.css é o entry CANÔNICO do ecossistema (mesma experiência do
+ * dashboard/@theokit/ui styles.css): tailwind v4 core + fonts + tokens
+ * runtime + @theme v4 + base layer (focus ring violeta, scrollbar,
+ * ligatures Geist, cursor de botão). Ver issue usetheo-ui#10 — estes
+ * arquivos devem voltar a ser publicados no pacote.
+ *
+ * O @config soma o theoUIPreset DESTE repo (tailwindcss-animate + tokens
+ * utility-level que o @theme não cobre) e o @source escaneia src/.
  */
-@import "./tokens.css";
-@import "./fonts-cdn.css";
-@import "tailwindcss";
+@import "./global-v4.css";
 @config "./tailwind.config.ts";
 @source "../src";
-
-@layer base {
-  * {
-    border-color: oklch(from var(--border) l c h);
-  }
-  html {
-    font-family: var(--font-body);
-    -webkit-font-smoothing: antialiased;
-  }
-  body {
-    background-color: oklch(from var(--background) l c h);
-    color: oklch(from var(--foreground) l c h);
-  }
-  /* Tailwind v4 preflight removeu o cursor:pointer de botões (v3 tinha). */
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-}
