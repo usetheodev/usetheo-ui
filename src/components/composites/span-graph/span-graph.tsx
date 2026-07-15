@@ -102,6 +102,7 @@ export function SpanGraph({
               }
             }}
             tabIndex={0}
+            // biome-ignore lint/a11y/useSemanticElements: a native <button> cannot be a child of <svg>; role="button" on <g> is the accessible-SVG idiom
             role="button"
             aria-label={`${KIND_LABEL[n.kind]}: ${n.name}`}
             aria-current={n.selected ? "true" : undefined}

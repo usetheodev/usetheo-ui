@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "span-tree",
+  "type": "registry:ui",
+  "title": "SpanTree",
+  "description": "Accessible, controllable tree of trace spans with full WAI-ARIA APG TreeView semantics (treeitem/level/posinset/setsize/selected/expanded/group), keyboard navigation (\u2191/\u2193/Home/End/Enter), a dual recursive/virtualized render path, an optional inline timeline bar, and per-kind badges. Fully controlled selection + collapse.",
+  "dependencies": [
+    "lucide-react",
+    "@tanstack/react-virtual"
+  ],
+  "registryDependencies": [
+    "cn",
+    "badge",
+    "trace",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/composites/span-tree/span-tree.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/span-tree.tsx"
+    },
+    {
+      "path": "components/composites/span-tree/span-tree-row.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/span-tree-row.tsx"
+    },
+    {
+      "path": "components/composites/span-tree/span-tree-virtual.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/span-tree-virtual.tsx"
+    }
+  ]
+}

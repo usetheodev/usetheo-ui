@@ -83,9 +83,11 @@ export function buildLayeredGraph(
 ): LayeredGraph {
   // Dedup by id (a malformed tree may repeat a span) — first occurrence wins.
   const seenIds = new Set<string>();
-  const all = flattenAll(root).filter((s) =>
-    seenIds.has(s.id) ? false : (seenIds.add(s.id), true),
-  );
+  const all = flattenAll(root).filter((s) => {
+    if (seenIds.has(s.id)) return false;
+    seenIds.add(s.id);
+    return true;
+  });
   const count = all.length;
   if (count > cap) {
     return { nodes: [], edges: [], width: 0, height: 0, truncated: true, count };

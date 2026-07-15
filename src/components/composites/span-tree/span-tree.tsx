@@ -86,11 +86,12 @@ export function SpanTree({
   };
 
   return (
-    // biome-ignore lint/a11y/noNoninteractiveTabindex: the tree is a composite widget owning roving focus
     <div
+      // biome-ignore lint/a11y/useSemanticElements: role="tree" is the correct WAI-ARIA pattern; no native element expresses it
       role="tree"
       data-slot="span-tree"
       aria-label={ariaLabel}
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: the tree is a composite widget owning roving focus
       tabIndex={0}
       onKeyDown={onKeyDown}
       className={cn("outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}
@@ -136,7 +137,10 @@ function RecursiveNode({
         renderBadge={ctx.renderBadge}
       />
       {!isCollapsed && children.length > 0 ? (
-        <div role="group">
+        <div
+          // biome-ignore lint/a11y/useSemanticElements: role="group" is the WAI-ARIA TreeView nesting contract
+          role="group"
+        >
           {children.map((c, i) => (
             <RecursiveNode
               key={`${i}-${c.id}`}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "span-waterfall",
+  "type": "registry:ui",
+  "title": "SpanWaterfall",
+  "description": "Trace waterfall: a nice-interval (1/2/5\u00d710\u207f) time axis over percentage-positioned, row-packed span bars, a hover-needle reading the absolute wall-clock time under the pointer, a \u2211 rollup-cost badge on parent rows, and dashed 'unbounded' bars for in-flight / clock-skewed spans. Controlled selection.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cn",
+    "badge",
+    "trace",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/composites/span-waterfall/span-waterfall.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/span-waterfall.tsx"
+    }
+  ]
+}

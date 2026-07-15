@@ -251,4 +251,7 @@ export type { TraceTranscriptProps } from "./components/composites/trace-transcr
 export { SpanGraph } from "./components/composites/span-graph/index.js";
 export type { SpanGraphProps } from "./components/composites/span-graph/index.js";
 export { TraceCompare } from "./components/composites/trace-compare/index.js";
-export type { TraceCompareProps, CompareLane } from "./components/composites/trace-compare/index.js";
+export type {
+  TraceCompareProps,
+  CompareLane,
+} from "./components/composites/trace-compare/index.js";

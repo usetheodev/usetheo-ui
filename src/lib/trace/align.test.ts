@@ -42,8 +42,16 @@ describe("alignSpanTrees", () => {
   });
 
   it("test_filhos_pareiam_por_nome", () => {
-    const a = span({ id: "ar", name: "run", children: [span({ id: "a1", name: "step", startTime: 0n, endTime: 1_000_000n })] });
-    const b = span({ id: "br", name: "run", children: [span({ id: "b1", name: "step", startTime: 0n, endTime: 3_000_000n })] });
+    const a = span({
+      id: "ar",
+      name: "run",
+      children: [span({ id: "a1", name: "step", startTime: 0n, endTime: 1_000_000n })],
+    });
+    const b = span({
+      id: "br",
+      name: "run",
+      children: [span({ id: "b1", name: "step", startTime: 0n, endTime: 3_000_000n })],
+    });
     const rows = alignSpanTrees(a, b);
     const step = rows.find((r) => r.key === "step");
     expect(step?.status).toBe("matched");

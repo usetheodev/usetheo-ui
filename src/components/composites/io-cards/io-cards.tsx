@@ -75,6 +75,7 @@ function MessageFeed({
     return (
       <div className="space-y-2">
         {messages.map((m, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: chat messages carry no stable id; the transcript is append-only so index is the natural key
           <MessageItem key={i} message={m} renderMarkdown={renderMarkdown} />
         ))}
         {collapsible && expanded ? (
@@ -93,12 +94,14 @@ function MessageFeed({
   return (
     <div className="space-y-2">
       {head.map((m, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: chat messages carry no stable id (append-only feed)
         <MessageItem key={`h-${i}`} message={m} renderMarkdown={renderMarkdown} />
       ))}
       <Button variant="ghost" size="sm" onClick={() => setExpanded(true)}>
         {`Show ${hiddenCount} more`}
       </Button>
       {tail.map((m, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: chat messages carry no stable id (append-only feed)
         <MessageItem key={`t-${i}`} message={m} renderMarkdown={renderMarkdown} />
       ))}
     </div>

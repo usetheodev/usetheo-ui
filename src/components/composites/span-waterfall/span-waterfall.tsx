@@ -101,7 +101,6 @@ export function SpanWaterfall({
           ))}
         </div>
       ) : null}
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: hover-needle is a presentational enhancement over interactive rows */}
       <div
         ref={laneRef}
         className="relative space-y-0.5"

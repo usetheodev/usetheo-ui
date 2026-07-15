@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trace-compare",
+  "type": "registry:ui",
+  "title": "TraceCompare",
+  "description": "Two traces side by side (B vs A baseline): a per-lane metrics header + a structural diff table with honest deltas \u2014 a span present in only one trace is marked 'only in A/B' with no fabricated delta. Receives data (lanes); fetching/URL live in the consumer.",
+  "dependencies": [],
+  "registryDependencies": [
+    "cn",
+    "badge",
+    "card",
+    "skeleton",
+    "trace",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/composites/trace-compare/trace-compare.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/trace-compare.tsx"
+    }
+  ]
+}

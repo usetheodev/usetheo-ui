@@ -6,7 +6,12 @@ describe("contentText", () => {
     expect(contentText("hello")).toBe("hello");
   });
   it("test_junta_blocos_de_texto", () => {
-    expect(contentText([{ type: "text", text: "a" }, { type: "text", text: "b" }])).toBe("a\n\nb");
+    expect(
+      contentText([
+        { type: "text", text: "a" },
+        { type: "text", text: "b" },
+      ]),
+    ).toBe("a\n\nb");
   });
   it("test_null_vira_vazio", () => {
     expect(contentText(null)).toBe("");
