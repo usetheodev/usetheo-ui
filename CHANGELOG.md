@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 ### Added
+- `TrendChart` composite — multi-series time-trend chart in pure SVG (zero chart-lib
+  dependencies), promoted from the theo-cloud dashboard with its production lessons pinned
+  by tests: sparse-series point markers, single-bucket dots, explicit empty state, a
+  screen-reader data table keyed by the shared period axis (ragged series read correctly),
+  `valueFormatter` for axis/table values, and non-finite points skipped safely. Pure
+  helpers `linScale`/`niceMax`/`seriesPath` exported. 18 behavior tests (axe: zero
+  violations), 3 Ladle stories (including the theo-rag p50/p95 latency case), registry
+  item `trend-chart`. (usetheo-ui#M3)
 
 ### Changed
 
