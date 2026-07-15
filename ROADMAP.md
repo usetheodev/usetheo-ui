@@ -243,6 +243,130 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
+## V2 — Fechamento do gap SOTA (pós-V1)
+
+> Declarado 2026-07-15 a partir do gap analysis com evidência (`.claude/knowledge-base/audits/sota-gap-analysis-2026-07-15.md` — 3 agentes sobre phoenix ⚠️ ELv2 / langfuse MIT-core / theo-lens). O theo-lens está ~65-70% de paridade com Langfuse-core; os gaps são PROFUNDIDADE (sessions/prompt/analytics/annotation/monitors), não amplitude. Cada milestone V2 promove os componentes recorrentes ao `@usetheo/ui` e adota no lens — mesmo playbook M0–M8. Deps declaradas continuam a numeração V1.
+
+### M9 — [ ] Sessions ricas (replay + métricas por sessão)
+
+> Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Fechar o maior stub do lens — hoje `sessions.tsx` é só uma lista (sessionId + traceCount). Ambos Phoenix (`SessionDetails`/`SessionsTable`) e Langfuse (sessions + user detail) têm sessão rica. Promover `SessionTimeline` + `SessionSummary` ao DS e construir a tela de session detail (traces agrupados por sessão/usuário, métricas agregadas, navegação temporal).
+
+**Definition of done:**
+
+- [ ] `SessionTimeline` + `SessionSummary` publicados no `@usetheo/ui` com DoD padrão (stories + axe + testes + registry).
+- [ ] theo-lens: tela de session detail (traces da sessão em ordem temporal, métricas de sessão: duração total, custo, tokens, erro, nº de traces) consumindo os componentes.
+- [ ] North-star delta registrado; zero dep nova de chart (SVG puro/reuso TrendChart).
+- [ ] Release semver + adoção no lens (deleção do stub).
+
+**Dependencies:** M8 (trace-native kit — SessionTimeline reusa SpanWaterfall/TraceTranscript).
+
+**Top risks (new):**
+
+1. Shape de "sessão" pode não vir do backend (sessions derivadas de spans) — mitigação: validar o contrato `/sessions/{id}` no discover antes do plano; se ausente, o milestone vira UI-only sobre dados agregados client-side.
+2. Session replay temporal pode exigir virtualização de N traces — mitigação: reusar `@tanstack/react-virtual` (M6), zero dep nova.
+
+**Why now (from gap analysis):** maior stub, ambos concorrentes têm, e é a fundação para user-journey analytics.
+
+---
+
+### M10 — [ ] Prompt management (versioning + labels + diff)
+
+> Added 2026-07-15 (V2, gap P0 — o único 100% AUSENTE). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Adicionar gestão de prompts ao lens — hoje inexistente. Phoenix (`PromptVersionsList` + labels + code export) e Langfuse (`prompt-history` + labels prod/staging + `PromptVersionDiffDialog`) têm o ciclo completo. Promover `PromptDiff` + `VersionLabelPicker` ao DS e construir versioning imutável + labels + diff visual no lens.
+
+**Definition of done:**
+
+- [ ] `PromptDiff` (diff lado a lado de 2 versões, reusa padrão do TraceCompare) + `VersionLabelPicker` publicados no `@usetheo/ui` (stories + axe + testes + registry).
+- [ ] theo-lens: prompt list + version history imutável + labels (prod/staging) + diff entre versões, consumindo os componentes.
+- [ ] North-star delta; zero dep nova.
+- [ ] Release semver + adoção no lens.
+
+**Dependencies:** M8 (JsonViewer/CodeBlock reusados no diff).
+
+**Top risks (new):**
+
+1. Prompt store/versioning é backend-heavy (versões imutáveis, labels mutáveis) — mitigação: discover valida o contrato de API; se ausente, escopo reduz a UI + fixtures com nota de backend pendente.
+2. Diff de prompt multi-linha/markdown pode divergir do diff estrutural do TraceCompare — mitigação: PromptDiff é text-diff (não tree-align), contrato próprio.
+
+**Why now:** gap TOTAL vs ambos concorrentes; alto valor por ser lacuna, não melhoria.
+
+---
+
+### M11 — [ ] Analytics time-series SOTA (histogramas + percentis)
+
+> Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Elevar os dashboards do lens (hoje KPI/trend/top-N fixos) ao nível Langfuse (widget library: Big Number/Time Series/Pie/Bar/Histogram) e Phoenix (11+ chart types: latência p50/p95/p99, tokens, custo, erro, score-trend, top-models). Promover `Histogram` + `PercentileChart` ao DS (SVG puro, ADR anti-chart-lib mantido).
+
+**Definition of done:**
+
+- [ ] `Histogram` + `PercentileChart` (p50/p95/p99) publicados no `@usetheo/ui` (SVG puro, stories + axe + testes + registry).
+- [ ] theo-lens: dashboards com latência percentil, distribuição de duração (histograma) e top-models por custo/tokens, consumindo os componentes.
+- [ ] North-star delta; zero dep nova de chart.
+- [ ] Release semver + adoção no lens.
+
+**Dependencies:** M8 (TrendChart do M3 é a base; PercentileChart estende).
+
+**Top risks (new):**
+
+1. Percentis exigem agregação server-side (p95 não é client-computável em grandes volumes) — mitigação: discover valida se o backend expõe percentis; senão, client-side sobre amostra com nota honesta de "sampled".
+2. Histograma SVG puro com muitos buckets pode ficar pesado — mitigação: bucket cap + virtualização se necessário (react-virtual).
+
+**Why now:** Langfuse tem widget library completa; é o gap de profundidade de analytics.
+
+---
+
+### M12 — [ ] Annotation platform (configs + tipos)
+
+> Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Estruturar anotação humana — hoje o `labeling-queue.tsx` tem label/score/note mas sem config store reutilizável. Phoenix (`AnnotationConfigDialog` + categorical/continuous/freeform) e Langfuse (`score-configs`) têm tipos nomeados. Promover `AnnotationInput` (os 3 tipos) ao DS e adicionar score-configs ao lens.
+
+**Definition of done:**
+
+- [ ] `AnnotationInput` (categorical / continuous / freeform, controlado) publicado no `@usetheo/ui` (stories + axe + testes + registry).
+- [ ] theo-lens: score-configs (definir tipos de score nomeados) + anotação por span/trace usando os configs, consumindo o componente.
+- [ ] North-star delta; zero dep nova.
+- [ ] Release semver + adoção no lens (labeling-queue passa a usar os configs).
+
+**Dependencies:** M9 (annotation por sessão reusa a infra), M8.
+
+**Top risks (new):**
+
+1. Score-config store é backend — mitigação: discover valida contrato; senão UI + fixtures.
+2. Anotação inter-rater (dual annotation do Langfuse) é escopo grande — mitigação: FORA do M12 (candidato futuro); M12 entrega single-annotation com os 3 tipos.
+
+**Why now:** fundação de qualidade/eval que os dois concorrentes têm estruturada.
+
+---
+
+### M13 — [ ] Monitors + automations (anomaly + Slack/webhook)
+
+> Added 2026-07-15 (V2, gap P1). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Evoluir os alerts do lens (threshold + webhook) para monitors com detecção de anomalia + automations (Slack/webhook), como Langfuse (`monitors/` + `automations/` + `slack/`). Majoritariamente plataforma; o DS ganha `MonitorSeverityBadge`/`AutomationForm` se recorrentes.
+
+**Definition of done:**
+
+- [ ] theo-lens: monitors (threshold + anomaly simples sobre as séries do M11) + automations (Slack + webhook custom) com histórico de execução.
+- [ ] Componentes recorrentes (`SeverityBadge`, form de automation) promovidos ao `@usetheo/ui` SE aparecerem em ≥2 telas (regra de 3 do DRY).
+- [ ] North-star delta; zero dep nova.
+- [ ] Release semver + adoção no lens.
+
+**Dependencies:** M11 (monitors leem as séries time-series), M13 depende de M11.
+
+**Top risks (new):**
+
+1. Anomaly detection estatística é backend/worker — mitigação: M13 entrega threshold + anomaly SIMPLES (desvio sobre média móvel); ML de anomalia fica fora.
+2. Integração Slack exige OAuth/secret handling — mitigação: reusar o padrão de webhook worker existente (J-16); Slack como um tipo de automation action.
+
+**Why now:** fecha o loop operacional (alertar antes do incidente) que o Langfuse-core tem.
+
+---
+
 ---
 
 ## State-of-the-art references
