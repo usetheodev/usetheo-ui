@@ -19,10 +19,12 @@ export {
   prettyValue,
   spanCostUsd,
   toNs,
+  groupByNamespace,
   toTranscriptRows,
   VIRTUALIZE_THRESHOLD,
 } from "./lib/trace/index.js";
 export type {
+  AttributeGroup,
   AxisTick,
   BarLayout,
   ChatMessage,
@@ -227,6 +229,12 @@ export {
   type CommandItem,
 } from "./components/composites/command-palette/index.js";
 export { SpanTree, SpanTreeRow } from "./components/composites/span-tree/index.js";
-export type { SpanTreeProps, SpanTreeRowProps, SpanTreeRenderCtx } from "./components/composites/span-tree/index.js";
+export type {
+  SpanTreeProps,
+  SpanTreeRowProps,
+  SpanTreeRenderCtx,
+} from "./components/composites/span-tree/index.js";
 export { SpanWaterfall } from "./components/composites/span-waterfall/index.js";
 export type { SpanWaterfallProps } from "./components/composites/span-waterfall/index.js";
+export { AttributesTable } from "./components/composites/attributes-table/index.js";
+export type { AttributesTableProps } from "./components/composites/attributes-table/index.js";
