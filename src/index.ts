@@ -261,3 +261,5 @@ export { SessionSummary } from "./components/composites/session-summary/index.js
 export type { SessionSummaryProps } from "./components/composites/session-summary/index.js";
 export { SessionTimeline } from "./components/composites/session-timeline/index.js";
 export type { SessionTimelineProps } from "./components/composites/session-timeline/index.js";
+export { computeHistogram } from "./lib/chart/index.js";
+export type { HistogramBin } from "./lib/chart/index.js";

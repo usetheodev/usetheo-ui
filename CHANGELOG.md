@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `computeHistogram(values, binCount)` helper puro em `src/lib/chart` — distribui valores numéricos em bins de largura igual (count por bin; não-finitos filtrados; range degenerado colapsa em 1 bin; borda superior inclusiva no último bin) (M11 T1.0)
 
 ### Changed
 
