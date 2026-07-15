@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import type { JsonViewerProps } from "./json-viewer.js";
 import { JsonViewer } from "./json-viewer.js";
+import { DetailPanel, EventPayload } from "./json-viewer.stories.js";
 
 function renderJson(value: unknown, props: Partial<JsonViewerProps> = {}) {
   return render(<JsonViewer value={value} {...props} />);
@@ -154,6 +155,21 @@ describe("JsonViewer — wiring & a11y", () => {
       arr: [1, 2],
       obj: { nested: true },
     });
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("JsonViewer — stories (M2 consumer evidence)", () => {
+  it("event payload story renders the typed-event fixture", () => {
+    render(<EventPayload />);
+    expect(screen.getByText("type")).toBeInTheDocument();
+    expect(screen.getByText('"tool.call"')).toBeInTheDocument();
+  });
+
+  it("detail panel composition (DL + JsonViewer) has no axe violations", async () => {
+    const { container } = render(<DetailPanel />);
+    expect(container.querySelector("dl")).not.toBeNull();
+    expect(container.querySelector('[data-slot="json-viewer"]')).not.toBeNull();
     expect(await axe(container)).toHaveNoViolations();
   });
 });
