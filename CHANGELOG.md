@@ -4,6 +4,12 @@
 
 ### Added
 
+### Fixed
+- `ActionBar`/`PageShell` — o input de busca voltou a expor `aria-label` derivado do
+  placeholder (reticências finais removidas), com override opcional via
+  `search["aria-label"]`. Regressão de a11y da linhagem do pivot, pega pela suíte do
+  dashboard no bump do M7; testes de regressão pinam a derivação e o override. (#8)
+
 ### Changed
 
 ### Deprecated
