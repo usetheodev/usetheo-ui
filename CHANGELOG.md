@@ -3,6 +3,20 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.22.0] - 2026-07-15
+
+### Added
 - Modo `virtualized` no `DataTable` — 10K+ linhas num scroll único sobre
   `@tanstack/react-virtual` (única dependência nova do V1; MIT, 1 transitiva zero-dep,
   custo MEDIDO de +5233 bytes min ESM no dist): `<table>` semântica preservada (tr em
@@ -14,18 +28,11 @@
   (`Virtualized10K` determinística com matriz manual cross-browser), registry `data-table`
   atualizado com a dep explícita e os módulos copy-pasteable. (usetheo-ui#M6)
 
+
 ### Changed
 - `DataTableProps<T>` passou de interface para união discriminada (type-only; runtime
   intacto). Consumidores que estendiam a interface via `extends` devem trocar para
   interseção de tipos; uso normal do componente não muda. (usetheo-ui#M6)
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.21.0] - 2026-07-15
 
