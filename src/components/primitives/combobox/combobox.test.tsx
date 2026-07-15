@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import type { ComboboxProps } from "./combobox.js";
 import { Combobox } from "./combobox.js";
+import { Basic as BasicStory } from "./combobox.stories.js";
 
 const FRUITS = ["Apple", "Banana", "Cherry"];
 
@@ -241,5 +242,12 @@ describe("Combobox — wiring & a11y", () => {
     const { container } = renderCombobox({ "aria-label": "Fruit picker" });
     await user.click(input());
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("Combobox — story smoke", () => {
+  it("basic story renders the labelled input", () => {
+    render(<BasicStory />);
+    expect(screen.getByPlaceholderText("Select a collection")).toBeInTheDocument();
   });
 });
