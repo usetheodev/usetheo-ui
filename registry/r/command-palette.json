@@ -4,7 +4,10 @@
   "type": "registry:ui",
   "title": "CommandPalette",
   "description": "Cmd+K-style global launcher with arrow-key navigation, fuzzy ranking, and Enter/Escape behavior — built on cmdk + Theo Dialog.",
-  "dependencies": ["cmdk", "lucide-react"],
+  "dependencies": [
+    "cmdk",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/dialog.json",

@@ -3,6 +3,20 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.23.0] - 2026-07-15
+
+### Added
 - `TraceCompare` composite — dois traces lado a lado (B vs A baseline): header de métricas por lane + tabela de diff estrutural com deltas honestos (span sem par = "only in A/B", sem delta fabricado); `alignSpanTrees`/`traceMetrics` puros (M8 T5.0)
 - `SpanGraph` composite — grafo de agente em SVG puro (layout BFS layered determinístico, zero dep de chart/layout — ADR mantido), destaque do caminho root→selecionado, oversize honesto, nodes focáveis (M8 T4.0)
 - `TraceTranscript` composite — feed reader-mode do trace (card por span com role/preview/stats), group-headers colapsáveis de subagente (descendentes reais da árvore, nesting-safe), virtualização; deriva o row model via `toTranscriptRows` (M8 T3.2)
@@ -15,16 +29,9 @@
 - Preview local dos componentes: `pnpm dev` sobe o Ladle com o tema Violet Forge completo (tokens OKLCH + preset + Tailwind v4 via `@tailwindcss/vite`) — setup dev-only em `.ladle/`, nada é shipped no pacote (#dev-preview)
 - Preview local: paridade real com o ecossistema — base layer canônica `global-v4.css` + `tokens-v4.css` (@theme), `bg-dotted-violet`/`container` no provider e Geist via `<link>` no head (o `@import` externo era ignorado pós-inline do Tailwind); a investigação expôs a regressão dos assets CSS públicos não publicados no pacote (#10)
 
+
 ### Changed
 - Roadmap "out of scope" amended: recorte de observabilidade de agentes removido da exclusão AI-nativa (agora em escopo como M8; conversação/Chat/Citations seguem fora)
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [0.22.1] - 2026-07-15
 

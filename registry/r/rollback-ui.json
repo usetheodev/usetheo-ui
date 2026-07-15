@@ -4,7 +4,9 @@
   "type": "registry:block",
   "title": "RollbackUI",
   "description": "Instant rollback selector showing recent versions.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/badge.json",
     "https://usetheodev.github.io/usetheo-ui/r/button.json",

@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "Card",
   "description": "Surface container for grouping related content.",
-  "dependencies": ["@radix-ui/react-slot"],
+  "dependencies": [
+    "@radix-ui/react-slot"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

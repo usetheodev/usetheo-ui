@@ -4,7 +4,10 @@
   "type": "registry:ui",
   "title": "Breadcrumb",
   "description": "Hierarchical navigation trail primitive. Composable nav>ol>li anatomy (List/Item/Link/Page/Separator/Ellipsis) with aria-current on the current page, presentation-role separators, asChild router links and safe-href guarding.",
-  "dependencies": ["@radix-ui/react-slot", "lucide-react"],
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/safe-href.json",

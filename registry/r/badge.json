@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "Badge",
   "description": "Small status / tag indicator with semantic variants (default, primary, success, warning, destructive, info).",
-  "dependencies": ["class-variance-authority"],
+  "dependencies": [
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

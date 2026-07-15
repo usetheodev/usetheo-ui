@@ -5,7 +5,9 @@
   "metadata": {
     "requires": {
       "tsconfigPathAlias": {
-        "@/*": ["./src/*"]
+        "@/*": [
+          "./src/*"
+        ]
       }
     }
   },

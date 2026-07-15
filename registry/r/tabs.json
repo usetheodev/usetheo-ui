@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "Tabs",
   "description": "Built on Radix Tabs with active-underline styling and focus-visible ring.",
-  "dependencies": ["@radix-ui/react-tabs"],
+  "dependencies": [
+    "@radix-ui/react-tabs"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

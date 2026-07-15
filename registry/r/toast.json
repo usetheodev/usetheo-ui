@@ -4,7 +4,11 @@
   "type": "registry:ui",
   "title": "Toast",
   "description": "Transient notification built on Radix Toast.",
-  "dependencies": ["@radix-ui/react-toast", "class-variance-authority", "lucide-react"],
+  "dependencies": [
+    "@radix-ui/react-toast",
+    "class-variance-authority",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
