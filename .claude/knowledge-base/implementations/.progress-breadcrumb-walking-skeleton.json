@@ -87,9 +87,18 @@
     {
       "id": "T3.1",
       "phase": 3,
-      "status": "blocked",
-      "note": "gated on release (cross-repo, plan Dependency Graph)",
-      "blocked_reason": "gated on release by design — executes in theokit-studio repo after the M0 release PR merges (plan Dependency Graph + Drawback 2 mitigation); tracked in roadmap-runs/M0-2026-07-14.md"
+      "status": "committed",
+      "commit_sha": "22c1777 (theokit-studio)",
+      "files": [
+        "(cross-repo) packages/studio/src/app/shell.tsx",
+        "(cross-repo) packages/studio/package.json"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "caller real de produção; shell.test 15 testes; data-slot assertado no consumidor"
     }
   ]
 }

@@ -68,10 +68,10 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done (all must hold):**
 
-- [ ] `Breadcrumb` primitive publicado com testes vitest + axe (zero violations), story e entrada `registry/*.json` validando.
-- [ ] API cobre o caso real do studio (rotas via handles) e o slot de breadcrumbs do TopNav sem duplicar conceito (decisão documentada de convivência ou absorção).
-- [ ] Release semver cortada e theokit-studio consumindo o componente em tela real, com o Breadcrumb hand-rolled de `packages/studio/src/app/shell.tsx` deletado.
-- [ ] CHANGELOG + docs de props publicados.
+- [x] `Breadcrumb` primitive publicado com testes vitest + axe (zero violations), story e entrada `registry/*.json` validando.
+- [x] API cobre o caso real do studio (rotas via handles) e o slot de breadcrumbs do TopNav sem duplicar conceito (decisão documentada de convivência ou absorção).
+- [x] Release semver cortada e theokit-studio consumindo o componente em tela real, com o Breadcrumb hand-rolled de `packages/studio/src/app/shell.tsx` deletado (studio commit 22c1777).
+- [x] CHANGELOG + docs de props publicados.
 
 **Dependencies:** none (this is the foundation).
 
