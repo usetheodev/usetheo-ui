@@ -228,3 +228,5 @@ export {
 } from "./components/composites/command-palette/index.js";
 export { SpanTree, SpanTreeRow } from "./components/composites/span-tree/index.js";
 export type { SpanTreeProps, SpanTreeRowProps, SpanTreeRenderCtx } from "./components/composites/span-tree/index.js";
+export { SpanWaterfall } from "./components/composites/span-waterfall/index.js";
+export type { SpanWaterfallProps } from "./components/composites/span-waterfall/index.js";

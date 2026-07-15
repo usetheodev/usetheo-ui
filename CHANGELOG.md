@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `SpanWaterfall` composite — eixo de tempo 1/2/5×10ⁿ + barras percentuais row-packed, hover-needle com timestamp absoluto, badge ∑ de custo em parents, in-flight/clock-skew como barra dashed unbounded (M8 T2.1)
 - `SpanTree` composite — árvore de spans com ARIA APG completa (treeitem/level/posinset/setsize/selected/expanded/group), navegação por teclado (↑/↓/Home/End/Enter), dual-path recursivo/virtualizado, barra inline opcional (M8 T2.0)
 - `trace-core`: tipo `TraceSpan` (interseção phoenix/langfuse/lens) + helpers puros de observabilidade — `toNs`, `durationMs`, `computeTraceBounds`, `computeBarLayout`, `niceAxisTicks`, `packRows`, `spanCostUsd`/`aggregateCost`, `flattenVisible`/`flattenAll`, `toTranscriptRows`, `asChat`/`prettyValue`, `deriveSpanKind`, `buildLayeredGraph` (M8 T1.0)
 - Roadmap amended: added M8 Lens Observability Kit (`/roadmap-feature lens-observability-kit`)
