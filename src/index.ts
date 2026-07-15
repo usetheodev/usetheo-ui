@@ -265,3 +265,8 @@ export { computeHistogram } from "./lib/chart/index.js";
 export type { HistogramBin } from "./lib/chart/index.js";
 export { Histogram } from "./components/composites/histogram/index.js";
 export type { HistogramProps } from "./components/composites/histogram/index.js";
+export { PercentileChart } from "./components/composites/percentile-chart/index.js";
+export type {
+  PercentileBucket,
+  PercentileChartProps,
+} from "./components/composites/percentile-chart/index.js";
