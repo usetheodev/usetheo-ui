@@ -242,3 +242,5 @@ export { AttributesTable } from "./components/composites/attributes-table/index.
 export type { AttributesTableProps } from "./components/composites/attributes-table/index.js";
 export { IOCards, MessageCard, MessageItem } from "./components/composites/io-cards/index.js";
 export type { IOCardsProps, RenderMarkdown } from "./components/composites/io-cards/index.js";
+export { TraceTranscript } from "./components/composites/trace-transcript/index.js";
+export type { TraceTranscriptProps } from "./components/composites/trace-transcript/index.js";
