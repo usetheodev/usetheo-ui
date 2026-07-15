@@ -101,7 +101,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M2 — [ ] Primitives de detalhe: DescriptionList + JsonViewer
+### M2 — [x] Primitives de detalhe: DescriptionList + JsonViewer
 
 **Objective:** Entregar os dois blocos de todo painel de detalhe dos produtos de dados — DescriptionList para metadados chave-valor (memória, documento, skill, entity) e JsonViewer para payloads JSONB/eventos.
 
