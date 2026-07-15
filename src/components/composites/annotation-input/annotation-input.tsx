@@ -56,12 +56,13 @@ function AnnotationInput(props: AnnotationInputProps) {
   const generatedId = useId();
   const controlId = props.id ?? generatedId;
   const descId = description ? `${controlId}-desc` : undefined;
+  const isCategorical = props.config.type === "categorical";
+  // Categorical is a radiogroup, not a single control — the visible label names
+  // the group via aria-labelledby (no htmlFor, no duplicated aria-label).
+  const labelId = isCategorical ? `${controlId}-label` : undefined;
 
   const label = (
-    <Label
-      htmlFor={props.config.type === "categorical" ? undefined : controlId}
-      required={required}
-    >
+    <Label id={labelId} htmlFor={isCategorical ? undefined : controlId} required={required}>
       {name}
     </Label>
   );
@@ -86,7 +87,7 @@ function AnnotationInput(props: AnnotationInputProps) {
       <RadioGroup
         value={value ?? ""}
         onValueChange={(v) => onValueChange(v === "" ? null : v)}
-        aria-label={name}
+        aria-labelledby={labelId}
         className="gap-1.5"
         {...a11y}
       >
