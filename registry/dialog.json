@@ -4,14 +4,8 @@
   "type": "registry:ui",
   "title": "Dialog",
   "description": "Modal overlay built on Radix Dialog.",
-  "dependencies": [
-    "@radix-ui/react-dialog",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-dialog", "lucide-react"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/dialog/dialog.tsx",

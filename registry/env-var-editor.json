@@ -4,17 +4,8 @@
   "type": "registry:block",
   "title": "EnvVarEditor",
   "description": "Table-like editor for environment variables.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "button",
-    "cn",
-    "env",
-    "input",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "button", "cn", "env", "input", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/env-var-editor/env-var-editor.tsx",

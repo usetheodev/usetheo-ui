@@ -4,16 +4,8 @@
   "type": "registry:block",
   "title": "DomainConfig",
   "description": "Manage custom domains for a project.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "button",
-    "cn",
-    "input",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "button", "cn", "input", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/domain-config/domain-config.tsx",

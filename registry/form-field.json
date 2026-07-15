@@ -4,14 +4,8 @@
   "type": "registry:ui",
   "title": "FormField",
   "description": "Composition wrapper for accessible form rows.",
-  "dependencies": [
-    "@radix-ui/react-label",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-label", "lucide-react"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/form-field/form-field.tsx",

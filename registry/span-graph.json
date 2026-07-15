@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "span-graph",
+  "type": "registry:ui",
+  "title": "SpanGraph",
+  "description": "Dependency-free SVG rendering of a trace as a layered agent graph (depth = distance from root, order = index within depth). Edges follow parent/call order; the root\u2192selected path is highlighted; over a node cap it renders an honest 'too large' state. No chart/layout library (SVG-pure). Focusable nodes, controlled selection.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "trace", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/span-graph/span-graph.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/span-graph.tsx"
+    }
+  ]
+}

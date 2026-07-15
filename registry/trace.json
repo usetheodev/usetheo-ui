@@ -1,0 +1,61 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trace",
+  "type": "registry:lib",
+  "title": "Trace core (TraceSpan + pure helpers)",
+  "description": "Shared data contracts and pure, total helpers for the trace-native observability components: the TraceSpan type (phoenix/langfuse/OTel-GenAI intersection), timestamp/duration math, bar-layout geometry, tree flatten + transcript row model, ChatML parsing, cost aggregation, layered graph layout, attribute grouping, and structural trace alignment. No React, no I/O.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/trace/types.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/types.ts"
+    },
+    {
+      "path": "lib/trace/duration.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/duration.ts"
+    },
+    {
+      "path": "lib/trace/chat.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/chat.ts"
+    },
+    {
+      "path": "lib/trace/cost.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/cost.ts"
+    },
+    {
+      "path": "lib/trace/flatten.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/flatten.ts"
+    },
+    {
+      "path": "lib/trace/bar-layout.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/bar-layout.ts"
+    },
+    {
+      "path": "lib/trace/graph-layout.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/graph-layout.ts"
+    },
+    {
+      "path": "lib/trace/attributes.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/attributes.ts"
+    },
+    {
+      "path": "lib/trace/align.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/align.ts"
+    },
+    {
+      "path": "lib/trace/index.ts",
+      "type": "registry:lib",
+      "target": "lib/trace/index.ts"
+    }
+  ]
+}

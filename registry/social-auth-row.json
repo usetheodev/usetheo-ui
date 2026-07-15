@@ -5,11 +5,7 @@
   "title": "SocialAuthRow",
   "description": "Row of OAuth provider buttons.",
   "dependencies": [],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset",
-    "types"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset", "types"],
   "files": [
     {
       "path": "components/primitives/social-auth-row/social-auth-row.tsx",

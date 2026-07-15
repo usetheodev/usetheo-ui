@@ -4,16 +4,8 @@
   "type": "registry:block",
   "title": "PreviewEnvCard",
   "description": "Preview environment card surfacing all services from one PR.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "cn",
-    "deployment-row",
-    "safe-href",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "cn", "deployment-row", "safe-href", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/preview-env-card/preview-env-card.tsx",

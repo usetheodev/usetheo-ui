@@ -1,6 +1,51 @@
 // @usetheo/ui barrel — seeded from theo-ui (pivot M-B). 54 non-AI components + Violet Forge foundation.
 
 export { cn } from "./lib/cn.js";
+export {
+  aggregateCost,
+  asChat,
+  contentText,
+  isRedactedThinking,
+  buildLayeredGraph,
+  computeBarLayout,
+  computeTraceBounds,
+  deriveSpanKind,
+  durationMs,
+  flattenAll,
+  flattenVisible,
+  GRAPH_NODE_CAP,
+  isSpanError,
+  KIND_LABEL,
+  niceAxisTicks,
+  packRows,
+  prettyValue,
+  spanCostUsd,
+  toNs,
+  alignSpanTrees,
+  groupByNamespace,
+  traceMetrics,
+  toTranscriptRows,
+  VIRTUALIZE_THRESHOLD,
+} from "./lib/trace/index.js";
+export type {
+  AlignDelta,
+  AlignRow,
+  AttributeGroup,
+  AxisTick,
+  BarLayout,
+  ChatMessage,
+  FlatSpan,
+  GraphEdge,
+  GraphNode,
+  LayeredGraph,
+  SpanKind,
+  SpanStatus,
+  ToolCall,
+  TraceSpan,
+  TranscriptRow,
+  TranscriptRowStats,
+} from "./lib/trace/index.js";
+
 export { Button, buttonVariants, type ButtonProps } from "./components/primitives/button/index.js";
 export { Badge, badgeVariants, type BadgeProps } from "./components/primitives/badge/index.js";
 export {
@@ -189,3 +234,24 @@ export {
   CommandPalette,
   type CommandItem,
 } from "./components/composites/command-palette/index.js";
+export { SpanTree, SpanTreeRow } from "./components/composites/span-tree/index.js";
+export type {
+  SpanTreeProps,
+  SpanTreeRowProps,
+  SpanTreeRenderCtx,
+} from "./components/composites/span-tree/index.js";
+export { SpanWaterfall } from "./components/composites/span-waterfall/index.js";
+export type { SpanWaterfallProps } from "./components/composites/span-waterfall/index.js";
+export { AttributesTable } from "./components/composites/attributes-table/index.js";
+export type { AttributesTableProps } from "./components/composites/attributes-table/index.js";
+export { IOCards, MessageCard, MessageItem } from "./components/composites/io-cards/index.js";
+export type { IOCardsProps, RenderMarkdown } from "./components/composites/io-cards/index.js";
+export { TraceTranscript } from "./components/composites/trace-transcript/index.js";
+export type { TraceTranscriptProps } from "./components/composites/trace-transcript/index.js";
+export { SpanGraph } from "./components/composites/span-graph/index.js";
+export type { SpanGraphProps } from "./components/composites/span-graph/index.js";
+export { TraceCompare } from "./components/composites/trace-compare/index.js";
+export type {
+  TraceCompareProps,
+  CompareLane,
+} from "./components/composites/trace-compare/index.js";

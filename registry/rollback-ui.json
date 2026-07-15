@@ -4,15 +4,8 @@
   "type": "registry:block",
   "title": "RollbackUI",
   "description": "Instant rollback selector showing recent versions.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "button",
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "button", "cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/rollback-ui/rollback-ui.tsx",

@@ -29,7 +29,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ### Explicitly out of scope
 
-- Componentes AI-nativos (Citations, answer ConfidenceBadge, Recall/Answer Playground, Chat) — *why excluded:* pertencem ao `@theokit/ui`; a fronteira do split AI/não-AI não se cruza.
+- Componentes AI-nativos de CONVERSAÇÃO (Citations, answer ConfidenceBadge, Recall/Answer Playground, Chat) — *why excluded:* pertencem ao `@theokit/ui`; a fronteira do split AI/não-AI não se cruza.
+
+> Note: o recorte de OBSERVABILIDADE de agentes (waterfall/span tree/transcript/attributes) foi removido desta exclusão em 2026-07-15 quando o M8 foi adicionado (decisão estratégica registrada no CHANGELOG); conversação segue fora.
 - Graph explorer (entidades/communities force-directed) — *why excluded:* visualização de domínio pesada, exige lib de layout; fica no app até existir 2º caso concreto.
 - DatePicker completo — *why excluded:* `<input type="datetime-local">` estilizado resolve o asOf bi-temporal por ora (parsimony rung 3).
 - Syntax highlighting no CodeBlock — *why excluded:* shiki/prism quebraria o registry copy-pasteable; o prop `language` já é forward-compat.
@@ -88,9 +90,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `Slider` (Radix) com suporte a range, step, marcas de valor e label acessível; DoD padrão da lib.
-- [ ] `Combobox` construído sobre o `cmdk` já instalado (zero dep nova), com filtro assíncrono opcional, estados empty/loading e keyboard nav completa; DoD padrão da lib.
-- [ ] Ambos usados em tela real do studio (playground M5) ou em story de composição "query playground" validada com axe.
+- [x] `Slider` (Radix) com suporte a range, step, marcas de valor e label acessível; DoD padrão da lib.
+- [x] `Combobox` construído sobre o `cmdk` já instalado (zero dep nova), com filtro assíncrono opcional, estados empty/loading e keyboard nav completa; DoD padrão da lib.
+- [x] Ambos usados em tela real do studio (playground M5) ou em story de composição "query playground" validada com axe.
 
 **Dependencies:** M0.
 
@@ -107,9 +109,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `DescriptionList` primitive (term/detail, layouts horizontal/vertical, densidade) com DoD padrão da lib.
-- [ ] `JsonViewer` composite dependency-free (tree colapsável, controle de profundidade inicial, copy por nó via `CopyButton` existente, truncamento de strings longas, safe contra referências circulares) com DoD padrão da lib.
-- [ ] Studio event inspector (payloads em `<details>` hoje) coberto por story de composição equivalente; JsonViewer testado com payloads reais dos fixtures do studio.
+- [x] `DescriptionList` primitive (term/detail, layouts horizontal/vertical, densidade) com DoD padrão da lib.
+- [x] `JsonViewer` composite dependency-free (tree colapsável, controle de profundidade inicial, copy por nó via `CopyButton` existente, truncamento de strings longas, safe contra referências circulares) com DoD padrão da lib.
+- [x] Studio event inspector (payloads em `<details>` hoje) coberto por story de composição equivalente; JsonViewer testado com payloads reais dos fixtures do studio.
 
 **Dependencies:** M0.
 
@@ -126,9 +128,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `TrendChart` composite multi-série com legend, tooltip nativo, formatters de eixo e fallback `<table>` acessível; zero dependência de chart lib (mantém ADR).
-- [ ] Código seeded do dashboard com API generalizada (sem nomes de domínio lens/deploy); DoD padrão da lib.
-- [ ] Story reproduzindo o caso analytics do theo-rag (série temporal p50/p95) e o caso de uso do dashboard atual.
+- [x] `TrendChart` composite multi-série com legend, tooltip nativo, formatters de eixo e fallback `<table>` acessível; zero dependência de chart lib (mantém ADR).
+- [x] Código seeded do dashboard com API generalizada (sem nomes de domínio lens/deploy); DoD padrão da lib.
+- [x] Story reproduzindo o caso analytics do theo-rag (série temporal p50/p95) e o caso de uso do dashboard atual.
 
 **Dependencies:** M0 (pipeline provado); código-fonte no repo do dashboard.
 
@@ -145,9 +147,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `Stepper` composite com estados por etapa (pending/active/done/failed), orientações horizontal/vertical, timestamps opcionais e suporte a etapa com erro + retry slot; DoD padrão da lib.
-- [ ] API validada contra os dois casos reais: ingest pipeline do theo-rag e build timeline do dashboard.
-- [ ] Story de composição com `StatusDot`/`Badge` existentes (sem duplicar semântica de status).
+- [x] `Stepper` composite com estados por etapa (pending/active/done/failed), orientações horizontal/vertical, timestamps opcionais e suporte a etapa com erro + retry slot; DoD padrão da lib.
+- [x] API validada contra os dois casos reais: ingest pipeline do theo-rag e build timeline do dashboard.
+- [x] Story de composição com `StatusDot`/`Badge` existentes (sem duplicar semântica de status).
 
 **Dependencies:** M0.
 
@@ -164,9 +166,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `FileDropzone` primitive com drag-drop + file picker, validação (tipo/tamanho/quantidade) com erros tipados, estados idle/drag-over/rejected, acessível por teclado (padrão estudado em `react-dropzone`); dependency-free (HTML5 DnD nativo).
-- [ ] Integração composable com `Progress` existente para upload em andamento (story de composição).
-- [ ] DoD padrão da lib.
+- [x] `FileDropzone` primitive com drag-drop + file picker, validação (tipo/tamanho/quantidade) com erros tipados, estados idle/drag-over/rejected, acessível por teclado (padrão estudado em `react-dropzone`); dependency-free (HTML5 DnD nativo).
+- [x] Integração composable com `Progress` existente para upload em andamento (story de composição).
+- [x] DoD padrão da lib.
 
 **Dependencies:** M0.
 
@@ -183,9 +185,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] ADR aprovado adicionando `@tanstack/react-virtual` como dependência (única nova do V1), com análise de custo no bundle e no copy-paste do registry.
-- [ ] `DataTable` com opção de virtualização (sticky header, alturas de linha fixas; limitações — sem expandable rows virtualizadas — documentadas), sem breaking na API atual.
-- [ ] Prova com dataset de 10K+ linhas em story + teste de comportamento; DoD padrão da lib.
+- [x] ADR aprovado adicionando `@tanstack/react-virtual` como dependência (única nova do V1), com análise de custo no bundle e no copy-paste do registry.
+- [x] `DataTable` com opção de virtualização (sticky header, alturas de linha fixas; limitações — sem expandable rows virtualizadas — documentadas), sem breaking na API atual.
+- [x] Prova com dataset de 10K+ linhas em story + teste de comportamento; DoD padrão da lib.
 
 **Dependencies:** M0; recomendado após M3-M5 (padrão de promoção rodado).
 
@@ -196,16 +198,16 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M7 — [ ] Adoção e dedup nos consumidores
+### M7 — [x] Adoção e dedup nos consumidores
 
 **Objective:** Fechar o loop de reuso: dashboard e studio consumindo os 9 componentes em telas reais e deletando os hand-rolled correspondentes — a prova material do north-star.
 
 **Definition of done:**
 
-- [ ] Dashboard atualizado do skew `@usetheo/ui@0.13.2` para a versão corrente (migração do breaking 0.15.0 documentada e aplicada).
-- [ ] Dashboard: `metric-trend-chart`, `build-timeline`, `virtual-table` e breadcrumb hand-rolled substituídos pelos componentes da lib (PRs merged ou abertos), com deleção dos arquivos duplicados.
-- [ ] Studio: Tier 1 completo em uso real (Breadcrumb no shell, Slider/Combobox no playground, JsonViewer no event inspector, DescriptionList em detail views).
-- [ ] Contagem north-star registrada (baseline vs pós-adoção) em `knowledge-base/audits/`.
+- [x] Dashboard atualizado do skew `@usetheo/ui@0.13.2` para a versão corrente (migração do breaking 0.15.0 documentada e aplicada).
+- [x] Dashboard: `metric-trend-chart`, `build-timeline`, `virtual-table` e breadcrumb hand-rolled substituídos pelos componentes da lib (PRs merged ou abertos), com deleção dos arquivos duplicados.
+- [x] Studio: Tier 1 completo em uso real (Breadcrumb no shell, Slider/Combobox no playground, JsonViewer no event inspector, DescriptionList em detail views).
+- [x] Contagem north-star registrada (baseline vs pós-adoção) em `knowledge-base/audits/`.
 
 **Dependencies:** M0-M6.
 
@@ -213,6 +215,33 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 1. Trabalho cross-repo (dashboard e studio têm ciclos próprios) atrasar a adoção — mitigação: PRs de adoção preparados junto com cada release da lib, não ao final.
 2. O DESIGN.md do dashboard exigir ajustes finos nos componentes promovidos — mitigação: DoD de cada milestone já valida contra o consumidor de origem.
+
+### M8 — [ ] Lens Observability Kit (trace-native)
+
+> Added 2026-07-15 by `/roadmap-feature` (slug: `lens-observability-kit`). See CHANGELOG `[Unreleased] § Added`.
+
+**Objective:** Promover as 7 superfícies de observabilidade de agentes hand-rolled do theo-lens (~1.850 LoC) a componentes do design system — experiência de LLM tracing nível Arize (waterfall, span tree, transcript, attributes, IO, graph, compare) com adoção e deleção no consumidor.
+
+**Definition of done:**
+
+- [ ] 7 componentes trace-native publicados com DoD padrão da lib (stories + axe + testes + registry válido): `SpanWaterfall`, `SpanTree`, `TraceTranscript`, `AttributesTable` (com masking/reveal), `IOCards`, `SpanGraph`, `TraceCompare`.
+- [ ] theo-lens adota os 7 e deleta os hand-rolled correspondentes (waterfall 208, tree 433, transcript 300, io-cards 283, attributes 177, span-graph 141, compare 312 LoC — SHAs de deleção registrados no audit).
+- [ ] North-star delta registrado em `knowledge-base/audits/` (baseline pós-M7: 48 símbolos únicos).
+- [ ] Zero nova dependência de chart — ADR "SVG puro" mantido (waterfall/graph em SVG nativo).
+- [ ] Release semver cortado e consumidores bumpados.
+
+**Dependencies:** M2 (JsonViewer/DescriptionList — payloads de span), M6 (DataTable virtualizado — listas de traces/attributes), M7 (playbook de adoção+dedup validado; consumidores em 0.22.x).
+
+**Top risks (new — pre-existing risks documented elsewhere in roadmap):**
+
+1. API-lock a partir de UM consumidor: generalizar contratos só pelo lens trava shapes errados — mitigação: validar APIs contra 2º caso real (Phoenix / OTel GenAI semconv) no `/discover-plan`.
+2. Fronteira AI/não-AI borrada: revisitar o out-of-scope abre precedente — mitigação: nota explícita delimitando o que CONTINUA fora (Chat, Citations, Recall/Answer Playground) e escopo restrito a observability/tracing.
+
+**Why now (from grill Q1):**
+
+V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois consumidores; a gap-analysis nível Arize expôs ~1.850 LoC de UI de observabilidade duplicada no lens — o maior bolsão remanescente de hand-rolled com consumidor real esperando.
+
+---
 
 ---
 
@@ -230,6 +259,8 @@ Peers cloned under `.claude/knowledge-base/references/`. See `_catalog.md` in th
 | `react-dropzone` | MIT | Padrão consagrado de drag-drop: contrato de eventos, validação, a11y | M5 |
 | `mantine` | MIT | Lib madura com todos os componentes-alvo (Dropzone, Slider, Stepper, JsonInput) — design de API/props | M1, M2, M4, M5 |
 | `tremor` | Apache-2.0 | Melhor referência de API de chart components (axis, legend, tooltip, formatters) — só a interface, não a dep de Recharts | M3 |
+| `phoenix` | Elastic 2.0 ⚠️ study-only | UI open-source mais próxima da Arize — waterfall/tree/transcript/evals reais (proibido copiar código; ver `_catalog.md`) | M8 |
+| `langfuse` | MIT (core; `ee/` excluído) | 2ª referência independente de LLM tracing UI — evita single-source no shape das APIs | M8 |
 
 ---
 

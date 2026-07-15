@@ -5,10 +5,7 @@
   "title": "Stepper",
   "description": "Multi-step pipeline progress list promoted from a production build timeline: explicit per-step status (pending/active/done/failed), vertical/horizontal orientations, optional timestamp and failed-only retry slots, ol+aria-current accessibility.",
   "dependencies": ["lucide-react"],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/stepper/stepper.tsx",

@@ -4,15 +4,8 @@
   "type": "registry:ui",
   "title": "Sheet",
   "description": "Slide-in side panel built on Radix Dialog.",
-  "dependencies": [
-    "@radix-ui/react-dialog",
-    "class-variance-authority",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-dialog", "class-variance-authority", "lucide-react"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/sheet/sheet.tsx",

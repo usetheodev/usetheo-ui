@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trace-transcript",
+  "type": "registry:ui",
+  "title": "TraceTranscript",
+  "description": "Reader-mode feed of a trace: one card per span (role badge + output preview + token/cost/duration micro-stats), with collapsible group headers for subagent subtrees (nesting-safe: descendants come from the tree). Virtualizes above a threshold. Controlled selection.",
+  "dependencies": ["lucide-react", "@tanstack/react-virtual"],
+  "registryDependencies": ["cn", "badge", "empty-state", "trace", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/trace-transcript/trace-transcript.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/trace-transcript.tsx"
+    }
+  ]
+}

@@ -31,6 +31,12 @@
       "description": "Persistent inline notice primitive. Four intents (info / success / warning / destructive) with mapped lucide icons (Info / CheckCircle2 / TriangleAlert / AlertCircle) and design tokens. Optional title, description, action slot, and onDismiss handler. destructive intent renders role=alert (assertive); other intents render role=status (polite). Distinct from Toast (transient, auto-dismiss) and EmptyState (centered card)."
     },
     {
+      "name": "attributes-table",
+      "type": "registry:ui",
+      "title": "AttributesTable",
+      "description": "Namespace-grouped OTel span attributes with fail-closed PII masking. A masked value's raw string never enters the DOM until Reveal is clicked AND canReveal is true; object values fall back to the dependency-free JsonViewer. Promoted-key badges + collapsible per-namespace cards."
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
@@ -181,6 +187,12 @@
       "description": "Text input primitive with focus ring, error state, and form-field composition support."
     },
     {
+      "name": "io-cards",
+      "type": "registry:ui",
+      "title": "IOCards",
+      "description": "Span input/output rendering: a ChatML message array becomes role-labeled cards with tool-call/result linkage and long-history collapse; markdown bodies go through an optional renderMarkdown slot (default plain text, XSS-safe by construction — no dangerouslySetInnerHTML); non-chat payloads fall back to JsonViewer."
+    },
+    {
       "name": "json-viewer",
       "type": "registry:ui",
       "title": "JsonViewer",
@@ -319,6 +331,24 @@
       "description": "Row of OAuth provider buttons."
     },
     {
+      "name": "span-graph",
+      "type": "registry:ui",
+      "title": "SpanGraph",
+      "description": "Dependency-free SVG rendering of a trace as a layered agent graph (depth = distance from root, order = index within depth). Edges follow parent/call order; the root→selected path is highlighted; over a node cap it renders an honest 'too large' state. No chart/layout library (SVG-pure). Focusable nodes, controlled selection."
+    },
+    {
+      "name": "span-tree",
+      "type": "registry:ui",
+      "title": "SpanTree",
+      "description": "Accessible, controllable tree of trace spans with full WAI-ARIA APG TreeView semantics (treeitem/level/posinset/setsize/selected/expanded/group), keyboard navigation (↑/↓/Home/End/Enter), a dual recursive/virtualized render path, an optional inline timeline bar, and per-kind badges. Fully controlled selection + collapse."
+    },
+    {
+      "name": "span-waterfall",
+      "type": "registry:ui",
+      "title": "SpanWaterfall",
+      "description": "Trace waterfall: a nice-interval (1/2/5×10ⁿ) time axis over percentage-positioned, row-packed span bars, a hover-needle reading the absolute wall-clock time under the pointer, a ∑ rollup-cost badge on parent rows, and dashed 'unbounded' bars for in-flight / clock-skewed spans. Controlled selection."
+    },
+    {
       "name": "stat-tile",
       "type": "registry:ui",
       "title": "StatTile",
@@ -407,6 +437,24 @@
       "type": "registry:ui",
       "title": "TopNav",
       "description": "Horizontal app bar (64px) with breadcrumbs, mode switcher (radiogroup), and action slots."
+    },
+    {
+      "name": "trace-compare",
+      "type": "registry:ui",
+      "title": "TraceCompare",
+      "description": "Two traces side by side (B vs A baseline): a per-lane metrics header + a structural diff table with honest deltas — a span present in only one trace is marked 'only in A/B' with no fabricated delta. Receives data (lanes); fetching/URL live in the consumer."
+    },
+    {
+      "name": "trace-transcript",
+      "type": "registry:ui",
+      "title": "TraceTranscript",
+      "description": "Reader-mode feed of a trace: one card per span (role badge + output preview + token/cost/duration micro-stats), with collapsible group headers for subagent subtrees (nesting-safe: descendants come from the tree). Virtualizes above a threshold. Controlled selection."
+    },
+    {
+      "name": "trace",
+      "type": "registry:lib",
+      "title": "Trace core (TraceSpan + pure helpers)",
+      "description": "Shared data contracts and pure, total helpers for the trace-native observability components: the TraceSpan type (phoenix/langfuse/OTel-GenAI intersection), timestamp/duration math, bar-layout geometry, tree flatten + transcript row model, ChatML parsing, cost aggregation, layered graph layout, attribute grouping, and structural trace alignment. No React, no I/O."
     },
     {
       "name": "trend-chart",

@@ -4,16 +4,8 @@
   "type": "registry:block",
   "title": "ProjectCard",
   "description": "Surface for a project in a project listing.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "cn",
-    "deployment-row",
-    "safe-href",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "cn", "deployment-row", "safe-href", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/project-card/project-card.tsx",

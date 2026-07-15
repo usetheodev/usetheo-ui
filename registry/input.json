@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "Input",
   "description": "Text input primitive with focus ring, error state, and form-field composition support.",
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/input/input.tsx",
@@ -15,7 +12,5 @@
       "target": "components/ui/input.tsx"
     }
   ],
-  "dependencies": [
-    "class-variance-authority"
-  ]
+  "dependencies": ["class-variance-authority"]
 }

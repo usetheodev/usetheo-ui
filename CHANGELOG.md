@@ -14,6 +14,25 @@
 
 ### Security
 
+## [0.23.0] - 2026-07-15
+
+### Added
+- `TraceCompare` composite — dois traces lado a lado (B vs A baseline): header de métricas por lane + tabela de diff estrutural com deltas honestos (span sem par = "only in A/B", sem delta fabricado); `alignSpanTrees`/`traceMetrics` puros (M8 T5.0)
+- `SpanGraph` composite — grafo de agente em SVG puro (layout BFS layered determinístico, zero dep de chart/layout — ADR mantido), destaque do caminho root→selecionado, oversize honesto, nodes focáveis (M8 T4.0)
+- `TraceTranscript` composite — feed reader-mode do trace (card por span com role/preview/stats), group-headers colapsáveis de subagente (descendentes reais da árvore, nesting-safe), virtualização; deriva o row model via `toTranscriptRows` (M8 T3.2)
+- `IOCards` composite — payloads input/output de span: array ChatML vira cards por role com pareamento tool-call/result, colapso de histórico longo, redacted-thinking; markdown via slot `renderMarkdown` (default texto puro, XSS-safe); fallback JSON via `JsonViewer` (M8 T3.1)
+- `AttributesTable` composite — atributos OTel agrupados por namespace (cards colapsáveis), masking PII fail-closed (`maskedKeys` predicate + `canReveal`; valor raw nunca no DOM pré-reveal), promoted badges, fallback JSON via `JsonViewer` (M8 T3.0)
+- `SpanWaterfall` composite — eixo de tempo 1/2/5×10ⁿ + barras percentuais row-packed, hover-needle com timestamp absoluto, badge ∑ de custo em parents, in-flight/clock-skew como barra dashed unbounded (M8 T2.1)
+- `SpanTree` composite — árvore de spans com ARIA APG completa (treeitem/level/posinset/setsize/selected/expanded/group), navegação por teclado (↑/↓/Home/End/Enter), dual-path recursivo/virtualizado, barra inline opcional (M8 T2.0)
+- `trace-core`: tipo `TraceSpan` (interseção phoenix/langfuse/lens) + helpers puros de observabilidade — `toNs`, `durationMs`, `computeTraceBounds`, `computeBarLayout`, `niceAxisTicks`, `packRows`, `spanCostUsd`/`aggregateCost`, `flattenVisible`/`flattenAll`, `toTranscriptRows`, `asChat`/`prettyValue`, `deriveSpanKind`, `buildLayeredGraph` (M8 T1.0)
+- Roadmap amended: added M8 Lens Observability Kit (`/roadmap-feature lens-observability-kit`)
+- Preview local dos componentes: `pnpm dev` sobe o Ladle com o tema Violet Forge completo (tokens OKLCH + preset + Tailwind v4 via `@tailwindcss/vite`) — setup dev-only em `.ladle/`, nada é shipped no pacote (#dev-preview)
+- Preview local: paridade real com o ecossistema — base layer canônica `global-v4.css` + `tokens-v4.css` (@theme), `bg-dotted-violet`/`container` no provider e Geist via `<link>` no head (o `@import` externo era ignorado pós-inline do Tailwind); a investigação expôs a regressão dos assets CSS públicos não publicados no pacote (#10)
+
+
+### Changed
+- Roadmap "out of scope" amended: recorte de observabilidade de agentes removido da exclusão AI-nativa (agora em escopo como M8; conversação/Chat/Citations seguem fora)
+
 ## [0.22.1] - 2026-07-15
 
 ### Fixed
