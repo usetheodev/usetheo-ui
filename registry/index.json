@@ -331,6 +331,12 @@
       "description": "Operational state indicator (online/offline/degraded/info) consuming status-* semantic tokens (ADR-0007)."
     },
     {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "Multi-step pipeline progress list promoted from a production build timeline: explicit per-step status (pending/active/done/failed), vertical/horizontal orientations, optional timestamp and failed-only retry slots, ol+aria-current accessibility."
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
