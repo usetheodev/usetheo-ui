@@ -58,7 +58,7 @@ const Root = forwardRef<HTMLDListElement, DescriptionListProps>(
         "text-body-sm",
         layout === "vertical" && (dense ? "grid gap-2" : "grid gap-4"),
         layout === "horizontal" &&
-          "grid grid-cols-[max-content_1fr] items-baseline [&>div]:contents",
+          "grid grid-cols-[max-content_1fr] items-baseline [&>div]:contents [&_dd]:col-start-2",
         layout === "horizontal" && (dense ? "gap-x-4 gap-y-1.5" : "gap-x-6 gap-y-3"),
         className,
       )}

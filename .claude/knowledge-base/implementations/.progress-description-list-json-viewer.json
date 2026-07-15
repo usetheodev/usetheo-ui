@@ -94,8 +94,7 @@
         "registry/json-viewer.json",
         "registry/index.json",
         "registry/r/description-list.json",
-        "registry/r/json-viewer.json",
-        "registry/r/index.json"
+        "registry/r/json-viewer.json"
       ],
       "wiring": {
         "a": "pass",
