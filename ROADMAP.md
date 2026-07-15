@@ -196,7 +196,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M7 — [ ] Adoção e dedup nos consumidores
+### M7 — [x] Adoção e dedup nos consumidores
 
 **Objective:** Fechar o loop de reuso: dashboard e studio consumindo os 9 componentes em telas reais e deletando os hand-rolled correspondentes — a prova material do north-star.
 
