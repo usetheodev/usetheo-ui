@@ -191,3 +191,16 @@ describe("DataTable virtualized — story smoke", () => {
     expect(rows.length).toBeLessThan(100);
   });
 });
+
+describe("DataTable virtualized — barrel", () => {
+  it("test_barrel_exports_virtualized_type", async () => {
+    const barrel = await import("../../../index.js");
+    // o tipo compila via barrel (uso em literal) e o DataTable é o mesmo símbolo
+    const opts: import("../../../index.js").DataTableVirtualizedOptions = {
+      height: 400,
+      rowHeight: 40,
+    };
+    expect(opts.rowHeight).toBe(40);
+    expect(barrel.DataTable).toBe(DataTable);
+  });
+});
