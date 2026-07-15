@@ -31,6 +31,12 @@
       "description": "Persistent inline notice primitive. Four intents (info / success / warning / destructive) with mapped lucide icons (Info / CheckCircle2 / TriangleAlert / AlertCircle) and design tokens. Optional title, description, action slot, and onDismiss handler. destructive intent renders role=alert (assertive); other intents render role=status (polite). Distinct from Toast (transient, auto-dismiss) and EmptyState (centered card)."
     },
     {
+      "name": "annotation-input",
+      "type": "registry:ui",
+      "title": "AnnotationInput",
+      "description": "Controlled, config-driven human annotation input. Dispatches on config.type (Phoenix's three-type model): categorical -> RadioGroup over named options; continuous -> number input bounded by the config; freeform -> textarea. Fully controlled (value + onValueChange); the consumer owns the config (fixture or backend store) and the submission. Composes the DS form primitives."
+    },
+    {
       "name": "attributes-table",
       "type": "registry:ui",
       "title": "AttributesTable",
