@@ -21,11 +21,15 @@ export {
   prettyValue,
   spanCostUsd,
   toNs,
+  alignSpanTrees,
   groupByNamespace,
+  traceMetrics,
   toTranscriptRows,
   VIRTUALIZE_THRESHOLD,
 } from "./lib/trace/index.js";
 export type {
+  AlignDelta,
+  AlignRow,
   AttributeGroup,
   AxisTick,
   BarLayout,
@@ -246,3 +250,5 @@ export { TraceTranscript } from "./components/composites/trace-transcript/index.
 export type { TraceTranscriptProps } from "./components/composites/trace-transcript/index.js";
 export { SpanGraph } from "./components/composites/span-graph/index.js";
 export type { SpanGraphProps } from "./components/composites/span-graph/index.js";
+export { TraceCompare } from "./components/composites/trace-compare/index.js";
+export type { TraceCompareProps, CompareLane } from "./components/composites/trace-compare/index.js";

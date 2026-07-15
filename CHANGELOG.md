@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `TraceCompare` composite — dois traces lado a lado (B vs A baseline): header de métricas por lane + tabela de diff estrutural com deltas honestos (span sem par = "only in A/B", sem delta fabricado); `alignSpanTrees`/`traceMetrics` puros (M8 T5.0)
 - `SpanGraph` composite — grafo de agente em SVG puro (layout BFS layered determinístico, zero dep de chart/layout — ADR mantido), destaque do caminho root→selecionado, oversize honesto, nodes focáveis (M8 T4.0)
 - `TraceTranscript` composite — feed reader-mode do trace (card por span com role/preview/stats), group-headers colapsáveis de subagente (descendentes reais da árvore, nesting-safe), virtualização; deriva o row model via `toTranscriptRows` (M8 T3.2)
 - `IOCards` composite — payloads input/output de span: array ChatML vira cards por role com pareamento tool-call/result, colapso de histórico longo, redacted-thinking; markdown via slot `renderMarkdown` (default texto puro, XSS-safe); fallback JSON via `JsonViewer` (M8 T3.1)
