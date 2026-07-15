@@ -3,9 +3,6 @@
 ## [Unreleased]
 
 ### Added
-- `PercentileChart` composite — p50/p95/p99 por bucket temporal como BANDAS sombreadas (área p50–p95 + p95–p99 mais clara + linha p50) em SVG puro; leitura instantânea de spread (upgrade do overlay de 3 linhas, padrão phoenix); reusa `linScale`/`niceMax`/`seriesPath` do TrendChart — zero dep nova (M11 T3.0)
-- `Histogram` composite — distribuição de valores numéricos em barras SVG puras (aceita `bins` pré-computados OU `values`+`binCount` binado client-side via `computeHistogram`; altura via `niceMax`; empty state honesto; tabela sr-only para paridade a11y; reusa `linScale`/`niceMax` do TrendChart — zero dep nova) (M11 T2.0)
-- `computeHistogram(values, binCount)` helper puro em `src/lib/chart` — distribui valores numéricos em bins de largura igual (count por bin; não-finitos filtrados; range degenerado colapsa em 1 bin; borda superior inclusiva no último bin) (M11 T1.0)
 
 ### Changed
 
@@ -16,6 +13,16 @@
 ### Fixed
 
 ### Security
+
+## [0.25.0] - 2026-07-15
+
+### Added
+- `PercentileChart` composite — p50/p95/p99 por bucket temporal como BANDAS sombreadas (área p50–p95 + p95–p99 mais clara + linha p50) em SVG puro; leitura instantânea de spread (upgrade do overlay de 3 linhas, padrão phoenix); reusa `linScale`/`niceMax`/`seriesPath` do TrendChart — zero dep nova (M11 T3.0)
+- `Histogram` composite — distribuição de valores numéricos em barras SVG puras (aceita `bins` pré-computados OU `values`+`binCount` binado client-side via `computeHistogram`; altura via `niceMax`; empty state honesto; tabela sr-only para paridade a11y; reusa `linScale`/`niceMax` do TrendChart — zero dep nova) (M11 T2.0)
+- `computeHistogram(values, binCount)` helper puro em `src/lib/chart` — distribui valores numéricos em bins de largura igual (count por bin; não-finitos filtrados; range degenerado colapsa em 1 bin; borda superior inclusiva no último bin) (M11 T1.0)
+
+### Fixed
+- `PercentileChart` — percentil ausente (não-finito) agora vira gap honesto (bandas quebram em sub-bandas contíguas de pontos finitos) em vez de emitir `NaN` no path SVG; tabela sr-only mostra `—` (M11 review M-1)
 
 ## [0.24.0] - 2026-07-15
 
