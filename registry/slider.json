@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "type": "registry:ui",
+  "title": "Slider",
+  "description": "Range input primitive over Radix Slider: single or multi-thumb, decimal steps, clickable labelled marks, value clamped to [min,max], accessible thumb labels.",
+  "dependencies": [
+    "@radix-ui/react-slider"
+  ],
+  "registryDependencies": [
+    "cn",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/primitives/slider/slider.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/slider.tsx"
+    }
+  ]
+}
