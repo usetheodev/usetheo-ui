@@ -56,3 +56,13 @@ if (typeof Element !== "undefined") {
   if (!proto.releasePointerCapture) proto.releasePointerCapture = () => {};
   if (!proto.scrollIntoView) proto.scrollIntoView = () => {};
 }
+
+// happy-dom doesn't ship ResizeObserver; Radix Slider observes the track to
+// position thumbs. A no-op stub keeps keyboard/value tests deterministic.
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof globalThis.ResizeObserver;
+}

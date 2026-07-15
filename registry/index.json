@@ -79,6 +79,12 @@
       "description": "Terminal / code-snippet surface. Renders code inside a <pre> with optional 'terminal' prefix per line ('$ '), optional caption (file name), and optional inline CopyButton in top-right. Copy uses the raw code (without the visual prefix). language prop is forward-compat for future syntax highlighting."
     },
     {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Single-select typeahead over the cmdk engine with an inline listbox: sync/async filtering (shouldFilter=false), empty and loading states, full keyboard nav, APG combobox ARIA contract."
+    },
+    {
       "name": "command-palette",
       "type": "registry:ui",
       "title": "CommandPalette",
@@ -281,6 +287,12 @@
       "type": "registry:ui",
       "title": "Skeleton",
       "description": "Placeholder block shown while content is loading."
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Range input primitive over Radix Slider: single or multi-thumb, decimal steps, clickable labelled marks, value clamped to [min,max], accessible thumb labels."
     },
     {
       "name": "social-auth-row",
