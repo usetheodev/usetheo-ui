@@ -247,7 +247,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 > Declarado 2026-07-15 a partir do gap analysis com evidência (`.claude/knowledge-base/audits/sota-gap-analysis-2026-07-15.md` — 3 agentes sobre phoenix ⚠️ ELv2 / langfuse MIT-core / theo-lens). O theo-lens está ~65-70% de paridade com Langfuse-core; os gaps são PROFUNDIDADE (sessions/prompt/analytics/annotation/monitors), não amplitude. Cada milestone V2 promove os componentes recorrentes ao `@usetheo/ui` e adota no lens — mesmo playbook M0–M8. Deps declaradas continuam a numeração V1.
 
-### M9 — [ ] Sessions ricas (replay + métricas por sessão)
+### M9 — [x] Sessions ricas (replay + métricas por sessão)
 
 > Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
 
@@ -297,7 +297,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M11 — [ ] Analytics time-series SOTA (histogramas + percentis)
+### M11 — [x] Analytics time-series SOTA (histogramas + percentis)
 
 > Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
 
@@ -321,7 +321,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M12 — [ ] Annotation platform (configs + tipos)
+### M12 — [x] Annotation platform (configs + tipos)
 
 > Added 2026-07-15 (V2, gap P0). See CHANGELOG `[Unreleased] § Added`.
 
