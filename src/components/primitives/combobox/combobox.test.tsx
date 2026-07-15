@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
+import { Combobox as ComboboxFromBarrel } from "../../../index.js";
 import type { ComboboxProps } from "./combobox.js";
 import { Combobox } from "./combobox.js";
 import { Basic as BasicStory } from "./combobox.stories.js";
@@ -249,5 +250,11 @@ describe("Combobox — story smoke", () => {
   it("basic story renders the labelled input", () => {
     render(<BasicStory />);
     expect(screen.getByPlaceholderText("Select a collection")).toBeInTheDocument();
+  });
+});
+
+describe("Combobox — barrel", () => {
+  it("barrel exports the same symbol", () => {
+    expect(ComboboxFromBarrel).toBe(Combobox);
   });
 });

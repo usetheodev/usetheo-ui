@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
+import { Slider as SliderFromBarrel } from "../../../index.js";
 import { Slider } from "./slider.js";
 import { Default as DefaultStory } from "./slider.stories.js";
 
@@ -165,5 +166,11 @@ describe("Slider — story smoke", () => {
   it("default story renders a labelled slider", () => {
     render(<DefaultStory />);
     expect(screen.getByRole("slider")).toHaveAttribute("aria-label", "Volume");
+  });
+});
+
+describe("Slider — barrel", () => {
+  it("barrel exports the same symbol", () => {
+    expect(SliderFromBarrel).toBe(Slider);
   });
 });

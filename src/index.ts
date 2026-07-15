@@ -8,6 +8,18 @@ export {
   type BreadcrumbLinkProps,
 } from "./components/primitives/breadcrumb/index.js";
 export {
+  Combobox,
+  type ComboboxContentProps,
+  type ComboboxInputProps,
+  type ComboboxItemProps,
+  type ComboboxProps,
+} from "./components/primitives/combobox/index.js";
+export {
+  Slider,
+  type SliderMark,
+  type SliderProps,
+} from "./components/primitives/slider/index.js";
+export {
   UpdateBanner,
   type UpdateBannerProps,
 } from "./components/primitives/update-banner/index.js";
