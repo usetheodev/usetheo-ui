@@ -158,7 +158,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M5 — [ ] FileDropzone
+### M5 — [x] FileDropzone
 
 **Objective:** Entregar o primitive de upload por drag-drop que a ingestão de documentos do theo-rag exige (pdf, docx, csv, imagens), com validação e a11y de teclado.
 

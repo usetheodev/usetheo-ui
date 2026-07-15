@@ -127,3 +127,46 @@ export const FullyFeatured: Story = () => (
     />
   </div>
 );
+
+/**
+ * Prova do M6 (DoD b3): 10.000 linhas determinísticas num scroll virtualizado.
+ * Matriz manual (jsdom não rola): verificar em browser real — scroll fluido até
+ * o fim, sticky header, sort reordenando, ~15-20 tr no DOM a qualquer momento.
+ */
+interface AuditRow {
+  id: string;
+  event: string;
+  actor: string;
+  seq: number;
+}
+
+const auditRows: AuditRow[] = Array.from({ length: 10_000 }, (_, i) => ({
+  id: `evt-${i}`,
+  event: ["deploy", "rollback", "scale", "config-change"][i % 4] as string,
+  actor: `user-${i % 37}`,
+  seq: i,
+}));
+
+const auditColumns: DataTableColumn<AuditRow>[] = [
+  { key: "seq", label: "#", width: "80px", align: "right", sortable: true },
+  { key: "event", label: "Event", sortable: true },
+  { key: "actor", label: "Actor" },
+];
+
+export const Virtualized10K: Story = () => (
+  <DataTable<AuditRow>
+    columns={auditColumns}
+    data={auditRows}
+    rowKey={(r) => r.id}
+    virtualized={{ height: 480, rowHeight: 40 }}
+  />
+);
+
+export const VirtualizedCompact: Story = () => (
+  <DataTable<AuditRow>
+    columns={auditColumns}
+    data={auditRows.slice(0, 2_000)}
+    rowKey={(r) => r.id}
+    virtualized={{ height: 320, rowHeight: 32, overscan: 10 }}
+  />
+);

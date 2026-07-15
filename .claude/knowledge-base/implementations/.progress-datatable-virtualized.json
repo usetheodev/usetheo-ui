@@ -1,0 +1,105 @@
+{
+  "slug": "datatable-virtualized",
+  "tasks": [
+    {
+      "id": "T1.1",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "74350562",
+      "files": [
+        "package.json",
+        "pnpm-lock.yaml"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "dep manifest; consumo real no T1.2"
+    },
+    {
+      "id": "T1.2",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "2ac269b9",
+      "files": [
+        "src/components/composites/data-table/data-table.tsx",
+        "src/components/composites/data-table/data-table-virtualized.tsx",
+        "src/components/composites/data-table/data-table-virtualized.test.tsx",
+        "src/components/composites/data-table/compare-values.ts",
+        "src/components/composites/data-table/use-data-table-sort.ts",
+        "src/components/composites/data-table/data-table-loading.tsx",
+        "src/components/composites/data-table/data-table-parts.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "delega\u00e7\u00e3o real no DataTable; data-slots assertados; extra\u00e7\u00f5es pelo piso 300 (ADR 0002-m6 a formalizar)"
+    },
+    {
+      "id": "T1.3",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "517b50a0",
+      "files": [
+        "src/components/composites/data-table/data-table.stories.tsx",
+        "src/components/composites/data-table/data-table-virtualized.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "stories caller (ADR D4); sweep 177"
+    },
+    {
+      "id": "T2.1",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "8579c06a",
+      "files": [
+        "src/index.ts",
+        "src/components/composites/data-table/index.ts",
+        "src/components/composites/data-table/data-table-virtualized.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "barrel type"
+    },
+    {
+      "id": "T2.2",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "761cec00",
+      "files": [
+        "registry/data-table.json"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "dep declarada + 6 files; validator followup #11 (n\u00e3o introspecta imports locais)"
+    },
+    {
+      "id": "T2.3",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "d9b9e3de",
+      "files": [
+        "CHANGELOG.md"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "documental"
+    }
+  ]
+}

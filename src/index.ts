@@ -123,6 +123,7 @@ export {
   type DataTableColumn,
   type DataTableProps,
   type DataTableSort,
+  type DataTableVirtualizedOptions,
 } from "./components/composites/data-table/index.js";
 export { PageShell, type PageShellProps } from "./components/composites/page-shell/index.js";
 export {
