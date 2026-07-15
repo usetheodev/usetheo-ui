@@ -82,7 +82,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M1 — [ ] Primitives de playground: Slider + Combobox
+### M1 — [x] Primitives de playground: Slider + Combobox
 
 **Objective:** Entregar os dois primitives de entrada interativa que os playgrounds de recall (theo-memory) e retrieval (theo-rag) exigem — Slider para topK/threshold/diversify e Combobox com typeahead para seleção de scope/collection/entity.
 
