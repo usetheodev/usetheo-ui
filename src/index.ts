@@ -257,3 +257,5 @@ export type {
 } from "./components/composites/trace-compare/index.js";
 export { aggregateSession } from "./lib/session/index.js";
 export type { SessionTraceItem, SessionMetrics } from "./lib/session/index.js";
+export { SessionSummary } from "./components/composites/session-summary/index.js";
+export type { SessionSummaryProps } from "./components/composites/session-summary/index.js";
