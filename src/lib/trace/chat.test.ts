@@ -1,5 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { asChat, prettyValue } from "./chat.js";
+import { asChat, contentText, isRedactedThinking, prettyValue } from "./chat.js";
+
+describe("contentText", () => {
+  it("test_extrai_string_direta", () => {
+    expect(contentText("hello")).toBe("hello");
+  });
+  it("test_junta_blocos_de_texto", () => {
+    expect(contentText([{ type: "text", text: "a" }, { type: "text", text: "b" }])).toBe("a\n\nb");
+  });
+  it("test_null_vira_vazio", () => {
+    expect(contentText(null)).toBe("");
+  });
+});
+
+describe("isRedactedThinking", () => {
+  it("test_reconhece_content_redacted", () => {
+    expect(isRedactedThinking({ role: "assistant", content: "<REDACTED>" })).toBe(true);
+  });
+  it("test_reconhece_bloco_redacted_thinking", () => {
+    expect(
+      isRedactedThinking({ role: "assistant", content: [{ type: "redacted_thinking" }] }),
+    ).toBe(true);
+  });
+  it("test_conteudo_normal_nao_e_redacted", () => {
+    expect(isRedactedThinking({ role: "user", content: "hi" })).toBe(false);
+  });
+});
 
 describe("asChat", () => {
   it("test_asChat_detecta_array_chatml_e_rejeita_json_generico", () => {

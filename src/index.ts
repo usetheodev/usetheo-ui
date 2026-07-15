@@ -4,6 +4,8 @@ export { cn } from "./lib/cn.js";
 export {
   aggregateCost,
   asChat,
+  contentText,
+  isRedactedThinking,
   buildLayeredGraph,
   computeBarLayout,
   computeTraceBounds,
@@ -238,3 +240,5 @@ export { SpanWaterfall } from "./components/composites/span-waterfall/index.js";
 export type { SpanWaterfallProps } from "./components/composites/span-waterfall/index.js";
 export { AttributesTable } from "./components/composites/attributes-table/index.js";
 export type { AttributesTableProps } from "./components/composites/attributes-table/index.js";
+export { IOCards, MessageCard, MessageItem } from "./components/composites/io-cards/index.js";
+export type { IOCardsProps, RenderMarkdown } from "./components/composites/io-cards/index.js";
