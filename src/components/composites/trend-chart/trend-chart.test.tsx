@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import type { TrendSeries } from "./trend-chart.js";
 import { TrendChart, linScale, niceMax, seriesPath } from "./trend-chart.js";
+import { RagLatency } from "./trend-chart.stories.js";
 
 const pts = (...ys: (number | undefined)[]): TrendSeries["points"] =>
   ys.map((y, x) => ({ x, y: y as number }));
@@ -163,5 +164,13 @@ describe("TrendChart — wiring & a11y", () => {
       </div>,
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("TrendChart — story smoke", () => {
+  it("rag latency story renders p50/p95 paths with the ms formatter", () => {
+    const { container } = render(<RagLatency />);
+    expect(slots(container, "trend-chart-line")).toHaveLength(2);
+    expect(container.querySelector('[data-slot="trend-chart-table"]')?.textContent).toContain("ms");
   });
 });
