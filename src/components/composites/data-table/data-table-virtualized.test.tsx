@@ -176,3 +176,18 @@ describe("DataTable virtualized — edges e negatives", () => {
     expect(container.querySelectorAll("tbody tr")).toHaveLength(5);
   });
 });
+
+describe("DataTable virtualized — story smoke", () => {
+  it("test_virtualized_10k_story_renders_window", async () => {
+    // A story NÃO injeta rect (browser real mede sozinho); em jsdom o viewport
+    // é 0 → 0 linhas é o honesto aqui. O smoke prova: 10K montam sem crash,
+    // sizer dimensionado para o dataset inteiro e NUNCA 10.000 tr no DOM. A
+    // janela exata com rect injetado é pinada em test_virtualized_renders_exact_window_of_10k.
+    const { Virtualized10K } = await import("./data-table.stories.js");
+    const { container } = render(<Virtualized10K />);
+    const sizer = container.querySelector('[data-slot="data-table-virtual-sizer"]') as HTMLElement;
+    expect(sizer.style.height).toBe(`${10_000 * 40}px`);
+    const rows = container.querySelectorAll('[data-slot="data-table-virtual-body"] tbody tr');
+    expect(rows.length).toBeLessThan(100);
+  });
+});
