@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `Histogram` composite — distribuição de valores numéricos em barras SVG puras (aceita `bins` pré-computados OU `values`+`binCount` binado client-side via `computeHistogram`; altura via `niceMax`; empty state honesto; tabela sr-only para paridade a11y; reusa `linScale`/`niceMax` do TrendChart — zero dep nova) (M11 T2.0)
 - `computeHistogram(values, binCount)` helper puro em `src/lib/chart` — distribui valores numéricos em bins de largura igual (count por bin; não-finitos filtrados; range degenerado colapsa em 1 bin; borda superior inclusiva no último bin) (M11 T1.0)
 
 ### Changed
