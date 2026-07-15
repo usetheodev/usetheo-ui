@@ -270,3 +270,17 @@ export type {
   PercentileBucket,
   PercentileChartProps,
 } from "./components/composites/percentile-chart/index.js";
+export {
+  AnnotationInput,
+  isCategoricalConfig,
+  isContinuousConfig,
+  isFreeformConfig,
+} from "./components/composites/annotation-input/index.js";
+export type {
+  AnnotationInputProps,
+  CategoricalOption,
+  AnnotationCategoricalConfig,
+  AnnotationContinuousConfig,
+  AnnotationFreeformConfig,
+  AnnotationConfig,
+} from "./components/composites/annotation-input/index.js";

@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- `AnnotationInput` composite — input de anotação humana controlado e config-driven (categorical→RadioGroup / continuous→number input com bounds / freeform→Textarea), modelo de 3 tipos do Phoenix; compõe os primitivos do DS (RadioGroup/Input/Textarea/Label) — zero dep nova; a11y (radiogroup ARIA, aria-required/describedby) + axe (M12 T2.0)
+- Tipos de annotation config (`AnnotationConfig` union discriminada: `AnnotationCategoricalConfig`/`AnnotationContinuousConfig`/`AnnotationFreeformConfig` + `CategoricalOption`) e type guards `isCategoricalConfig`/`isContinuousConfig`/`isFreeformConfig` (M12 T1.0)
 
 ### Changed
 
