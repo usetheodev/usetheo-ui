@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "Table",
   "description": "Semantic data-table primitive with sub-components (Table.Header, Table.Body, Table.Row, Table.Cell, Table.HeaderCell). Supports density (default | compact via Context), per-cell align (left | center | right), numeric cells (font-mono tabular-nums), and sortable header cells (onSort + sortDirection with ChevronUp/ChevronDown affordance + aria-sort).",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

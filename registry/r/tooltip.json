@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "Tooltip",
   "description": "Built on Radix Tooltip — accessible hover / focus tooltip with delay and side / align controls.",
-  "dependencies": [
-    "@radix-ui/react-tooltip"
-  ],
+  "dependencies": ["@radix-ui/react-tooltip"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

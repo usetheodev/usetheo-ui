@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "session",
+  "type": "registry:lib",
+  "title": "Session core (SessionTraceItem + aggregateSession)",
+  "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, \u2211cost, \u2211tokens, error count, distinct models). Pure, total \u2014 absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization.",
+  "dependencies": [],
+  "registryDependencies": ["trace"],
+  "files": [
+    {
+      "path": "lib/session/types.ts",
+      "type": "registry:lib",
+      "target": "lib/session/types.ts"
+    },
+    {
+      "path": "lib/session/aggregate.ts",
+      "type": "registry:lib",
+      "target": "lib/session/aggregate.ts"
+    },
+    {
+      "path": "lib/session/index.ts",
+      "type": "registry:lib",
+      "target": "lib/session/index.ts"
+    }
+  ]
+}

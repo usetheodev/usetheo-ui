@@ -5,9 +5,7 @@
   "metadata": {
     "requires": {
       "tsconfigPathAlias": {
-        "@/*": [
-          "./src/*"
-        ]
+        "@/*": ["./src/*"]
       }
     }
   },
@@ -299,6 +297,24 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "Styled wrapper around Radix Select."
+    },
+    {
+      "name": "session-summary",
+      "type": "registry:ui",
+      "title": "SessionSummary",
+      "description": "A dl of honest aggregate metrics over a session's traces: trace count, wall-clock window, ∑cost, ∑tokens, error count (destructive when >0), distinct models. Sums of zero are honest, never an em-dash."
+    },
+    {
+      "name": "session-timeline",
+      "type": "registry:ui",
+      "title": "SessionTimeline",
+      "description": "Temporal replay of a session: one row per trace sorted by start time, each with timestamp, name, a duration bar relative to the session window (reuses the trace-core bar layout), status, and cost. Controlled selection; virtualizes above a threshold."
+    },
+    {
+      "name": "session",
+      "type": "registry:lib",
+      "title": "Session core (SessionTraceItem + aggregateSession)",
+      "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, ∑cost, ∑tokens, error count, distinct models). Pure, total — absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization."
     },
     {
       "name": "sheet",

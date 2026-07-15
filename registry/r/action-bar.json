@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "ActionBar",
   "description": "Page-top action strip primitive. Three optional slots: search input (flex-1, grows to fill), filter icon button, and primary action button (right-aligned). Returns null when no slots are provided. Used standalone or composed inside <PageShell>. Primary action supports loading state with spinner.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

@@ -4,9 +4,7 @@
   "type": "registry:block",
   "title": "EnvVarEditor",
   "description": "Table-like editor for environment variables.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/badge.json",
     "https://usetheodev.github.io/usetheo-ui/r/button.json",

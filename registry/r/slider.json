@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "Slider",
   "description": "Range input primitive over Radix Slider: single or multi-thumb, decimal steps, clickable labelled marks, value clamped to [min,max], accessible thumb labels.",
-  "dependencies": [
-    "@radix-ui/react-slider"
-  ],
+  "dependencies": ["@radix-ui/react-slider"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

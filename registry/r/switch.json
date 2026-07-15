@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "Switch",
   "description": "Built on Radix Switch — accessible binary toggle with on / off states and disabled support.",
-  "dependencies": [
-    "@radix-ui/react-switch",
-    "class-variance-authority"
-  ],
+  "dependencies": ["@radix-ui/react-switch", "class-variance-authority"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "session-timeline",
+  "type": "registry:ui",
+  "title": "SessionTimeline",
+  "description": "Temporal replay of a session: one row per trace sorted by start time, each with timestamp, name, a duration bar relative to the session window (reuses the trace-core bar layout), status, and cost. Controlled selection; virtualizes above a threshold.",
+  "dependencies": ["@tanstack/react-virtual"],
+  "registryDependencies": ["cn", "badge", "empty-state", "session", "trace", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/session-timeline/session-timeline.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/session-timeline.tsx"
+    }
+  ]
+}

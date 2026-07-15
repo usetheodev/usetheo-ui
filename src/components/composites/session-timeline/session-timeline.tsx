@@ -108,6 +108,7 @@ function Row({ item, ...ctx }: { item: SessionTraceItem } & RowCtx) {
   const startNs = toNs(item.startTime);
   const dur = durationMs({ startTime: item.startTime, endTime: item.endTime });
   return (
+    // biome-ignore lint/a11y/useSemanticElements: pairs with the role="list" container (virtualized wrappers forbid <li>)
     <div role="listitem">
       <button
         type="button"

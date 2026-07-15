@@ -1,0 +1,29 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "session",
+  "type": "registry:lib",
+  "title": "Session core (SessionTraceItem + aggregateSession)",
+  "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, ∑cost, ∑tokens, error count, distinct models). Pure, total — absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization.",
+  "dependencies": [],
+  "registryDependencies": ["https://usetheodev.github.io/usetheo-ui/r/trace.json"],
+  "files": [
+    {
+      "path": "lib/session/types.ts",
+      "type": "registry:lib",
+      "target": "lib/session/types.ts",
+      "content": "/**\n * Data contracts for the session-level components (M9). A session groups traces that share a\n * `session.id`; `SessionTraceItem` is the trace-level shape both `SessionSummary` and\n * `SessionTimeline` consume — the intersection of the theo-lens traces-list row and the peer\n * session views (phoenix numTraces+latency+cost, langfuse timestamp+name+latency). Timestamps\n * accept unix-ns (bigint | numeric string) or ISO — normalized by the trace-core `toNs`.\n */\n\nexport interface SessionTraceItem {\n  id: string;\n  name?: string;\n  /** Unix ns (bigint | numeric string) or ISO-8601 string. */\n  startTime?: bigint | string;\n  /** Absent/null = in-flight (renders unbounded on the timeline). */\n  endTime?: bigint | string | null;\n  status?: \"OK\" | \"ERROR\";\n  model?: string;\n  costUsd?: number;\n  totalTokens?: number;\n}\n\n/** Aggregate metrics over a session's traces. All numeric fields are 0 (never NaN) when absent. */\nexport interface SessionMetrics {\n  traceCount: number;\n  /** Session wall-clock window in ms: max(end) − min(start) across all traces. */\n  windowMs: number;\n  totalCostUsd: number;\n  totalTokens: number;\n  errorCount: number;\n  /** Distinct models seen, sorted. */\n  models: string[];\n}\n"
+    },
+    {
+      "path": "lib/session/aggregate.ts",
+      "type": "registry:lib",
+      "target": "lib/session/aggregate.ts",
+      "content": "/**\n * Pure, total session-metric aggregation. Never throws, never does I/O. Honest sums: absent\n * cost/tokens count as 0 (never NaN); the window is max(end) − min(start) over parseable timestamps\n * (an unparseable start is skipped from the window, never a crash).\n */\n\nimport { toNs } from \"@/lib/trace/duration\";\nimport type { SessionMetrics, SessionTraceItem } from \"@/lib/session/types\";\n\nexport function aggregateSession(items: SessionTraceItem[]): SessionMetrics {\n  let totalCostUsd = 0;\n  let totalTokens = 0;\n  let errorCount = 0;\n  const models = new Set<string>();\n  let minStart: bigint | null = null;\n  let maxEnd: bigint | null = null;\n\n  for (const it of items) {\n    if (typeof it.costUsd === \"number\" && Number.isFinite(it.costUsd) && it.costUsd > 0) {\n      totalCostUsd += it.costUsd;\n    }\n    if (\n      typeof it.totalTokens === \"number\" &&\n      Number.isFinite(it.totalTokens) &&\n      it.totalTokens > 0\n    ) {\n      totalTokens += it.totalTokens;\n    }\n    if (it.status === \"ERROR\") errorCount++;\n    if (it.model) models.add(it.model);\n\n    const start = toNs(it.startTime);\n    if (start === null) continue; // cannot place this trace in the window\n    if (minStart === null || start < minStart) minStart = start;\n    const end = toNs(it.endTime ?? null) ?? start;\n    const eff = end >= start ? end : start;\n    if (maxEnd === null || eff > maxEnd) maxEnd = eff;\n  }\n\n  const windowMs =\n    minStart !== null && maxEnd !== null ? Number((maxEnd - minStart) / 1_000_000n) : 0;\n\n  return {\n    traceCount: items.length,\n    windowMs,\n    totalCostUsd,\n    totalTokens,\n    errorCount,\n    models: [...models].sort(),\n  };\n}\n"
+    },
+    {
+      "path": "lib/session/index.ts",
+      "type": "registry:lib",
+      "target": "lib/session/index.ts",
+      "content": "export * from \"@/lib/session/types\";\nexport * from \"@/lib/session/aggregate\";\n"
+    }
+  ]
+}

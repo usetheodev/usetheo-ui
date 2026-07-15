@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "Alert",
   "description": "Persistent inline notice primitive. Four intents (info / success / warning / destructive) with mapped lucide icons (Info / CheckCircle2 / TriangleAlert / AlertCircle) and design tokens. Optional title, description, action slot, and onDismiss handler. destructive intent renders role=alert (assertive); other intents render role=status (polite). Distinct from Toast (transient, auto-dismiss) and EmptyState (centered card).",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "FormField",
   "description": "Composition wrapper for accessible form rows.",
-  "dependencies": [
-    "@radix-ui/react-label",
-    "lucide-react"
-  ],
+  "dependencies": ["@radix-ui/react-label", "lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
