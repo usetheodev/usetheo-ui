@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "ScrollArea",
   "description": "Custom scroller with Violet Forge styling.",
-  "dependencies": ["@radix-ui/react-scroll-area"],
+  "dependencies": [
+    "@radix-ui/react-scroll-area"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "Stepper",
   "description": "Multi-step pipeline progress list promoted from a production build timeline: explicit per-step status (pending/active/done/failed), vertical/horizontal orientations, optional timestamp and failed-only retry slots, ol+aria-current accessibility.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

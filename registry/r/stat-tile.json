@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "StatTile",
   "description": "Big-number stat tile primitive for dashboard summaries. Renders value + label + optional icon + optional delta (trend up/down/flat with TrendingUp/TrendingDown/Minus icons and success/destructive/muted color). Dual mode: with onClick renders as button with hover state + trailing ArrowUpRight chevron; without, renders as static div. Value uses font-display tabular-nums whitespace-nowrap.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

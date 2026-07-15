@@ -4,7 +4,9 @@
   "type": "registry:block",
   "title": "PreviewEnvCard",
   "description": "Preview environment card surfacing all services from one PR.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/badge.json",
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",

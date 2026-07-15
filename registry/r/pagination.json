@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "Pagination",
   "description": "Accessible page-number navigation primitive. Renders <nav aria-label=Pagination> with first/prev/numbers/next/last buttons and visual ellipses when totalPages exceeds the visible range. Active page carries aria-current=page. Keyboard nav: ArrowLeft / ArrowRight / Home / End. Configurable siblingCount + optional jump buttons. Returns null when totalPages <= 1. Exports a pure computePageRange helper for unit testing the range logic in isolation.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

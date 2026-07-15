@@ -4,7 +4,10 @@
   "type": "registry:lib",
   "title": "Theo UI Tailwind preset",
   "description": "Type scale, fontFamily, colors and motion tokens consumed by every Theo UI component. Add to tailwind.config.ts#presets before installing any other component.",
-  "dependencies": ["tailwindcss", "tailwindcss-animate"],
+  "dependencies": [
+    "tailwindcss",
+    "tailwindcss-animate"
+  ],
   "files": [
     {
       "path": "styles/tailwind-preset.ts",

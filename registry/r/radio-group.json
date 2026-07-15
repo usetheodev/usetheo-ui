@@ -4,7 +4,10 @@
   "type": "registry:ui",
   "title": "RadioGroup",
   "description": "Built on Radix RadioGroup — accessible radio group with roving focus and orientation control.",
-  "dependencies": ["@radix-ui/react-radio-group", "lucide-react"],
+  "dependencies": [
+    "@radix-ui/react-radio-group",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

@@ -4,7 +4,10 @@
   "type": "registry:lib",
   "title": "cn (Tailwind class merger)",
   "description": "Merge Tailwind classes with conflict resolution.",
-  "dependencies": ["clsx", "tailwind-merge"],
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
   "files": [
     {
       "path": "lib/cn.ts",

@@ -4,7 +4,11 @@
   "type": "registry:ui",
   "title": "Sheet",
   "description": "Slide-in side panel built on Radix Dialog.",
-  "dependencies": ["@radix-ui/react-dialog", "class-variance-authority", "lucide-react"],
+  "dependencies": [
+    "@radix-ui/react-dialog",
+    "class-variance-authority",
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

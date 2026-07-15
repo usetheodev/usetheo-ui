@@ -4,7 +4,9 @@
   "type": "registry:ui",
   "title": "TopNav",
   "description": "Horizontal app bar (64px) with breadcrumbs, mode switcher (radiogroup), and action slots.",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

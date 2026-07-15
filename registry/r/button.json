@@ -4,7 +4,10 @@
   "type": "registry:ui",
   "title": "Button",
   "description": "Primitive action element in the Violet Forge design system.",
-  "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "class-variance-authority"
+  ],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
