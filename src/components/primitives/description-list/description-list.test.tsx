@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import type { DescriptionListProps } from "./description-list.js";
 import { DescriptionList } from "./description-list.js";
+import { Vertical as VerticalStory } from "./description-list.stories.js";
 
 const entry = (term: string, detail: ReactNode) => (
   <DescriptionList.Item key={term}>
@@ -96,5 +97,13 @@ describe("DescriptionList — wiring & a11y", () => {
       </div>,
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("DescriptionList — story smoke", () => {
+  it("vertical story renders the memory metadata panel", () => {
+    const { container } = render(<VerticalStory />);
+    expect(container.querySelector("dl")).not.toBeNull();
+    expect(screen.getByText("Scope")).toBeInTheDocument();
   });
 });
