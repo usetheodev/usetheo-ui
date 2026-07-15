@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "json-viewer",
+  "type": "registry:ui",
+  "title": "JsonViewer",
+  "description": "Read-only collapsible JSON tree, dependency-free: boolean/depth collapse with lazy subtrees, per-type rendering (BigInt, Date, undefined), long-string truncation, circular-safe rendering and copy via CopyButton.",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "cn",
+    "copy-button",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/primitives/json-viewer/json-viewer.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/json-viewer.tsx"
+    }
+  ]
+}

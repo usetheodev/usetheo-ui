@@ -8,6 +8,11 @@ export {
   type BreadcrumbLinkProps,
 } from "./components/primitives/breadcrumb/index.js";
 export {
+  DescriptionList,
+  type DescriptionListProps,
+} from "./components/primitives/description-list/index.js";
+export { JsonViewer, type JsonViewerProps } from "./components/primitives/json-viewer/index.js";
+export {
   Combobox,
   type ComboboxContentProps,
   type ComboboxInputProps,

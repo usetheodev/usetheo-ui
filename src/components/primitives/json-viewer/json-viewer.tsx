@@ -1,0 +1,278 @@
+"use client";
+
+import { ChevronRight } from "lucide-react";
+import { forwardRef, useMemo, useState } from "react";
+import type { HTMLAttributes } from "react";
+import { cn } from "../../../lib/cn.js";
+import { CopyButton } from "../copy-button/index.js";
+
+/**
+ * JsonViewer — read-only collapsible JSON tree, dependency-free.
+ *
+ * Collapse: `collapsed` mirrors the SOTA contract — `true` collapses every
+ * node, a number collapses everything at depth >= N (root is depth 0).
+ * Collapsed subtrees are NOT rendered (lazy): that is the performance guard —
+ * a huge payload fully expanded is the consumer's responsibility (ADR D1);
+ * prefer `collapsed={1}` for large payloads.
+ *
+ * Safety: circular references render a "[Circular]" marker (and serialize as
+ * such on copy) instead of overflowing the stack. Copy limitation: the
+ * serializer conservatively marks REPEATED (shared, non-circular) references
+ * as "[Circular]" too — output is always JSON.parse-able — the studied SOTA reference
+ * does not handle this. BigInt renders with the `n` suffix; NaN/Infinity
+ * follow JSON semantics on copy (null).
+ *
+ *   <JsonViewer value={eventPayload} collapsed={1} enableCopy />
+ */
+
+interface JsonViewerProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Data to render. Any value — objects, arrays, primitives, BigInt, Date. */
+  value: unknown;
+  /** true = all collapsed; number = collapse at depth >= N. Default: all expanded. */
+  collapsed?: boolean | number;
+  /** Truncate strings longer than this (click to reveal). Default 60. */
+  shortenTextAfterLength?: number;
+  /** Show a copy button on the root and on object/array nodes. */
+  enableCopy?: boolean;
+}
+
+/** Path segments join with an unprintable delimiter so keys with dots never collide. */
+const PATH_SEP = "\u001f";
+
+/** Minimal ancestry lookup chained per level — detects circular references. */
+interface AncestorChain {
+  has(candidate: object): boolean;
+}
+
+const EMPTY_CHAIN: AncestorChain = { has: () => false };
+
+function isPlainContainer(value: unknown): value is object {
+  return typeof value === "object" && value !== null && !(value instanceof Date);
+}
+
+function safeStringify(value: unknown): string {
+  const seen = new WeakSet<object>();
+  return JSON.stringify(
+    value,
+    (_key, entry) => {
+      if (typeof entry === "bigint") return `${entry}n`;
+      if (typeof entry === "object" && entry !== null) {
+        if (seen.has(entry)) return "[Circular]";
+        seen.add(entry);
+      }
+      return entry;
+    },
+    2,
+  );
+}
+
+function defaultExpanded(depth: number, collapsed: JsonViewerProps["collapsed"]): boolean {
+  if (collapsed === true) return false;
+  if (typeof collapsed === "number") return depth < collapsed;
+  return true;
+}
+
+function PrimitiveValue({
+  value,
+  shortenAfter,
+}: {
+  value: unknown;
+  shortenAfter: number;
+}) {
+  const [revealed, setRevealed] = useState(false);
+  if (typeof value === "string") {
+    const shorten = !revealed && value.length > shortenAfter;
+    const text = shorten ? `${value.slice(0, shortenAfter)}…` : `"${value}"`;
+    return (
+      <span
+        data-slot="json-viewer-value"
+        data-type="string"
+        className={cn("text-success", shorten && "cursor-pointer underline decoration-dotted")}
+        onClick={shorten ? () => setRevealed(true) : undefined}
+        onKeyDown={
+          shorten
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setRevealed(true);
+                }
+              }
+            : undefined
+        }
+        role={shorten ? "button" : undefined}
+        tabIndex={shorten ? 0 : undefined}
+      >
+        {text}
+      </span>
+    );
+  }
+  let text: string;
+  let type: string = typeof value;
+  if (typeof value === "bigint") text = `${value}n`;
+  else if (value === null) {
+    text = "null";
+    type = "null";
+  } else if (value === undefined) text = "undefined";
+  else if (typeof value === "function") text = "ƒ";
+  else if (value instanceof Date) {
+    text = value.toISOString();
+    type = "date";
+  } else text = String(value);
+  return (
+    <span data-slot="json-viewer-value" data-type={type} className="text-info">
+      {text}
+    </span>
+  );
+}
+
+interface NodeProps {
+  nodeKey?: string;
+  value: unknown;
+  path: string;
+  depth: number;
+  ancestors: AncestorChain;
+  viewer: Required<Pick<JsonViewerProps, "shortenTextAfterLength" | "enableCopy">> &
+    Pick<JsonViewerProps, "collapsed">;
+  expandedOverrides: Map<string, boolean>;
+  onToggle: (path: string, next: boolean) => void;
+}
+
+function JsonNode(props: NodeProps) {
+  const { nodeKey, value, path, depth, ancestors, viewer, expandedOverrides, onToggle } = props;
+  // Hooks stay unconditional (before any early return). ADR D1 guard:
+  // serialize only when the copy affordance exists, memoized per value.
+  const copyValue = useMemo(
+    () => (viewer.enableCopy && isPlainContainer(value) ? safeStringify(value) : ""),
+    [value, viewer.enableCopy],
+  );
+  const keyLabel =
+    nodeKey !== undefined ? (
+      <span className="text-muted-foreground">
+        <span data-slot="json-viewer-key">{nodeKey === "" ? '""' : nodeKey}</span>:
+      </span>
+    ) : null;
+
+  if (isPlainContainer(value) && ancestors.has(value)) {
+    return (
+      <li data-slot="json-viewer-node" className="flex items-baseline gap-1.5">
+        {keyLabel}
+        <span data-slot="json-viewer-value" data-type="circular" className="text-warning">
+          [Circular]
+        </span>
+      </li>
+    );
+  }
+
+  if (!isPlainContainer(value)) {
+    return (
+      <li data-slot="json-viewer-node" className="flex items-baseline gap-1.5">
+        {keyLabel}
+        <PrimitiveValue value={value} shortenAfter={viewer.shortenTextAfterLength} />
+      </li>
+    );
+  }
+
+  const isArray = Array.isArray(value);
+  const entries = isArray
+    ? (value as unknown[]).map((entry, index) => [String(index), entry] as const)
+    : Object.entries(value as Record<string, unknown>);
+
+  if (entries.length === 0) {
+    return (
+      <li data-slot="json-viewer-node" className="flex items-baseline gap-1.5">
+        {keyLabel}
+        <span data-slot="json-viewer-value" data-type={isArray ? "array" : "object"}>
+          {isArray ? "[]" : "{}"}
+        </span>
+      </li>
+    );
+  }
+
+  const expanded = expandedOverrides.get(path) ?? defaultExpanded(depth, viewer.collapsed);
+  const badge = isArray ? `[${entries.length}]` : `{${entries.length}}`;
+
+  return (
+    <li data-slot="json-viewer-node">
+      <span className="group/node flex items-baseline gap-1.5">
+        <button
+          type="button"
+          data-slot="json-viewer-toggle"
+          aria-expanded={expanded}
+          aria-label={`Toggle ${nodeKey ?? "root"}`}
+          onClick={() => onToggle(path, !expanded)}
+          className="inline-flex size-4 shrink-0 translate-y-0.5 items-center justify-center rounded text-muted-foreground hover:text-foreground"
+        >
+          <ChevronRight
+            aria-hidden
+            className={cn("size-3.5 transition-transform", expanded && "rotate-90")}
+          />
+        </button>
+        {keyLabel}
+        {!expanded && <span className="text-muted-foreground">{badge}</span>}
+        {viewer.enableCopy && (
+          <span
+            data-slot="json-viewer-copy"
+            className="opacity-0 transition-opacity group-focus-within/node:opacity-100 group-hover/node:opacity-100"
+          >
+            <CopyButton value={copyValue} aria-label={`Copy ${nodeKey ?? "JSON"}`} />
+          </span>
+        )}
+      </span>
+      {expanded && (
+        <ul className="m-0 grid list-none gap-0.5 border-border/40 border-l pl-4">
+          {entries.map(([entryKey, entryValue]) => (
+            <JsonNode
+              key={entryKey}
+              nodeKey={entryKey}
+              value={entryValue}
+              path={path + PATH_SEP + entryKey}
+              depth={depth + 1}
+              ancestors={{
+                has: (candidate: object) => candidate === value || ancestors.has(candidate),
+              }}
+              viewer={viewer}
+              expandedOverrides={expandedOverrides}
+              onToggle={onToggle}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+const JsonViewer = forwardRef<HTMLDivElement, JsonViewerProps>(
+  (
+    { value, collapsed, shortenTextAfterLength = 60, enableCopy = false, className, ...props },
+    ref,
+  ) => {
+    const [expandedOverrides, setExpandedOverrides] = useState<Map<string, boolean>>(new Map());
+    const onToggle = (path: string, next: boolean) => {
+      setExpandedOverrides((prev) => new Map(prev).set(path, next));
+    };
+    return (
+      <div
+        data-slot="json-viewer"
+        ref={ref}
+        className={cn("font-mono text-code-sm", className)}
+        {...props}
+      >
+        <ul className="m-0 grid list-none gap-0.5 p-0">
+          <JsonNode
+            value={value}
+            path="$"
+            depth={0}
+            ancestors={EMPTY_CHAIN}
+            viewer={{ collapsed, shortenTextAfterLength, enableCopy }}
+            expandedOverrides={expandedOverrides}
+            onToggle={onToggle}
+          />
+        </ul>
+      </div>
+    );
+  },
+);
+JsonViewer.displayName = "JsonViewer";
+
+export { JsonViewer };
+export type { JsonViewerProps };

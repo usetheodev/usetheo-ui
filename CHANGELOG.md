@@ -14,6 +14,21 @@
 
 ### Security
 
+## [0.18.0] - 2026-07-15
+
+### Added
+- `DescriptionList` primitive — semantic key/value pairs on native `dl/dt/dd`
+  (`DescriptionList.Item/Term/Detail`): vertical and horizontal (grid) layouts, `dense`
+  mode, valid multi-detail terms. 11 behavior tests (axe: zero violations on both
+  layouts), 3 Ladle stories, registry item `description-list`. (usetheo-ui#M2)
+- `JsonViewer` primitive — read-only collapsible JSON tree with zero dependencies:
+  `collapsed` boolean/depth contract with lazy (unrendered) subtrees, per-type rendering
+  (BigInt `n` suffix, Date ISO, `undefined`/functions), long-string truncation with
+  click-to-reveal, and circular-safe rendering AND copy (the studied SOTA reference does
+  not handle circular references). Per-node copy via `CopyButton`. 21 behavior tests
+  (axe: zero violations), 3 Ladle stories including the DetailPanel composition with
+  DescriptionList, registry item `json-viewer`. (usetheo-ui#M2)
+
 ## [0.17.0] - 2026-07-15
 
 ### Added
