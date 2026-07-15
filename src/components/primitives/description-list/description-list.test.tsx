@@ -3,6 +3,7 @@ import { createRef } from "react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+import { DescriptionList as DescriptionListFromBarrel } from "../../../index.js";
 import type { DescriptionListProps } from "./description-list.js";
 import { DescriptionList } from "./description-list.js";
 import { Vertical as VerticalStory } from "./description-list.stories.js";
@@ -105,5 +106,11 @@ describe("DescriptionList — story smoke", () => {
     const { container } = render(<VerticalStory />);
     expect(container.querySelector("dl")).not.toBeNull();
     expect(screen.getByText("Scope")).toBeInTheDocument();
+  });
+});
+
+describe("DescriptionList — barrel", () => {
+  it("barrel exports the same symbol", () => {
+    expect(DescriptionListFromBarrel).toBe(DescriptionList);
   });
 });

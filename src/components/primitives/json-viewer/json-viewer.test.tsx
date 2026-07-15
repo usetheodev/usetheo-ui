@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
+import { JsonViewer as JsonViewerFromBarrel } from "../../../index.js";
 import type { JsonViewerProps } from "./json-viewer.js";
 import { JsonViewer } from "./json-viewer.js";
 import { DetailPanel, EventPayload } from "./json-viewer.stories.js";
@@ -171,5 +172,11 @@ describe("JsonViewer — stories (M2 consumer evidence)", () => {
     expect(container.querySelector("dl")).not.toBeNull();
     expect(container.querySelector('[data-slot="json-viewer"]')).not.toBeNull();
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("JsonViewer — barrel", () => {
+  it("barrel exports the same symbol", () => {
+    expect(JsonViewerFromBarrel).toBe(JsonViewer);
   });
 });
