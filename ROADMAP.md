@@ -120,7 +120,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M3 — [ ] TrendChart (promoção do dashboard)
+### M3 — [x] TrendChart (promoção do dashboard)
 
 **Objective:** Promover o `metric-trend-chart.tsx` do dashboard (SVG puro, dependency-free, a11y via tabela) para composite `TrendChart` genérico da lib — a base dos analytics do theo-rag (volume, latência p50/p95) e das métricas de uso do theo-memory.
 
