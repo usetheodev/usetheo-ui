@@ -9,7 +9,7 @@ export default {
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="grid max-w-md gap-2">
-      <span className="text-caption text-muted-foreground">{label}</span>
+      <span className="text-body-sm text-muted-foreground">{label}</span>
       {children}
     </div>
   );

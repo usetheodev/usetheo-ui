@@ -179,7 +179,14 @@ def check_acceptance_criteria(
     # --- file_size budget (mechanizable, NOT covered by run_validation) ----------
     if by_category.get("file_size") and repo_root is not None and changed:
         limit = _file_size_limit(criteria)
+        # The LoC budget targets source modules (rules/architecture.md); generated
+        # artifacts are exempt — lockfiles and built registry payloads routinely
+        # exceed any sane source budget (followup #7, M1 validation).
+        generated_names = {"pnpm-lock.yaml", "package-lock.json", "yarn.lock", "Cargo.lock"}
+        generated_prefixes = ("dist/", "registry/r/")
         for rel in changed:
+            if Path(rel).name in generated_names or rel.startswith(generated_prefixes):
+                continue
             path = repo_root / rel
             if not path.is_file():
                 continue

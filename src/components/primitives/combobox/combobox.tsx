@@ -35,6 +35,11 @@ import { inputVariants } from "../input/input.js";
  *
  * Async filtering: pass `shouldFilter={false}` and feed pre-filtered items
  * (cmdk's documented pattern); flag `loading` on Content while fetching.
+ *
+ * Layout limitation (blueprint ADR D2): the listbox is positioned absolutely
+ * right below the input — an ancestor with `overflow: hidden` will CLIP it.
+ * Place the Combobox outside overflow-hidden containers (or give them room);
+ * a floating/popover variant is a future milestone, not M1.
  */
 
 interface ComboboxContextValue {
@@ -204,6 +209,10 @@ const Content = forwardRef<HTMLDivElement, ComboboxContentProps>(
     useEffect(() => {
       const el = listRef.current;
       if (!el) return;
+      // The input's aria-controls must reference the listbox element itself
+      // (APG), so the shared listId lives here — same hardcoded-attrs adapter
+      // rationale as the Input (cmdk assigns its own id after the spread).
+      el.setAttribute("id", listId);
       if (resultCount === 0) {
         el.setAttribute("role", "presentation");
         el.removeAttribute("aria-label");
@@ -218,7 +227,6 @@ const Content = forwardRef<HTMLDivElement, ComboboxContentProps>(
       <div
         data-slot="combobox-content"
         ref={ref}
-        id={listId}
         className={cn(
           "absolute top-full z-50 mt-1 w-full rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
           className,
@@ -228,6 +236,7 @@ const Content = forwardRef<HTMLDivElement, ComboboxContentProps>(
         {loading ? (
           <div
             data-slot="combobox-loading"
+            id={listId}
             aria-busy="true"
             className="flex items-center justify-center gap-2 px-3 py-6 text-body-sm text-muted-foreground"
           >

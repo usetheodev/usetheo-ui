@@ -43,10 +43,12 @@ describe("Combobox — open/close contract", () => {
     const user = userEvent.setup();
     const { container } = renderCombobox();
     await user.click(input());
-    const content = contentOf(container);
-    expect(content).not.toBeNull();
+    expect(contentOf(container)).not.toBeNull();
+    expect(input()).toHaveAttribute("role", "combobox");
     expect(input()).toHaveAttribute("aria-expanded", "true");
-    expect(input()).toHaveAttribute("aria-controls", content?.id);
+    const listbox = container.querySelector('[role="listbox"]');
+    expect(listbox).not.toBeNull();
+    expect(input()).toHaveAttribute("aria-controls", listbox?.id);
   });
 
   it("escape closes the listbox and keeps focus on the input", async () => {
@@ -204,6 +206,22 @@ describe("Combobox — async & loading", () => {
 });
 
 describe("Combobox — wiring & a11y", () => {
+  it("empty listbox demotes role to presentation and stays axe-clean (regression T3.3)", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Combobox aria-label="No options">
+        <Combobox.Input placeholder="Pick a fruit" />
+        <Combobox.Content>
+          <Combobox.Empty>No results.</Combobox.Empty>
+        </Combobox.Content>
+      </Combobox>,
+    );
+    await user.click(input());
+    expect(container.querySelector('[role="listbox"]')).toBeNull();
+    expect(container.querySelector("[cmdk-list]")).toHaveAttribute("role", "presentation");
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
   it("all subs carry data-slot attributes", async () => {
     const user = userEvent.setup();
     const { container } = renderCombobox();

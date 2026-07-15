@@ -1,5 +1,5 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "../../../lib/cn.js";
 
@@ -46,8 +46,10 @@ const Slider = forwardRef<HTMLSpanElement, SliderProps>(
     // aria-valuenow always lands inside [min, max] (Mantine-pinned behavior).
     const clamp = (entries?: number[]) =>
       entries?.map((entry) => Math.min(Math.max(entry, min), max));
-    const clampedValue = clamp(value);
-    const clampedDefault = clamp(defaultValue);
+    // Uncontrolled mark-clicks must move the thumb: keep an internal value
+    // when the consumer does not control `value` (F-dom-2, review M1).
+    const [internalValue, setInternalValue] = useState<number[] | undefined>(clamp(defaultValue));
+    const clampedValue = clamp(value) ?? internalValue;
 
     const thumbCount = useMemo(() => {
       if (Array.isArray(value)) return value.length;
@@ -65,12 +67,14 @@ const Slider = forwardRef<HTMLSpanElement, SliderProps>(
         <SliderPrimitive.Root
           ref={ref}
           data-slot="slider-root"
-          defaultValue={clampedDefault}
           value={clampedValue}
           min={min}
           max={max}
           disabled={disabled}
-          onValueChange={onValueChange}
+          onValueChange={(next) => {
+            if (value === undefined) setInternalValue(next);
+            onValueChange?.(next);
+          }}
           className={cn(
             "relative flex w-full touch-none select-none items-center",
             "data-[disabled]:opacity-50",
@@ -92,7 +96,9 @@ const Slider = forwardRef<HTMLSpanElement, SliderProps>(
             <SliderPrimitive.Thumb
               // biome-ignore lint/suspicious/noArrayIndexKey: thumbs are positional by design (Radix pattern)
               key={index}
-              aria-label={ariaLabel}
+              aria-label={
+                isRange && ariaLabel ? `${ariaLabel} (${index + 1} of ${thumbCount})` : ariaLabel
+              }
               aria-labelledby={ariaLabelledby}
               data-slot="slider-thumb"
               className="block size-4 shrink-0 rounded-full border border-primary bg-background shadow-sm transition-[box-shadow] hover:ring-4 hover:ring-ring/50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
@@ -108,9 +114,10 @@ const Slider = forwardRef<HTMLSpanElement, SliderProps>(
             tabIndex={-1}
             aria-hidden="true"
             style={{ left: `${((mark.value - min) / span) * 100}%` }}
-            className="-translate-x-1/2 absolute top-4 cursor-pointer text-caption text-muted-foreground disabled:cursor-default"
+            className="-translate-x-1/2 absolute top-4 cursor-pointer text-body-sm text-muted-foreground disabled:cursor-default"
             onClick={() => {
               if (disabled || isRange) return;
+              if (value === undefined) setInternalValue([mark.value]);
               onValueChange?.([mark.value]);
             }}
           >

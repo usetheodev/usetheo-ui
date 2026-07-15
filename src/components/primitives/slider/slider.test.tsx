@@ -149,6 +149,26 @@ describe("Slider — marks", () => {
   });
 });
 
+describe("Slider — review regressions (M1)", () => {
+  it("uncontrolled mark click moves the thumb (aria-valuenow)", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <Slider aria-label="Top K" defaultValue={[5]} marks={[{ value: 50, label: "50" }]} />,
+    );
+    const mark = container.querySelector('[data-slot="slider-mark"]');
+    if (!mark) throw new Error("mark missing");
+    await user.click(mark);
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "50");
+  });
+
+  it("range thumbs get distinct accessible names", () => {
+    render(<Slider aria-label="Price" defaultValue={[20, 80]} />);
+    const labels = screen.getAllByRole("slider").map((t) => t.getAttribute("aria-label"));
+    expect(new Set(labels).size).toBe(2);
+    expect(labels[0]).toContain("Price");
+  });
+});
+
 describe("Slider — a11y", () => {
   it("axe: no violations on single, range and marked sliders", async () => {
     const { container } = render(

@@ -27,7 +27,7 @@ export const Basic: Story = () => {
           {collectionItems(COLLECTIONS)}
         </Combobox.Content>
       </Combobox>
-      <p className="mt-2 text-caption text-muted-foreground">Selected: {value ?? "(none)"}</p>
+      <p className="mt-2 text-body-sm text-muted-foreground">Selected: {value ?? "(none)"}</p>
     </div>
   );
 };
@@ -91,15 +91,15 @@ export const QueryPlayground: Story = () => {
   return (
     <form aria-label="Query playground" className="grid max-w-sm gap-6">
       <div className="grid gap-2">
-        <span className="text-caption text-muted-foreground">Top K (1-100)</span>
+        <span className="text-body-sm text-muted-foreground">Top K (1-100)</span>
         <Slider aria-label="Top K" min={1} max={100} defaultValue={[5]} marks={[{ value: 50 }]} />
       </div>
       <div className="grid gap-2">
-        <span className="text-caption text-muted-foreground">Threshold (0-1)</span>
+        <span className="text-body-sm text-muted-foreground">Threshold (0-1)</span>
         <Slider aria-label="Threshold" min={0} max={1} step={0.05} defaultValue={[0.5]} />
       </div>
       <div className="grid gap-2">
-        <span className="text-caption text-muted-foreground">Collection</span>
+        <span className="text-body-sm text-muted-foreground">Collection</span>
         <Combobox aria-label="Collection" value={collection} onValueChange={setCollection}>
           <Combobox.Input placeholder="Select a collection" />
           <Combobox.Content>
