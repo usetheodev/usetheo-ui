@@ -255,3 +255,5 @@ export type {
   TraceCompareProps,
   CompareLane,
 } from "./components/composites/trace-compare/index.js";
+export { aggregateSession } from "./lib/session/index.js";
+export type { SessionTraceItem, SessionMetrics } from "./lib/session/index.js";

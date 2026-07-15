@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `session` core: tipo `SessionTraceItem` + `aggregateSession` (métricas honestas de sessão — traceCount/janela/∑custo/∑tokens/erros/models; custo-ausente=0 nunca NaN) (M9 T1.0)
 - Roadmap V2 declarado (fechamento do gap SOTA vs Arize/Phoenix/Langfuse): M9 Sessions ricas, M10 Prompt management, M11 Analytics time-series, M12 Annotation platform, M13 Monitors+automations — baseado em `.claude/knowledge-base/audits/sota-gap-analysis-2026-07-15.md`
 
 ### Changed
