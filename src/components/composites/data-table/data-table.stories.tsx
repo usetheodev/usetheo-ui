@@ -167,6 +167,6 @@ export const VirtualizedCompact: Story = () => (
     columns={auditColumns}
     data={auditRows.slice(0, 2_000)}
     rowKey={(r) => r.id}
-    virtualized={{ height: 320, rowHeight: 28, overscan: 10 }}
+    virtualized={{ height: 320, rowHeight: 32, overscan: 10 }}
   />
 );

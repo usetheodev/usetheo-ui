@@ -57,7 +57,9 @@ function renderVirtualized(rows: Row[], extra: Partial<DataTableProps<Row>> = {}
 }
 
 const bodyRows = (container: HTMLElement) =>
-  container.querySelectorAll('[data-slot="data-table-virtual-body"] tbody tr');
+  container.querySelectorAll(
+    '[data-slot="data-table-virtual-body"] tbody tr:not([data-slot^="data-table-virtual-spacer"])',
+  );
 
 describe("DataTable virtualized — janela e anatomia", () => {
   it("test_virtualized_renders_exact_window_of_10k", () => {
@@ -70,19 +72,29 @@ describe("DataTable virtualized — janela e anatomia", () => {
     expect(container.textContent).not.toContain("Item 100");
   });
 
-  it("test_virtualized_sizer_reflects_total_size", () => {
+  it("test_virtualized_spacers_sum_to_total_size", () => {
+    // F-dom-1/2: spacer rows crescem o layout box da <table> até o dataset inteiro
+    // (sticky thead funciona; última linha alcançável) — top + janela + bottom == total
     const { container } = renderVirtualized(makeRows(10_000));
-    const sizer = container.querySelector('[data-slot="data-table-virtual-sizer"]');
-    expect((sizer as HTMLElement).style.height).toBe(`${10_000 * 40}px`);
+    const top = container.querySelector('[data-slot="data-table-virtual-spacer-top"]');
+    const bottom = container.querySelector(
+      '[data-slot="data-table-virtual-spacer-bottom"]',
+    ) as HTMLElement;
+    const windowPx = bodyRows(container).length * 40;
+    const topPx = top ? Number.parseFloat((top as HTMLElement).style.height) : 0;
+    expect(topPx + windowPx + Number.parseFloat(bottom.style.height)).toBe(10_000 * 40);
   });
 
-  it("test_virtualized_rows_positioned_by_corrected_translate", () => {
+  it("test_virtualized_rows_in_flow_with_fixed_height_and_overscan", () => {
     const { container } = renderVirtualized(makeRows(10_000));
-    const first = bodyRows(container)[0] as HTMLElement;
-    // padrão do exemplo oficial: tr em fluxo com translateY(start − index*size);
-    // no topo do scroll a correção zera — pina a PRESENÇA da fórmula
-    expect(first.style.transform).toBe("translateY(0px)");
+    const rows = bodyRows(container);
+    const first = rows[0] as HTMLElement;
+    // spacer technique: linhas EM FLUXO, sem transform; altura fixa
+    expect(first.style.transform).toBe("");
     expect(first.style.height).toBe("40px");
+    // overscan honrado (F-tests-2): Item 14 (dentro do overscan trailing) presente
+    expect(container.textContent).toContain("Item 14");
+    expect(rows.length).toBeGreaterThanOrEqual(15);
   });
 
   it("test_virtualized_preserves_semantic_table", () => {
@@ -91,6 +103,8 @@ describe("DataTable virtualized — janela e anatomia", () => {
     expect(scope?.querySelector("table")).not.toBeNull();
     expect(scope?.querySelector("thead")).not.toBeNull();
     expect(scope?.querySelector("tbody tr td")).not.toBeNull();
+    const scroll = scope?.querySelector('[data-slot="data-table-virtual-scroll"]') as HTMLElement;
+    expect(scroll.style.height).toBe("400px");
   });
 
   it("test_virtualized_sticky_header_class", () => {
@@ -109,7 +123,8 @@ describe("DataTable virtualized — janela e anatomia", () => {
     fireEvent.click(nameHeader.querySelector("button") ?? nameHeader);
     fireEvent.click(nameHeader.querySelector("button") ?? nameHeader); // asc → desc
     const rows = bodyRows(container);
-    expect(rows[0]?.textContent).not.toContain("Item 0");
+    // oráculo POSITIVO (F-tests-3): desc por string em makeRows(100) → "Item 99" primeiro
+    expect(rows[0]?.textContent).toContain("Item 99");
     expect(rows.length).toBeLessThanOrEqual(25);
   });
 });
@@ -130,8 +145,9 @@ describe("DataTable virtualized — edges e negatives", () => {
     // EC-1 edge: 3 rows num viewport de 400px → todas, sem NaN
     const { container } = renderVirtualized(makeRows(3));
     expect(bodyRows(container)).toHaveLength(3);
-    const sizer = container.querySelector('[data-slot="data-table-virtual-sizer"]') as HTMLElement;
-    expect(sizer.style.height).toBe(`${3 * 40}px`);
+    // dataset < viewport: nenhum offscreen → sem spacers (ou spacers 0)
+    const bottom = container.querySelector('[data-slot="data-table-virtual-spacer-bottom"]');
+    expect(bottom).toBeNull();
   });
 
   it("test_virtualized_invalid_row_height_dev_warning", () => {
@@ -141,6 +157,18 @@ describe("DataTable virtualized — edges e negatives", () => {
       <DataTable<Row> {...virtualBase()} virtualized={{ ...syntheticRect(400), rowHeight: 0 }} />,
     );
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("rowHeight"));
+    warn.mockRestore();
+  });
+
+  it("test_virtualized_invalid_row_height_still_renders_rows", () => {
+    // F-tests-5: a metade "fallback funciona" — clamp para 1px ainda renderiza janela
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { container } = render(
+      <DataTable<Row> {...virtualBase()} virtualized={{ ...syntheticRect(400), rowHeight: 0 }} />,
+    );
+    expect(
+      container.querySelectorAll('[data-slot="data-table-virtual-body"] tbody tr').length,
+    ).toBeGreaterThan(0);
     warn.mockRestore();
   });
 
@@ -167,6 +195,35 @@ describe("DataTable virtualized — edges e negatives", () => {
     warn.mockRestore();
   });
 
+  it("test_virtualized_aria_rowcount_and_rowindex", () => {
+    // F-dom-4: só ~20 de 10.000 tr existem no DOM — SR precisa do total real
+    const { container } = renderVirtualized(makeRows(10_000));
+    const table = container.querySelector('[data-slot="data-table-virtual-body"] table');
+    expect(table?.getAttribute("aria-rowcount")).toBe(String(10_000 + 1));
+    const first = bodyRows(container)[0];
+    expect(first?.getAttribute("aria-rowindex")).toBe("2");
+  });
+
+  it("test_virtualized_scroll_region_is_keyboard_focusable", () => {
+    // F-dom-5: WCAG 2.1.1 — região rolável operável por teclado
+    const { container } = renderVirtualized(makeRows(100));
+    const scroll = container.querySelector('[data-slot="data-table-virtual-scroll"]');
+    expect(scroll?.getAttribute("tabindex")).toBe("0");
+    expect(scroll?.tagName).toBe("SECTION"); // role region implícito
+    expect(scroll?.getAttribute("aria-label")).toBeTruthy();
+  });
+
+  it("test_virtualized_row_actions_render_in_window", () => {
+    // F-wire-2: rowActions exercitado no corpo VIRTUAL
+    const { container } = renderVirtualized(makeRows(50), {
+      rowActions: () => <span>act</span>,
+    } as Partial<DataTableProps<Row>>);
+    const triggers = container.querySelectorAll(
+      '[data-slot="data-table-virtual-body"] [aria-label="Row actions"]',
+    );
+    expect(triggers.length).toBeGreaterThan(0);
+  });
+
   it("test_default_mode_untouched_snapshot", () => {
     // sem `virtualized`, NENHUM container virtual aparece — modo padrão intacto
     const { container } = render(
@@ -185,8 +242,11 @@ describe("DataTable virtualized — story smoke", () => {
     // janela exata com rect injetado é pinada em test_virtualized_renders_exact_window_of_10k.
     const { Virtualized10K } = await import("./data-table.stories.js");
     const { container } = render(<Virtualized10K />);
-    const sizer = container.querySelector('[data-slot="data-table-virtual-sizer"]') as HTMLElement;
-    expect(sizer.style.height).toBe(`${10_000 * 40}px`);
+    const bottom = container.querySelector(
+      '[data-slot="data-table-virtual-spacer-bottom"]',
+    ) as HTMLElement;
+    // jsdom sem rect: 0 itens na janela → bottom spacer cobre o dataset INTEIRO
+    expect(Number.parseFloat(bottom.style.height)).toBeGreaterThanOrEqual(10_000 * 40 - 40 * 30);
     const rows = container.querySelectorAll('[data-slot="data-table-virtual-body"] tbody tr');
     expect(rows.length).toBeLessThan(100);
   });

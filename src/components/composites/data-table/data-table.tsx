@@ -63,7 +63,7 @@ export interface DataTableSort {
   direction: "asc" | "desc";
 }
 
-interface DataTableBaseProps<T> {
+export interface DataTableBaseProps<T> {
   data: T[];
   columns: DataTableColumn<T>[];
   rowKey: (row: T) => string;
@@ -99,6 +99,7 @@ export type DataTableProps<T> = DataTableBaseProps<T> &
         expandable?: never;
         expandMode?: never;
         pagination?: never;
+        stickyHeader?: never;
       }
   );
 

@@ -9,7 +9,7 @@
   fluxo com translate corrigido — padrão do exemplo oficial), sticky header no container
   próprio, alturas de linha fixas, sorting compatível. `virtualized` é mutuamente
   exclusivo com `pagination`/`expandable` NO TIPO (união discriminada) + dev-warning em
-  runtime; limitações documentadas no JSDoc. 15 testes novos (janela exata de 10.000
+  runtime; limitações documentadas no JSDoc. 20 testes novos (janela exata de 10.000
   linhas provada com viewport injetado — padrão dos testes oficiais da dep), 2 stories
   (`Virtualized10K` determinística com matriz manual cross-browser), registry `data-table`
   atualizado com a dep explícita e os módulos copy-pasteable. (usetheo-ui#M6)

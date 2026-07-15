@@ -12,19 +12,23 @@ import {
   DataTableRowActionsCell,
   renderCellContent,
 } from "./data-table-parts.js";
-import type { DataTableColumn, DataTableSort } from "./data-table.js";
+import type { DataTableBaseProps } from "./data-table.js";
 import { useDataTableSort } from "./use-data-table-sort.js";
 
 /**
  * Virtualized body of DataTable — renders 10K+ rows over @tanstack/react-virtual
- * (blueprint M6, ADR D1/D2). Semantic `<table>` preserved: rows stay IN FLOW
- * with the official example's corrected translate — translateY(start − index*size)
- * — because a `<tr>` translates from its natural tbody position, not the sizer top.
+ * (blueprint M6, ADR D1/D2 + review fix F-dom-1). Semantic `<table>` preserved
+ * with the SPACER-ROW technique: two fixed-height spacer `<tr>`s grow the
+ * table's real layout box to the full dataset height, so the sticky `<thead>`
+ * keeps its containing block for the whole scroll and the last row stays
+ * reachable — per-row transforms (the official example's pattern) do NOT grow
+ * the layout box and un-stick the header after ~one window.
  *
  * Limitations (documented contract — mutually exclusive at the type level):
  * no pagination, no expandable rows (fixed row heights are required by
- * estimateSize). Cell content must fit `rowHeight` (use `truncate`). A row-action
- * dropdown unmounts when its row leaves the overscan window.
+ * estimateSize). Cell content must fit `rowHeight` (cells are clipped with
+ * reduced padding; keep rowHeight >= ~32px). A row-action dropdown unmounts
+ * when its row leaves the overscan window.
  */
 export interface DataTableVirtualizedOptions {
   /** Scroll container height (px or CSS length). */
@@ -34,24 +38,28 @@ export interface DataTableVirtualizedOptions {
   /** Rows rendered beyond the viewport on each side. @default 5 */
   overscan?: number;
   /** @internal test-only — inject virtualizer options (e.g. observeElementRect). */
-  virtualizerOptions?: Partial<VirtualizerOptions<HTMLDivElement, Element>>;
+  virtualizerOptions?: Partial<VirtualizerOptions<HTMLElement, Element>>;
 }
 
-export interface DataTableVirtualizedBodyProps<T> {
-  data: T[];
-  columns: DataTableColumn<T>[];
-  rowKey: (row: T) => string;
+export type DataTableVirtualizedBodyProps<T> = Omit<DataTableBaseProps<T>, "stickyHeader"> & {
   virtualized: DataTableVirtualizedOptions;
-  rowActions?: (row: T) => ReactNode;
-  defaultSort?: DataTableSort;
-  sort?: DataTableSort | null;
-  onSortChange?: (sort: DataTableSort | null) => void;
-  loading?: boolean;
-  emptyState?: ReactNode;
-  className?: string;
-}
+};
 
 const EXCLUSIVE_PROPS = ["pagination", "expandable"] as const;
+
+function SpacerRow(props: { slot: "top" | "bottom"; height: number; colSpan: number }) {
+  if (props.height <= 0) return null;
+  return (
+    // biome-ignore lint/a11y/noInteractiveElementToNoninteractiveRole: spacer row is pure layout filler (no content, no interaction) inside a semantic table; presentation keeps SRs on the aria-rowcount contract
+    <tr
+      data-slot={`data-table-virtual-spacer-${props.slot}`}
+      role="presentation"
+      style={{ height: `${props.height}px` }}
+    >
+      <td colSpan={props.colSpan} style={{ padding: 0 }} />
+    </tr>
+  );
+}
 
 export function DataTableVirtualizedBody<T>(props: DataTableVirtualizedBodyProps<T>): ReactNode {
   const {
@@ -85,7 +93,7 @@ export function DataTableVirtualizedBody<T>(props: DataTableVirtualizedBodyProps
   // EC-2: guard against divide-by-zero window math from untyped consumers
   const rowHeight = Math.max(1, virtualized.rowHeight);
 
-  const parentRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLElement>(null);
   const { sort, handleSort, sortedData } = useDataTableSort({
     data,
     columns,
@@ -95,11 +103,13 @@ export function DataTableVirtualizedBody<T>(props: DataTableVirtualizedBodyProps
   });
 
   const virtualizer = useVirtualizer({
+    // Injection first (review F-dom-6): the @internal test hook can add
+    // observeElementRect but can never override the core window contract.
+    ...virtualized.virtualizerOptions,
     count: sortedData.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => rowHeight,
     overscan: virtualized.overscan ?? 5,
-    ...virtualized.virtualizerOptions,
   });
 
   if (loading) {
@@ -122,55 +132,65 @@ export function DataTableVirtualizedBody<T>(props: DataTableVirtualizedBodyProps
     );
   }
 
+  const items = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+  const firstItem = items[0];
+  const lastItem = items[items.length - 1];
+  const paddingTop = firstItem ? firstItem.start : 0;
+  const paddingBottom = lastItem ? totalSize - lastItem.end : totalSize;
+  const colSpan = columns.length + (rowActions ? 1 : 0);
+
   return (
     <div data-slot="data-table-virtual-body" className={cn("w-full", className)}>
-      <div
+      <section
         ref={parentRef}
-        className="overflow-auto"
+        // WCAG 2.1.1 (review F-dom-5): a scrollable region must be reachable
+        // and operable by keyboard; <section> + aria-label = implicit region role.
+        aria-label="Table scroll area"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: WCAG 2.1.1 / axe scrollable-region-focusable — a keyboard user must be able to focus and scroll the region
+        tabIndex={0}
+        className="overflow-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         style={{ height: virtualized.height }}
         data-slot="data-table-virtual-scroll"
       >
-        <div
-          data-slot="data-table-virtual-sizer"
-          style={{ height: `${virtualizer.getTotalSize()}px` }}
-        >
-          <Table>
-            <Table.Header className="sticky top-0 z-10 bg-card">
-              <DataTableHeaderRow
-                columns={columns}
-                sort={sort}
-                onSortClick={handleSort}
-                hasActionsColumn={rowActions !== undefined}
-              />
-            </Table.Header>
-            <Table.Body>
-              {virtualizer.getVirtualItems().map((vRow, index) => {
-                const row = sortedData[vRow.index] as T;
-                return (
-                  <Table.Row
-                    key={rowKey(row)}
-                    style={{
-                      height: `${rowHeight}px`,
-                      // official-example correction: a tr translates from its
-                      // natural flow position, so subtract index*size
-                      transform: `translateY(${vRow.start - index * rowHeight}px)`,
-                    }}
-                  >
-                    {columns.map((col) => (
-                      <Table.Cell key={col.key} align={col.align} className={col.className}>
-                        {renderCellContent(row, col)}
-                      </Table.Cell>
-                    ))}
-                    {rowActions ? (
-                      <DataTableRowActionsCell>{rowActions(row)}</DataTableRowActionsCell>
-                    ) : null}
-                  </Table.Row>
-                );
-              })}
-            </Table.Body>
-          </Table>
-        </div>
-      </div>
+        <Table aria-rowcount={sortedData.length + 1}>
+          <Table.Header className="sticky top-0 z-10 bg-card">
+            <DataTableHeaderRow
+              columns={columns}
+              sort={sort}
+              onSortClick={handleSort}
+              hasActionsColumn={rowActions !== undefined}
+            />
+          </Table.Header>
+          <Table.Body>
+            <SpacerRow slot="top" height={paddingTop} colSpan={colSpan} />
+            {items.map((vRow) => {
+              const row = sortedData[vRow.index] as T;
+              return (
+                <Table.Row
+                  key={rowKey(row)}
+                  aria-rowindex={vRow.index + 2}
+                  style={{ height: `${rowHeight}px` }}
+                >
+                  {columns.map((col) => (
+                    <Table.Cell
+                      key={col.key}
+                      align={col.align}
+                      className={cn("overflow-hidden py-1.5", col.className)}
+                    >
+                      {renderCellContent(row, col)}
+                    </Table.Cell>
+                  ))}
+                  {rowActions ? (
+                    <DataTableRowActionsCell>{rowActions(row)}</DataTableRowActionsCell>
+                  ) : null}
+                </Table.Row>
+              );
+            })}
+            <SpacerRow slot="bottom" height={paddingBottom} colSpan={colSpan} />
+          </Table.Body>
+        </Table>
+      </section>
     </div>
   );
 }
