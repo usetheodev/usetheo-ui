@@ -259,3 +259,5 @@ export { aggregateSession } from "./lib/session/index.js";
 export type { SessionTraceItem, SessionMetrics } from "./lib/session/index.js";
 export { SessionSummary } from "./components/composites/session-summary/index.js";
 export type { SessionSummaryProps } from "./components/composites/session-summary/index.js";
+export { SessionTimeline } from "./components/composites/session-timeline/index.js";
+export type { SessionTimelineProps } from "./components/composites/session-timeline/index.js";
