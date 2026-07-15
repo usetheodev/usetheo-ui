@@ -5,7 +5,7 @@ status: completed
 plan: .claude/knowledge-base/plans/stepper-promotion-plan.md
 release: .claude/knowledge-base/releases/v0.20.0-release.md
 checkbox_flipped_at: 2026-07-15T04:55:24.757390+00:00
-flip_commit_sha: 
+flip_commit_sha: c90069c52a0c654800810b0c959052686976797c
 ---
 
 # Milestone M4 — completion record
