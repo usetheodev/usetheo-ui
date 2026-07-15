@@ -139,7 +139,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M4 — [ ] Stepper / PipelineStatus (promoção do dashboard)
+### M4 — [x] Stepper / PipelineStatus (promoção do dashboard)
 
 **Objective:** Promover o padrão `build-timeline` do dashboard para um composite genérico de progresso multi-etapas — o pipeline de ingest do theo-rag (partitioned → chunked → embedded → indexed → ready) e futuros fluxos de onboarding.
 
