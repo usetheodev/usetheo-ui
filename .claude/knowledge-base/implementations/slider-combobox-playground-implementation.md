@@ -24,3 +24,21 @@
 ## Iteration log
 
 (por iteração)
+
+## Iteration log (final)
+
+| Task | Commit | Resultado |
+|---|---|---|
+| T1.1 | f066a396 | Slider 15/15 (clamp no wrapper + aria-label→thumb; takeover da sessão fechada) |
+| T1.2 | bc2861b7 | 5 stories + smoke (16/16) |
+| T2.1 | a9d0dd79 | Combobox 17/17 (adapter ARIA p/ attrs hardcoded do cmdk — plan v1.2) |
+| T2.2 | 9bf17a51 | 4 stories + smoke (18/18) |
+| T3.1 | df7d1d6c | barrel aditivo + identity smokes (36/36) |
+| T3.2 | 02d9e54f | registry 63 itens validados |
+| T3.3 | 0dddb071 | QueryPlayground (DoD b3) + CHANGELOG + fix ARIA empty-listbox (sweep axe pegou bug real do cmdk) |
+
+Mini-reviews fases 1/2/3: PHASE_REVIEW_PASS. Suite completa: 731/731; typecheck/lint 0; registry 63; build OK.
+
+**Validation gate (Step 5):** 5 PASS / 2 WARN (LOW) / 1 FAIL = falso positivo do gate de
+file-size sobre `pnpm-lock.yaml` (gerado; followup #7). Nenhum FAIL acionável em código.
+Promise: IMPLEMENTATION_COMPLETE + VALIDATION_GATE_PASSED com exceção documentada acima.

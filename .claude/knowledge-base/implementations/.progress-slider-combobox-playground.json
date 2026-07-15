@@ -1,0 +1,129 @@
+{
+  "slug": "slider-combobox-playground",
+  "tasks": [
+    {
+      "id": "T1.1",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "f066a396",
+      "files": [
+        "src/components/primitives/slider/slider.tsx",
+        "src/components/primitives/slider/slider.test.tsx",
+        "src/components/primitives/slider/index.ts",
+        "src/test/setup.ts",
+        "package.json",
+        "pnpm-lock.yaml"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: story+barrel chegam em T1.2/T3.1 (fase 1 aberta); b: co-located tests (ADR D3 herda M0 D4); c: data-slot asserted"
+    },
+    {
+      "id": "T1.2",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "bc2861b7",
+      "files": [
+        "src/components/primitives/slider/slider.stories.tsx",
+        "src/components/primitives/slider/slider.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "a: stories são caller (D3); b: story smoke; c: sem métrica"
+    },
+    {
+      "id": "T2.1",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "a9d0dd79",
+      "files": [
+        "src/components/primitives/combobox/combobox.tsx",
+        "src/components/primitives/combobox/combobox.test.tsx",
+        "src/components/primitives/combobox/index.ts"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: stories+context callers; b: co-located tests (ADR D3); c: data-slot asserted"
+    },
+    {
+      "id": "T2.2",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "9bf17a51",
+      "files": [
+        "src/components/primitives/combobox/combobox.stories.tsx",
+        "src/components/primitives/combobox/combobox.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "a: stories caller; b: smoke; c: sem métrica"
+    },
+    {
+      "id": "T3.1",
+      "phase": 3,
+      "status": "committed",
+      "commit_sha": "df7d1d6c",
+      "files": [
+        "src/index.ts",
+        "src/components/primitives/slider/slider.test.tsx",
+        "src/components/primitives/combobox/combobox.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: barrel/registry/story callers; b: smokes+validate+axe sweep; c: data-slot/aria assertados"
+    },
+    {
+      "id": "T3.2",
+      "phase": 3,
+      "status": "committed",
+      "commit_sha": "02d9e54f",
+      "files": [
+        "registry/slider.json",
+        "registry/combobox.json",
+        "registry/index.json",
+        "registry/r/slider.json",
+        "registry/r/combobox.json",
+        "registry/r/index.json"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: barrel/registry/story callers; b: smokes+validate+axe sweep; c: data-slot/aria assertados"
+    },
+    {
+      "id": "T3.3",
+      "phase": 3,
+      "status": "committed",
+      "commit_sha": "0dddb071",
+      "files": [
+        "src/components/primitives/combobox/combobox.stories.tsx",
+        "src/components/primitives/combobox/combobox.test.tsx",
+        "src/components/primitives/combobox/combobox.tsx",
+        "CHANGELOG.md"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "a: barrel/registry/story callers; b: smokes+validate+axe sweep; c: data-slot/aria assertados"
+    }
+  ]
+}

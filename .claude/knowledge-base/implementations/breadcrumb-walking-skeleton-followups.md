@@ -24,3 +24,7 @@ Oportunidades detectadas durante o halt-loop, explicitamente NÃO incluídas nos
 6. **Kit: flip_milestone_checkbox.py grava audit em `knowledge-base/` (raiz) em vez de
    `.claude/knowledge-base/`** — duplicou o run-file do M0 (movido para o layout canônico como
    M0-2026-07-14-flip-audit.md). Fix: honrar layout .claude/.
+7. **Kit: check_acceptance_criteria.py aplica o budget de 500 linhas a lockfiles/gerados**
+   (pnpm-lock.yaml 7398 linhas → FAIL no M1). Fix: excluir lockfiles (pnpm-lock.yaml,
+   package-lock.json), dist/ e registry/r/ do gate de file-size (o budget do architecture.md
+   é para módulos-fonte). (validação M1, 2026-07-14)

@@ -7,7 +7,7 @@ goal: Ship os primitives Slider (Radix + marks) e Combobox (cmdk, listbox inline
 
 # Plan: Slider + Combobox — playground primitives (M1)
 
-> **Version 1.1** (2026-07-14 — absorve EC-1 MUST FIX + EC-2/EC-3/EC-4 SHOULD TEST no TDD; contagens 13→15 e 13→16) — Implementa os dois primitives de entrada dos playgrounds (Slider com range/step/marks/label acessível; Combobox cmdk-based com filtro sync/async, empty/loading e keyboard nav), com TDD completo, stories, entries de registry e a story de composição "query playground" (axe-validada) que satisfaz o DoD bullet 3 do M1 sem dependência cross-repo.
+> **Version 1.2** (2026-07-14 — v1.2: RED #1 do T2.1 ajustado ao ground truth do cmdk [attrs hardcoded pós-spread]; contrato APG mantido via adapter de atributos) — ex-v1.1 (absorve EC-1 MUST FIX + EC-2/EC-3/EC-4 SHOULD TEST no TDD; contagens 13→15 e 13→16) — Implementa os dois primitives de entrada dos playgrounds (Slider com range/step/marks/label acessível; Combobox cmdk-based com filtro sync/async, empty/loading e keyboard nav), com TDD completo, stories, entries de registry e a story de composição "query playground" (axe-validada) que satisfaz o DoD bullet 3 do M1 sem dependência cross-repo.
 
 ## Goal
 
@@ -353,7 +353,7 @@ Combobox.Item({value, children, onSelect}) -> Command.Item (fecha + seta value n
 
 #### TDD
 ```
-RED: test_closed_by_default_input_without_combobox_role() — fechado: sem role/aria-expanded (base-ui :146-148)
+RED: test_closed_by_default_aria_expanded_false() — fechado: aria-expanded="false" e SEM aria-controls (v1.2: cmdk hardcoda role/aria-expanded APÓS o spread dos props — node_modules/cmdk/dist/index.mjs, Input: `...u,"role":"combobox","aria-expanded":!0` — role permanece [APG-ok]; expanded/controls corrigidos por adapter de atributos via ref no nosso Input)
 RED: test_opens_on_focus_and_sets_aria() — focus → role="combobox", aria-expanded=true, aria-controls aponta o listbox (base-ui :154-155)
 RED: test_typing_filters_items() — digitar "re" → só itens matching visíveis (cmdk shouldFilter)
 RED: test_select_via_click_sets_value_and_closes() — click no item → onValueChange(value) + fechado
