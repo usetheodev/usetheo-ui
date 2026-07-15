@@ -177,7 +177,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 ---
 
-### M6 — [ ] DataTable virtualizado (promoção do dashboard)
+### M6 — [x] DataTable virtualizado (promoção do dashboard)
 
 **Objective:** Absorver o `virtual-table.tsx` do dashboard como modo `virtualized` do `DataTable` existente, habilitando listas de >10K linhas (audit do dashboard, memórias/chunks em escala) sem fork de componente.
 

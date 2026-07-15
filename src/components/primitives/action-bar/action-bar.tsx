@@ -24,6 +24,8 @@ import { cn } from "../../../lib/cn.js";
 export interface ActionBarProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   search?: {
     placeholder: string;
+    /** Accessible name; defaults to the placeholder with trailing ellipsis stripped (issue #8). */
+    "aria-label"?: string;
     value: string;
     onChange: (value: string) => void;
   };
@@ -60,6 +62,7 @@ const ActionBar = forwardRef<HTMLDivElement, ActionBarProps>(
             />
             <input
               type="search"
+              aria-label={search["aria-label"] ?? search.placeholder.replace(/(\.{3}|…)\s*$/, "")}
               placeholder={search.placeholder}
               value={search.value}
               onChange={(e) => search.onChange(e.target.value)}

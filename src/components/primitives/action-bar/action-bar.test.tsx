@@ -55,3 +55,27 @@ describe("ActionBar", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("ActionBar — search a11y (issue #8 regression)", () => {
+  it("test_search_input_aria_label_derived_from_placeholder", () => {
+    const { getByLabelText } = render(
+      <ActionBar search={{ placeholder: "Search projects...", value: "", onChange: () => {} }} />,
+    );
+    // deriva do placeholder com reticências (ASCII e Unicode) removidas
+    expect(getByLabelText("Search projects")).toBeTruthy();
+  });
+
+  it("test_search_input_explicit_aria_label_wins", () => {
+    const { getByLabelText } = render(
+      <ActionBar
+        search={{
+          placeholder: "Search…",
+          "aria-label": "Search the project list",
+          value: "",
+          onChange: () => {},
+        }}
+      />,
+    );
+    expect(getByLabelText("Search the project list")).toBeTruthy();
+  });
+});
