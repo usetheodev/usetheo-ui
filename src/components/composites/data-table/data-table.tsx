@@ -1,14 +1,21 @@
 "use client";
 
-import { ChevronDown, ChevronRight, MoreHorizontal } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { Fragment, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { cn } from "../../../lib/cn.js";
-import { DropdownMenu } from "../../primitives/dropdown-menu/index.js";
 import { EmptyState } from "../../primitives/empty-state/index.js";
 import { Pagination } from "../../primitives/pagination/index.js";
-import { Skeleton } from "../../primitives/skeleton/index.js";
 import { Table } from "../../primitives/table/index.js";
+import { DataTableLoading } from "./data-table-loading.js";
+import {
+  DataTableHeaderRow,
+  DataTableRowActionsCell,
+  renderCellContent,
+} from "./data-table-parts.js";
+import type { DataTableVirtualizedOptions } from "./data-table-virtualized.js";
+import { DataTableVirtualizedBody } from "./data-table-virtualized.js";
+import { useDataTableSort } from "./use-data-table-sort.js";
 
 /**
  * DataTable — generic, sortable, expandable composite over `<Table>`.
@@ -19,6 +26,10 @@ import { Table } from "../../primitives/table/index.js";
  * pagination, loading skeleton rows, empty state. Both sort and
  * pagination support controlled OR uncontrolled mode (consumer
  * passes onSortChange / onPageChange to take over state).
+ *
+ * `virtualized` mode (M6) renders 10K+ rows over @tanstack/react-virtual.
+ * It is mutually exclusive with `pagination` and `expandable` at the type
+ * level — a virtualized list is one continuous scroll of fixed-height rows.
  *
  * @example
  *   <DataTable
@@ -52,19 +63,12 @@ export interface DataTableSort {
   direction: "asc" | "desc";
 }
 
-export interface DataTableProps<T> {
+interface DataTableBaseProps<T> {
   data: T[];
   columns: DataTableColumn<T>[];
   rowKey: (row: T) => string;
   stickyHeader?: boolean;
-  expandable?: (row: T) => ReactNode | null;
-  expandMode?: "single" | "multiple";
   rowActions?: (row: T) => ReactNode;
-  pagination?: {
-    pageSize: number;
-    controlledPage?: number;
-    onPageChange?: (page: number) => void;
-  } | null;
   defaultSort?: DataTableSort;
   sort?: DataTableSort | null;
   onSortChange?: (sort: DataTableSort | null) => void;
@@ -73,15 +77,39 @@ export interface DataTableProps<T> {
   className?: string;
 }
 
-function compareValues(a: unknown, b: unknown): number {
-  if (a === b) return 0;
-  if (a === null || a === undefined) return -1;
-  if (b === null || b === undefined) return 1;
-  if (typeof a === "number" && typeof b === "number") return a - b;
-  return String(a).localeCompare(String(b));
-}
+/**
+ * Discriminated union: the default mode keeps pagination/expandable; the
+ * virtualized mode excludes them at the type level (fixed-height single
+ * scroll — see DataTableVirtualizedOptions for the documented limitations).
+ */
+export type DataTableProps<T> = DataTableBaseProps<T> &
+  (
+    | {
+        virtualized?: never;
+        expandable?: (row: T) => ReactNode | null;
+        expandMode?: "single" | "multiple";
+        pagination?: {
+          pageSize: number;
+          controlledPage?: number;
+          onPageChange?: (page: number) => void;
+        } | null;
+      }
+    | {
+        virtualized: DataTableVirtualizedOptions;
+        expandable?: never;
+        expandMode?: never;
+        pagination?: never;
+      }
+  );
 
 function DataTable<T>(props: DataTableProps<T>): ReactNode {
+  if (props.virtualized) {
+    return <DataTableVirtualizedBody {...props} virtualized={props.virtualized} />;
+  }
+  return <DataTableDefaultBody {...props} />;
+}
+
+function DataTableDefaultBody<T>(props: DataTableProps<T>): ReactNode {
   const {
     data,
     columns,
@@ -99,12 +127,6 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
     className,
   } = props;
 
-  const isControlledSort = onSortChange !== undefined;
-  const [uncontrolledSort, setUncontrolledSort] = useState<DataTableSort | null>(
-    defaultSort ?? null,
-  );
-  const sort = isControlledSort ? (controlledSort ?? null) : uncontrolledSort;
-
   const isControlledPage = pagination?.controlledPage !== undefined;
   const [uncontrolledPage, setUncontrolledPage] = useState(0);
   const currentPage = isControlledPage ? (pagination?.controlledPage ?? 0) : uncontrolledPage;
@@ -114,24 +136,17 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
 
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  function handleSort(columnKey: string) {
-    // Cycle: none → asc → desc → none
-    let nextSort: DataTableSort | null;
-    if (sort?.key !== columnKey) {
-      nextSort = { key: columnKey, direction: "asc" };
-    } else if (sort.direction === "asc") {
-      nextSort = { key: columnKey, direction: "desc" };
-    } else {
-      nextSort = null;
-    }
-    if (isControlledSort) {
-      onSortChange?.(nextSort);
-    } else {
-      setUncontrolledSort(nextSort);
-      // EC-8: sort change resets pagination to page 0
+  const { sort, handleSort, sortedData } = useDataTableSort({
+    data,
+    columns,
+    defaultSort,
+    sort: controlledSort,
+    onSortChange,
+    // EC-8: sort change resets pagination to page 0
+    onUncontrolledSortChange: () => {
       if (!isControlledPage) setUncontrolledPage(0);
-    }
-  }
+    },
+  });
 
   function handlePageChange(page: number) {
     // Pagination uses 1-indexed; internal state 0-indexed
@@ -159,24 +174,6 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
     }
   }
 
-  // Apply client-side sort in uncontrolled mode
-  const sortedData = useMemo(() => {
-    if (isControlledSort || sort === null) return data;
-    const col = columns.find((c) => c.key === sort.key);
-    if (!col) return data;
-    const sorted = [...data].sort((a, b) => {
-      const aVal = col.render
-        ? null
-        : (a as Record<string, unknown>)[sort.key as keyof T as string];
-      const bVal = col.render
-        ? null
-        : (b as Record<string, unknown>)[sort.key as keyof T as string];
-      const cmp = compareValues(aVal, bVal);
-      return sort.direction === "asc" ? cmp : -cmp;
-    });
-    return sorted;
-  }, [data, sort, isControlledSort, columns]);
-
   // Apply client-side pagination in uncontrolled mode
   const visibleData = useMemo(() => {
     if (!pagination) return sortedData;
@@ -188,47 +185,17 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
   // EC-1 fix: compute colSpan accounting for chevron + actions columns
   const extraCols = (expandable ? 1 : 0) + (rowActions ? 1 : 0);
   const expandedColSpan = columns.length + extraCols;
-  const totalCols = columns.length + extraCols;
 
   // Loading state (EC-7: loading > empty)
   if (loading) {
     return (
-      <div data-slot="data-table" className={cn("w-full", className)}>
-        <Table>
-          <Table.Header className={stickyHeader ? "sticky top-0 bg-card" : undefined}>
-            <Table.Row>
-              {expandable ? (
-                <Table.HeaderCell>
-                  <span className="sr-only">Expand</span>
-                </Table.HeaderCell>
-              ) : null}
-              {columns.map((col) => (
-                <Table.HeaderCell key={col.key} align={col.align}>
-                  {col.label}
-                </Table.HeaderCell>
-              ))}
-              {rowActions ? (
-                <Table.HeaderCell>
-                  <span className="sr-only">Actions</span>
-                </Table.HeaderCell>
-              ) : null}
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {Array.from({ length: 5 }, (_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton rows are positional placeholders
-              <Table.Row key={`skeleton-${i}`}>
-                {Array.from({ length: totalCols }, (_, j) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells are positional placeholders
-                  <Table.Cell key={`s-${i}-${j}`}>
-                    <Skeleton className="h-4 w-full" />
-                  </Table.Cell>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      </div>
+      <DataTableLoading
+        columns={columns}
+        hasExpandColumn={expandable !== undefined}
+        hasActionsColumn={rowActions !== undefined}
+        stickyHeader={stickyHeader}
+        className={className}
+      />
     );
   }
 
@@ -247,33 +214,13 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
     <div className={cn("w-full", className)}>
       <Table>
         <Table.Header className={stickyHeader ? "sticky top-0 z-10 bg-card" : undefined}>
-          <Table.Row>
-            {expandable ? (
-              <Table.HeaderCell>
-                <span className="sr-only">Expand</span>
-              </Table.HeaderCell>
-            ) : null}
-            {columns.map((col) => {
-              const isSortable = col.sortable === true;
-              const isActive = sort?.key === col.key;
-              return (
-                <Table.HeaderCell
-                  key={col.key}
-                  align={col.align}
-                  onSort={isSortable ? () => handleSort(col.key) : undefined}
-                  sortDirection={isSortable ? (isActive ? sort?.direction : "none") : undefined}
-                  style={col.width ? { width: col.width } : undefined}
-                >
-                  {col.label}
-                </Table.HeaderCell>
-              );
-            })}
-            {rowActions ? (
-              <Table.HeaderCell>
-                <span className="sr-only">Actions</span>
-              </Table.HeaderCell>
-            ) : null}
-          </Table.Row>
+          <DataTableHeaderRow
+            columns={columns}
+            sort={sort}
+            onSortClick={handleSort}
+            hasExpandColumn={expandable !== undefined}
+            hasActionsColumn={rowActions !== undefined}
+          />
         </Table.Header>
         <Table.Body>
           {visibleData.map((row) => {
@@ -306,27 +253,11 @@ function DataTable<T>(props: DataTableProps<T>): ReactNode {
                   ) : null}
                   {columns.map((col) => (
                     <Table.Cell key={col.key} align={col.align} className={col.className}>
-                      {col.render
-                        ? col.render(row)
-                        : String((row as Record<string, unknown>)[col.key] ?? "")}
+                      {renderCellContent(row, col)}
                     </Table.Cell>
                   ))}
                   {rowActions ? (
-                    <Table.Cell align="right">
-                      <DropdownMenu>
-                        <DropdownMenu.Trigger
-                          aria-label="Row actions"
-                          className={cn(
-                            "inline-flex size-7 items-center justify-center rounded-md",
-                            "text-muted-foreground hover:bg-muted hover:text-foreground",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                          )}
-                        >
-                          <MoreHorizontal aria-hidden="true" className="size-4" />
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content align="end">{rowActions(row)}</DropdownMenu.Content>
-                      </DropdownMenu>
-                    </Table.Cell>
+                    <DataTableRowActionsCell>{rowActions(row)}</DataTableRowActionsCell>
                   ) : null}
                 </Table.Row>
                 {isExpanded && isExpandable ? (

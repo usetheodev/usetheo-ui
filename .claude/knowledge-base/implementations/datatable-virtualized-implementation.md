@@ -20,4 +20,4 @@
 ## Medições (ADR D1 do plano)
 
 - Bundle baseline (pré-dep): 211822 bytes (dist/index.js, pnpm build 2026-07-15)
-- Bundle pós-T1.2: (pendente)
+- Bundle pós-T1.2: 217055 bytes — **delta total do modo virtualized (dep + código): +5233 bytes min ESM** (~2,4% do dist; muito abaixo da estimativa 10-16KB do blueprint) — fecha o ADR D1
