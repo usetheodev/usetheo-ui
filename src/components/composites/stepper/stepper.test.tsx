@@ -204,3 +204,12 @@ describe("Stepper — wiring & a11y", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe("Stepper — story smoke", () => {
+  it("test_build_pipeline_story_renders_failed_with_retry", async () => {
+    const { BuildPipelineFailed } = await import("./stepper.stories.js");
+    const { container } = render(<BuildPipelineFailed />);
+    expect(container.querySelectorAll('[data-slot="stepper-step"]').length).toBe(6);
+    expect(container.querySelectorAll('[data-slot="stepper-retry"]').length).toBe(1);
+  });
+});
