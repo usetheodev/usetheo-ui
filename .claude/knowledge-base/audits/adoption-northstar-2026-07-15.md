@@ -22,6 +22,28 @@ grep -rlE "from ['\"]@usetheo/ui['\"]" <SRC_DIRS> --include='*.tsx' --include='*
 
 Hand-rolled a remover (inventário no blueprint do M7): metric-trend-chart, build-timeline (estático, dead), build-timeline-live/build-step-card (render), virtual-table (dead), trace-detail/breadcrumb.
 
-## Delta (pós-adoção)
+## Delta (pós-adoção, 2026-07-15 — mesmos comandos)
 
-(preenchido no T4.0)
+| Consumidor | Símbolos únicos | Linhas de import | Arquivos | Versão | Δ símbolos |
+|---|---|---|---|---|---|
+| dashboard | **44** | 161 | 155 | ^0.22.0 (→^0.22.1 pós-#9) | 45→44 (−7 órfãos do pivot p/ @theokit/ui; +6 adoções: TrendChart/TrendSeries/TrendPoint/Stepper/StepperStepData/Breadcrumb) |
+| studio | **14** (+5) | 22 | 22 | ^0.22.0 | +JsonViewer, +DescriptionList, +Slider, +Combobox (Tier-1 fechado; Breadcrumb já contava) |
+| **União** | **48** (+2 líquido; +11 adoções reais compensando os 7 órfãos saneados) | 183 | 177 | — | baseline 46 → 48 |
+
+### Hand-rolled deletados (commits no develop do dashboard)
+
+| Arquivo | Veredito | Commit |
+|---|---|---|
+| `src/components/lens/metric-trend-chart.{tsx,test.tsx}` | migrado → TrendChart | `c9eaf13` [T2.1] |
+| `src/components/deploy/build-step-card.{tsx,test.tsx}` | migrado → Stepper (render do live) | `201dbc5` [T2.2] |
+| `src/pages/lens/trace-detail/breadcrumb.tsx` (markup) | reescrito sobre Breadcrumb da lib (helper/hooks ficam) | `bb12a1a` [T2.3] |
+| `src/components/deploy/build-timeline.{tsx,stories.tsx}` | deleção seca (zero callers) | `93e08b3` [T2.4] |
+| `src/components/data/virtual-table.{tsx,test.tsx}` | deleção seca (zero callers) | `93e08b3` [T2.4] |
+
+### Studio (commits no develop)
+
+`74c09a8` [T3.0 bump] · `aa318e6` [T3.1 JsonViewer+DescriptionList] · `c4e2d0e` [T3.2 painel de params]
+
+### Bônus do loop de feedback
+
+A suíte do dashboard pegou regressão de a11y NA LIB (search sem aria-label) → usetheo-ui#8 filado + corrigido com TDD + release 0.22.1 (PR #9) — o north-star funcionando nos dois sentidos.
