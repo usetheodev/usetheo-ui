@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `SpanTree` composite — árvore de spans com ARIA APG completa (treeitem/level/posinset/setsize/selected/expanded/group), navegação por teclado (↑/↓/Home/End/Enter), dual-path recursivo/virtualizado, barra inline opcional (M8 T2.0)
 - `trace-core`: tipo `TraceSpan` (interseção phoenix/langfuse/lens) + helpers puros de observabilidade — `toNs`, `durationMs`, `computeTraceBounds`, `computeBarLayout`, `niceAxisTicks`, `packRows`, `spanCostUsd`/`aggregateCost`, `flattenVisible`/`flattenAll`, `toTranscriptRows`, `asChat`/`prettyValue`, `deriveSpanKind`, `buildLayeredGraph` (M8 T1.0)
 - Roadmap amended: added M8 Lens Observability Kit (`/roadmap-feature lens-observability-kit`)
 - Preview local dos componentes: `pnpm dev` sobe o Ladle com o tema Violet Forge completo (tokens OKLCH + preset + Tailwind v4 via `@tailwindcss/vite`) — setup dev-only em `.ladle/`, nada é shipped no pacote (#dev-preview)

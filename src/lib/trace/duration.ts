@@ -35,3 +35,15 @@ export function durationMs(span: Pick<TraceSpan, "startTime" | "endTime">): numb
 export function isSpanError(status: SpanStatus | string | undefined): boolean {
   return status === "ERROR";
 }
+
+/** Compact ms/s/min duration label (`1500 → "1.5s"`). Null → "in-flight". Pure, no locale. */
+export function formatDurationMs(ms: number | null): string {
+  if (ms === null) return "in-flight";
+  if (ms >= 60_000) return `${trimZeros(ms / 60_000)}min`;
+  if (ms >= 1000) return `${trimZeros(ms / 1000)}s`;
+  return `${Math.round(ms)}ms`;
+}
+
+function trimZeros(n: number): string {
+  return Number.parseFloat(n.toFixed(2)).toString();
+}

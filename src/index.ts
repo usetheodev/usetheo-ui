@@ -226,3 +226,5 @@ export {
   CommandPalette,
   type CommandItem,
 } from "./components/composites/command-palette/index.js";
+export { SpanTree, SpanTreeRow } from "./components/composites/span-tree/index.js";
+export type { SpanTreeProps, SpanTreeRowProps, SpanTreeRenderCtx } from "./components/composites/span-tree/index.js";
