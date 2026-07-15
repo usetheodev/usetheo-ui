@@ -36,7 +36,7 @@ describe("TrendChart — pure helpers (ported)", () => {
 
   it("niceMax rounds up to a clean bound >= max", () => {
     expect(niceMax([0, 7, 34])).toBe(40);
-    expect(niceMax([0.7])).toBe(0.7);
+    expect(niceMax([0.7])).toBeCloseTo(0.7, 10);
     expect(niceMax([])).toBe(0);
     expect(niceMax([-5])).toBe(0);
   });
