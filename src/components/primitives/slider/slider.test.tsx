@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { Slider } from "./slider.js";
+import { Default as DefaultStory } from "./slider.stories.js";
 
 const marks = (...values: number[]) => values.map((value) => ({ value, label: String(value) }));
 
@@ -157,5 +158,12 @@ describe("Slider — a11y", () => {
       </div>,
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("Slider — story smoke", () => {
+  it("default story renders a labelled slider", () => {
+    render(<DefaultStory />);
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-label", "Volume");
   });
 });
