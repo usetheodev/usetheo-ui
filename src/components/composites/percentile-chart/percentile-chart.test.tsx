@@ -67,6 +67,37 @@ describe("PercentileChart", () => {
     expect(PercentileChartFromBarrel).toBe(PercentileChart);
   });
 
+  it("percentil ausente (NaN) vira gap honesto — nunca emite NaN no path SVG", () => {
+    // bucket do meio com p95 ausente: a banda deve quebrar em sub-bandas contíguas,
+    // nunca escrever "NaN" no atributo d (que o SVG rejeita, truncando o render).
+    const withGap: PercentileBucket[] = [
+      { label: "t1", p50: 40, p95: 120, p99: 240 },
+      { label: "t2", p50: 44, p95: Number.NaN, p99: 260 },
+      { label: "t3", p50: 38, p95: 110, p99: 210 },
+    ];
+    const { container } = render(<PercentileChart title="Latency" buckets={withGap} />);
+    const bands = Array.from(
+      container.querySelectorAll('[data-slot="percentile-band"]'),
+    ) as SVGPathElement[];
+    for (const band of bands) {
+      expect(band.getAttribute("d")).not.toMatch(/NaN/);
+    }
+    // as bandas ainda renderizam para os buckets finitos (não some tudo)
+    const p50p95 = bands.find((b) => b.getAttribute("data-band") === "p50-p95");
+    expect(p50p95?.getAttribute("d")).toBeTruthy();
+    // a linha p50 também não emite NaN
+    const line = container.querySelector('[data-slot="percentile-p50-line"]');
+    expect(line?.getAttribute("d")).not.toMatch(/NaN/);
+  });
+
+  it("percentil ausente aparece como — na tabela sr-only (paridade honesta)", () => {
+    const withGap: PercentileBucket[] = [{ label: "t1", p50: 40, p95: Number.NaN, p99: 240 }];
+    const { container } = render(<PercentileChart title="Latency" buckets={withGap} />);
+    const row = container.querySelector('[data-slot="percentile-table"] tbody tr');
+    expect(row?.textContent).toContain("—");
+    expect(row?.textContent).not.toContain("NaN");
+  });
+
   it("não tem violações axe", async () => {
     const { container } = render(<PercentileChart title="Latency" buckets={buckets} />);
     expect(await axe(container)).toHaveNoViolations();

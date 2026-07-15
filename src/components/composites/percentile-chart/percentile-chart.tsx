@@ -32,6 +32,12 @@ const PAD = { top: 8, right: 8, bottom: 4, left: 40 };
 /**
  * SVG area `d` for the band between an `upper` and `lower` series across the
  * buckets: forward along the upper edge, back along the lower edge, closed.
+ *
+ * A bucket whose upper OR lower value is non-finite is an honest GAP — it
+ * breaks the band into contiguous finite sub-bands (each its own closed
+ * subpath), the same way `seriesPath` skips non-finite points for the line.
+ * This keeps a missing percentile from emitting `NaN` into the path (which the
+ * SVG grammar rejects, silently truncating the render).
  */
 function bandPath(
   upper: number[],
@@ -39,15 +45,33 @@ function bandPath(
   xScale: (x: number) => number,
   yScale: (y: number) => number,
 ): string {
-  if (upper.length === 0) return "";
-  const top = upper.map(
-    (v, i) => `${i === 0 ? "M" : "L"}${xScale(i).toFixed(2)},${yScale(v).toFixed(2)}`,
-  );
-  const bottom = lower
-    .map((v, i) => ({ x: xScale(i), y: yScale(v) }))
-    .reverse()
-    .map((p) => `L${p.x.toFixed(2)},${p.y.toFixed(2)}`);
-  return `${top.join(" ")} ${bottom.join(" ")} Z`;
+  const runs: number[][] = [];
+  let run: number[] = [];
+  for (let i = 0; i < upper.length; i++) {
+    const u = upper[i];
+    const l = lower[i];
+    if (u !== undefined && l !== undefined && Number.isFinite(u) && Number.isFinite(l)) {
+      run.push(i);
+    } else if (run.length > 0) {
+      runs.push(run);
+      run = [];
+    }
+  }
+  if (run.length > 0) runs.push(run);
+
+  return runs
+    .map((idxs) => {
+      const top = idxs.map(
+        (i, k) =>
+          `${k === 0 ? "M" : "L"}${xScale(i).toFixed(2)},${yScale(upper[i] as number).toFixed(2)}`,
+      );
+      const bottom = idxs
+        .slice()
+        .reverse()
+        .map((i) => `L${xScale(i).toFixed(2)},${yScale(lower[i] as number).toFixed(2)}`);
+      return `${top.join(" ")} ${bottom.join(" ")} Z`;
+    })
+    .join(" ");
 }
 
 export type PercentileChartProps = HTMLAttributes<HTMLElement> & {
@@ -175,9 +199,9 @@ const PercentileChart = forwardRef<HTMLElement, PercentileChartProps>((props, re
             // biome-ignore lint/suspicious/noArrayIndexKey: buckets are positional time slots — index IS the identity
             <tr key={i}>
               <td>{b.label ?? i + 1}</td>
-              <td>{valueFormatter(b.p50)}</td>
-              <td>{valueFormatter(b.p95)}</td>
-              <td>{valueFormatter(b.p99)}</td>
+              <td>{Number.isFinite(b.p50) ? valueFormatter(b.p50) : "—"}</td>
+              <td>{Number.isFinite(b.p95) ? valueFormatter(b.p95) : "—"}</td>
+              <td>{Number.isFinite(b.p99) ? valueFormatter(b.p99) : "—"}</td>
             </tr>
           ))}
         </tbody>
