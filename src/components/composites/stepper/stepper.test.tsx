@@ -213,3 +213,11 @@ describe("Stepper — story smoke", () => {
     expect(container.querySelectorAll('[data-slot="stepper-retry"]').length).toBe(1);
   });
 });
+
+describe("Stepper — barrel", () => {
+  it("test_barrel_exports_stepper", async () => {
+    const barrel = await import("../../../index.js");
+    expect(barrel.Stepper).toBe(Stepper);
+    expect(barrel.deriveSteps).toBe(deriveSteps);
+  });
+});

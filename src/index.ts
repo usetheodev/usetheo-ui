@@ -134,6 +134,13 @@ export {
   type TrendPoint,
   type TrendSeries,
 } from "./components/composites/trend-chart/index.js";
+export {
+  Stepper,
+  deriveSteps,
+  type StepStatus,
+  type StepperProps,
+  type StepperStepData,
+} from "./components/composites/stepper/index.js";
 export { MetricsPanel, type Metric } from "./components/primitives/metrics-panel/index.js";
 export {
   SocialAuthRow,
