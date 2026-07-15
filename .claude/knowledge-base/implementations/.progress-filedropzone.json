@@ -1,0 +1,8 @@
+{
+  "slug": "filedropzone",
+  "tasks": [
+    { "id": "T1.1", "phase": 1, "status": "committed", "commit_sha": "d753fc22",
+      "files": ["src/components/primitives/file-dropzone/file-dropzone.tsx","src/components/primitives/file-dropzone/file-dropzone.test.tsx","src/components/primitives/file-dropzone/index.ts"],
+      "wiring": {"a":"pass","b":"pass","c":"pass"}, "wiring_note": "helpers puros; co-located (ADR D4)" }
+  ]
+}
