@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+import { TrendChart as TrendChartFromBarrel } from "../../../index.js";
 import type { TrendSeries } from "./trend-chart.js";
 import { TrendChart, linScale, niceMax, seriesPath } from "./trend-chart.js";
 import { RagLatency } from "./trend-chart.stories.js";
@@ -172,5 +173,11 @@ describe("TrendChart — story smoke", () => {
     const { container } = render(<RagLatency />);
     expect(slots(container, "trend-chart-line")).toHaveLength(2);
     expect(container.querySelector('[data-slot="trend-chart-table"]')?.textContent).toContain("ms");
+  });
+});
+
+describe("TrendChart — barrel", () => {
+  it("barrel exports the same symbol", () => {
+    expect(TrendChartFromBarrel).toBe(TrendChart);
   });
 });
