@@ -125,6 +125,15 @@ export {
   type DataTableSort,
 } from "./components/composites/data-table/index.js";
 export { PageShell, type PageShellProps } from "./components/composites/page-shell/index.js";
+export {
+  linScale,
+  niceMax,
+  seriesPath,
+  TrendChart,
+  type TrendChartProps,
+  type TrendPoint,
+  type TrendSeries,
+} from "./components/composites/trend-chart/index.js";
 export { MetricsPanel, type Metric } from "./components/primitives/metrics-panel/index.js";
 export {
   SocialAuthRow,

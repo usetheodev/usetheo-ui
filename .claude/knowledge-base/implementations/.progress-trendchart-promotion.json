@@ -1,0 +1,86 @@
+{
+  "slug": "trendchart-promotion",
+  "tasks": [
+    {
+      "id": "T1.1",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "62170064",
+      "files": [
+        "src/components/composites/trend-chart/trend-chart.tsx",
+        "src/components/composites/trend-chart/trend-chart.test.tsx",
+        "src/components/composites/trend-chart/index.ts"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "pass"
+      },
+      "wiring_note": "stories+barrel; co-located (ADR D3); data-slot"
+    },
+    {
+      "id": "T1.2",
+      "phase": 1,
+      "status": "committed",
+      "commit_sha": "3e3021b1",
+      "files": [
+        "src/components/composites/trend-chart/trend-chart.stories.tsx",
+        "src/components/composites/trend-chart/trend-chart.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "stories caller; smoke"
+    },
+    {
+      "id": "T2.1",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "acba0e2c",
+      "files": [
+        "src/index.ts",
+        "src/components/composites/trend-chart/trend-chart.test.tsx"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "barrel identity smoke"
+    },
+    {
+      "id": "T2.2",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "8f48de71",
+      "files": [
+        "registry/trend-chart.json",
+        "registry/index.json",
+        "registry/r/trend-chart.json"
+      ],
+      "wiring": {
+        "a": "pass",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "registry:validate 66"
+    },
+    {
+      "id": "T2.3",
+      "phase": 2,
+      "status": "committed",
+      "commit_sha": "42c2f4f6",
+      "files": [
+        "CHANGELOG.md"
+      ],
+      "wiring": {
+        "a": "defer",
+        "b": "pass",
+        "c": "defer"
+      },
+      "wiring_note": "docs"
+    }
+  ]
+}
