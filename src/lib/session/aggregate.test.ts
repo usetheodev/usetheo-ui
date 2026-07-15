@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aggregateSession } from "./aggregate.js";
+import { aggregateSession, sessionBounds } from "./aggregate.js";
 import type { SessionTraceItem } from "./types.js";
 
 const NS = 1_000_000_000n;
@@ -71,5 +71,25 @@ describe("aggregateSession", () => {
       item({ id: "b", startTime: T0, endTime: T0 + NS }),
     ]);
     expect(m.windowMs).toBe(1000);
+  });
+});
+
+describe("sessionBounds", () => {
+  it("test_bounds_min_start_max_end", () => {
+    const b = sessionBounds([
+      item({ id: "a", startTime: T0 + NS, endTime: T0 + 2n * NS }),
+      item({ id: "b", startTime: T0, endTime: T0 + 5n * NS }),
+    ]);
+    expect(b.startNs).toBe(T0);
+    expect(b.endNs).toBe(T0 + 5n * NS);
+  });
+
+  it("test_bounds_lista_vazia_zero", () => {
+    expect(sessionBounds([])).toEqual({ startNs: 0n, endNs: 0n });
+  });
+
+  it("test_bounds_end_ausente_cai_no_start", () => {
+    const b = sessionBounds([item({ id: "a", startTime: T0 })]);
+    expect(b.endNs).toBe(T0);
   });
 });

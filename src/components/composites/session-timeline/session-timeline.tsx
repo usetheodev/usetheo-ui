@@ -1,6 +1,7 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useMemo, useRef } from "react";
 import { cn } from "../../../lib/cn.js";
+import { sessionBounds } from "../../../lib/session/aggregate.js";
 import type { SessionTraceItem } from "../../../lib/session/types.js";
 import { computeBarLayout } from "../../../lib/trace/bar-layout.js";
 import { durationMs, formatDurationMs, isSpanError, toNs } from "../../../lib/trace/duration.js";
@@ -49,20 +50,9 @@ export function SessionTimeline({
     return withNs.map((w) => w.it);
   }, [items]);
 
-  const bounds = useMemo<Bounds>(() => {
-    let start: bigint | null = null;
-    let end: bigint | null = null;
-    for (const it of sorted) {
-      const s = toNs(it.startTime);
-      if (s === null) continue;
-      if (start === null || s < start) start = s;
-      const e = toNs(it.endTime ?? null) ?? s;
-      const eff = e >= s ? e : s;
-      if (end === null || eff > end) end = eff;
-    }
-    const s = start ?? 0n;
-    return { startNs: s, endNs: end ?? s };
-  }, [sorted]);
+  // The session window is the single shared definition (`sessionBounds`) — the same one
+  // `aggregateSession` uses for its `windowMs`, so bar denominator and summary never diverge.
+  const bounds = useMemo<Bounds>(() => sessionBounds(sorted), [sorted]);
 
   if (sorted.length === 0) {
     return <EmptyState title="No traces" description="This session has no traces to replay." />;
