@@ -275,6 +275,8 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 > Added 2026-07-15 (V2, gap P0 — o único 100% AUSENTE). See CHANGELOG `[Unreleased] § Added`.
 
+> ⚠️ **BLOCKED-ON-BACKEND (2026-07-15):** o dashboard BFF NÃO expõe store de prompt-versioning (`internal/promptly` é um broker de tokens, não um store; nenhuma rota `/prompts` em `lens_dashboard.go`). A adoção real no lens exige um engine de prompt (fora do escopo deste DS repo). Execução reordenada — M11 e M12 (com backend real) vêm primeiro; M10 aguarda o engine. Nenhum milestone depende do M10 (grafo: M11→M8, M12→M9+M8, M13→M11).
+
 **Objective:** Adicionar gestão de prompts ao lens — hoje inexistente. Phoenix (`PromptVersionsList` + labels + code export) e Langfuse (`prompt-history` + labels prod/staging + `PromptVersionDiffDialog`) têm o ciclo completo. Promover `PromptDiff` + `VersionLabelPicker` ao DS e construir versioning imutável + labels + diff visual no lens.
 
 **Definition of done:**
