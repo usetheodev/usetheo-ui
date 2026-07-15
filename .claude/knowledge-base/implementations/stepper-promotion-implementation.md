@@ -9,12 +9,12 @@
 
 | ID | Phase | Task | Status |
 |---|---|---|---|
-| T1.1 | 1 | Stepper + deriveSteps com TDD completo (23 REDs) | pending |
-| T1.2 | 1 | Stories (4) + smoke | pending |
-| T2.1 | 2 | Barrel + smoke identidade | pending |
-| T2.2 | 2 | Registry (descriptor + entry, validate 67) | pending |
-| T2.3 | 2 | CHANGELOG § Added | pending |
-| Final | — | Integration Validation (test/typecheck/lint/registry/build) | pending |
+| T1.1 | 1 | Stepper + deriveSteps com TDD completo (23 REDs) | committed fc076c1b |
+| T1.2 | 1 | Stories (4) + smoke | committed 3efcff49 |
+| T2.1 | 2 | Barrel + smoke identidade | committed |
+| T2.2 | 2 | Registry (descriptor + entry, validate 67) | committed |
+| T2.3 | 2 | CHANGELOG § Added | committed |
+| Final | — | Integration Validation (test/typecheck/lint/registry/build) | PASS — run_validation exit 0 (6 pass, 0 fail, 2 warn amb.) |
 
 ## Wiring triad (ADR D4 do plano — adaptação de lib aprovada M0-M3)
 
