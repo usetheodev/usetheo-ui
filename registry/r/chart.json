@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart",
+  "type": "registry:lib",
+  "title": "Chart core (computeHistogram)",
+  "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/chart/histogram.ts",
+      "type": "registry:lib",
+      "target": "lib/chart/histogram.ts",
+      "content": "/**\n * Pure histogram binning — distributes numeric values into `binCount`\n * equal-width bins over [min, max] and counts how many fall in each.\n *\n * Zero-dependency, total, deterministic (M11 ADR D2 — binning is pure logic,\n * distinct from the SVG scaling reused from TrendChart). Non-finite values\n * (NaN / ±Infinity) are dropped, mirroring the trace-core `Number.isFinite`\n * discipline. A degenerate range (all values equal) collapses to a single\n * populated bin so no count is lost.\n */\n\n/** One histogram bucket: half-open [lo, hi) except the final bin, which is [lo, hi] (max-inclusive). */\nexport interface HistogramBin {\n  lo: number;\n  hi: number;\n  count: number;\n}\n\n/**\n * Bin `values` into `binCount` equal-width buckets.\n * Returns `[]` for an empty input or a non-positive `binCount`.\n */\nexport function computeHistogram(values: number[], binCount: number): HistogramBin[] {\n  if (!Number.isFinite(binCount) || binCount <= 0) return [];\n  const finite = values.filter((v) => Number.isFinite(v));\n  if (finite.length === 0) return [];\n\n  const n = Math.floor(binCount);\n  let min = Number.POSITIVE_INFINITY;\n  let max = Number.NEGATIVE_INFINITY;\n  for (const v of finite) {\n    if (v < min) min = v;\n    if (v > max) max = v;\n  }\n\n  const span = max - min;\n  const width = span / n;\n\n  const bins: HistogramBin[] = Array.from({ length: n }, (_, i) => ({\n    lo: span === 0 ? min : min + i * width,\n    hi: span === 0 ? min : min + (i + 1) * width,\n    count: 0,\n  }));\n\n  for (const v of finite) {\n    // Degenerate range: every value lands in the single conceptual bucket.\n    const idx = span === 0 ? 0 : Math.min(n - 1, Math.floor((v - min) / width));\n    const bin = bins[idx];\n    if (bin) bin.count += 1;\n  }\n\n  return bins;\n}\n"
+    },
+    {
+      "path": "lib/chart/index.ts",
+      "type": "registry:lib",
+      "target": "lib/chart/index.ts",
+      "content": "export * from \"@/lib/chart/histogram\";\n"
+    }
+  ]
+}

@@ -67,6 +67,12 @@
       "description": "Surface container for grouping related content."
     },
     {
+      "name": "chart",
+      "type": "registry:lib",
+      "title": "Chart core (computeHistogram)",
+      "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic."
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -181,6 +187,12 @@
       "description": "Composition wrapper for accessible form rows."
     },
     {
+      "name": "histogram",
+      "type": "registry:ui",
+      "title": "Histogram",
+      "description": "Distribution of numeric values as pure-SVG bars (no chart lib). Accepts pre-computed bins OR raw values + binCount (binned client-side via computeHistogram). Bar height scaled via niceMax; honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax from TrendChart."
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
@@ -239,6 +251,12 @@
       "type": "registry:ui",
       "title": "Pagination",
       "description": "Accessible page-number navigation primitive. Renders <nav aria-label=Pagination> with first/prev/numbers/next/last buttons and visual ellipses when totalPages exceeds the visible range. Active page carries aria-current=page. Keyboard nav: ArrowLeft / ArrowRight / Home / End. Configurable siblingCount + optional jump buttons. Returns null when totalPages <= 1. Exports a pure computePageRange helper for unit testing the range logic in isolation."
+    },
+    {
+      "name": "percentile-chart",
+      "type": "registry:ui",
+      "title": "PercentileChart",
+      "description": "p50/p95/p99 over time as shaded bands (not three flat lines) in pure SVG. The p50–p95 and p95–p99 spans render as filled areas + a p50 reference line, so the spread reads at a glance. Honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax/seriesPath from TrendChart."
     },
     {
       "name": "pin-input",
