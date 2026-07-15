@@ -244,3 +244,5 @@ export { IOCards, MessageCard, MessageItem } from "./components/composites/io-ca
 export type { IOCardsProps, RenderMarkdown } from "./components/composites/io-cards/index.js";
 export { TraceTranscript } from "./components/composites/trace-transcript/index.js";
 export type { TraceTranscriptProps } from "./components/composites/trace-transcript/index.js";
+export { SpanGraph } from "./components/composites/span-graph/index.js";
+export type { SpanGraphProps } from "./components/composites/span-graph/index.js";

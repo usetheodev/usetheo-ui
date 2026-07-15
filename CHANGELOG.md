@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `SpanGraph` composite — grafo de agente em SVG puro (layout BFS layered determinístico, zero dep de chart/layout — ADR mantido), destaque do caminho root→selecionado, oversize honesto, nodes focáveis (M8 T4.0)
 - `TraceTranscript` composite — feed reader-mode do trace (card por span com role/preview/stats), group-headers colapsáveis de subagente (descendentes reais da árvore, nesting-safe), virtualização; deriva o row model via `toTranscriptRows` (M8 T3.2)
 - `IOCards` composite — payloads input/output de span: array ChatML vira cards por role com pareamento tool-call/result, colapso de histórico longo, redacted-thinking; markdown via slot `renderMarkdown` (default texto puro, XSS-safe); fallback JSON via `JsonViewer` (M8 T3.1)
 - `AttributesTable` composite — atributos OTel agrupados por namespace (cards colapsáveis), masking PII fail-closed (`maskedKeys` predicate + `canReveal`; valor raw nunca no DOM pré-reveal), promoted badges, fallback JSON via `JsonViewer` (M8 T3.0)
