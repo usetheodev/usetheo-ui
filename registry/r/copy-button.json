@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "CopyButton",
   "description": "Click-to-copy button primitive. Wraps navigator.clipboard.writeText with icon swap (Copy → Check on success, Copy → X on failure), aria-live announcement for screen readers, optional label, ghost/outline variants, and SSR-safe rendering. Auto-cleans the revert timer on unmount and debounces double-clicks.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"

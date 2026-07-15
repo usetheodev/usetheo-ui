@@ -6,7 +6,6 @@
   "description": "Span input/output rendering: a ChatML message array becomes role-labeled cards with tool-call/result linkage and long-history collapse; markdown bodies go through an optional renderMarkdown slot (default plain text, XSS-safe by construction — no dangerouslySetInnerHTML); non-chat payloads fall back to JsonViewer.",
   "dependencies": [],
   "registryDependencies": [
-    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/badge.json",
     "https://usetheodev.github.io/usetheo-ui/r/button.json",
     "https://usetheodev.github.io/usetheo-ui/r/card.json",

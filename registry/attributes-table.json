@@ -4,11 +4,8 @@
   "type": "registry:ui",
   "title": "AttributesTable",
   "description": "Namespace-grouped OTel span attributes with fail-closed PII masking. A masked value's raw string never enters the DOM until Reveal is clicked AND canReveal is true; object values fall back to the dependency-free JsonViewer. Promoted-key badges + collapsible per-namespace cards.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
-    "cn",
     "badge",
     "button",
     "card",

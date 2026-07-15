@@ -72,6 +72,31 @@ describe("TraceCompare", () => {
     expect(container.querySelector('[data-slot="delta-badge"]')).toBeNull();
   });
 
+  it("test_lanes_com_skew_e_ciclo_nao_lancam", () => {
+    // A lane whose root has a clock-skewed child + a self-referential cycle must render honestly.
+    const skewed: TraceSpan = {
+      id: "s-root",
+      parentId: null,
+      name: "agent.run",
+      startTime: T0,
+      endTime: T0 + 2n * NS,
+      children: [
+        {
+          id: "s1",
+          parentId: "s-root",
+          name: "tool.search",
+          startTime: T0 + 3n * NS,
+          endTime: T0 + NS,
+        },
+      ],
+    };
+    const cyclic: TraceSpan = { id: "c-root", parentId: null, name: "agent.run" };
+    cyclic.children = [cyclic];
+    expect(() =>
+      render(<TraceCompare laneA={{ id: "A", root: skewed }} laneB={{ id: "B", root: cyclic }} />),
+    ).not.toThrow();
+  });
+
   it("has no a11y violations", async () => {
     await expectNoA11yViolations(
       <TraceCompare laneA={{ id: "A", root: laneA }} laneB={{ id: "B", root: laneB }} />,

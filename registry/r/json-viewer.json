@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "JsonViewer",
   "description": "Read-only collapsible JSON tree, dependency-free: boolean/depth collapse with lazy subtrees, per-type rendering (BigInt, Date, undefined), long-string truncation, circular-safe rendering and copy via CopyButton.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/copy-button.json",

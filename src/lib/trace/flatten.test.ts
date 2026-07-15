@@ -34,6 +34,12 @@ describe("flattenAll", () => {
   it("test_flattenAll_ignora_collapse", () => {
     expect(flattenAll(TREE)).toHaveLength(4);
   });
+
+  it("test_flattenAll_cycle_safe_nao_stack_overflow", () => {
+    const cyc = span({ id: "c" });
+    cyc.children = [cyc]; // self-reference
+    expect(flattenAll(cyc)).toHaveLength(1);
+  });
 });
 
 describe("toTranscriptRows", () => {

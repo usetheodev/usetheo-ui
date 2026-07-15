@@ -38,7 +38,9 @@ describe("alignSpanTrees", () => {
   it("test_ciclo_malformado_nao_trava", () => {
     const cyc = span({ id: "x", name: "x" });
     cyc.children = [cyc]; // self-reference
-    expect(() => alignSpanTrees(cyc, span({ id: "y", name: "x" }))).not.toThrow();
+    const rows = alignSpanTrees(cyc, span({ id: "y", name: "x" }));
+    expect(rows.length).toBeGreaterThanOrEqual(1); // terminou + emitiu ao menos a raiz
+    expect(rows[0]?.key).toBe("x");
   });
 
   it("test_filhos_pareiam_por_nome", () => {

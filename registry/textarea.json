@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "Textarea",
   "description": "Multi-line input mirror of Input.",
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/textarea/textarea.tsx",
@@ -15,7 +12,5 @@
       "target": "components/ui/textarea.tsx"
     }
   ],
-  "dependencies": [
-    "class-variance-authority"
-  ]
+  "dependencies": ["class-variance-authority"]
 }

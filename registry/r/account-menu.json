@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "AccountMenu",
   "description": "Sidebar header for PaaS surfaces. Avatar + name + (optional) PlanBadge + (optional) secondary line, with dual mode: with onClick renders as a `button` with trailing chevron (account picker affordance); without, renders as a static `div`. PaaS-shape sibling of ProjectSwitcher.",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/avatar.json",

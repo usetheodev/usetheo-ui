@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "Combobox",
   "description": "Single-select typeahead over the cmdk engine with an inline listbox: sync/async filtering (shouldFilter=false), empty and loading states, full keyboard nav, APG combobox ARIA contract.",
-  "dependencies": [
-    "cmdk",
-    "lucide-react"
-  ],
+  "dependencies": ["cmdk", "lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",
     "https://usetheodev.github.io/usetheo-ui/r/input.json",

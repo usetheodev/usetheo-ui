@@ -4,14 +4,8 @@
   "type": "registry:ui",
   "title": "Switch",
   "description": "Built on Radix Switch — accessible binary toggle with on / off states and disabled support.",
-  "dependencies": [
-    "@radix-ui/react-switch",
-    "class-variance-authority"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-switch", "class-variance-authority"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/switch/switch.tsx",

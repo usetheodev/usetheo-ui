@@ -102,6 +102,12 @@ describe("spanCostUsd / aggregateCost", () => {
     expect(spanCostUsd(span({ attributes: { cost: "abc" } }))).toBe(0);
   });
 
+  it("test_aggregate_cycle_safe_conta_uma_vez", () => {
+    const cyc = span({ id: "c", costUsd: 1 });
+    cyc.children = [cyc];
+    expect(aggregateCost(cyc)).toBe(1);
+  });
+
   it("test_aggregate_soma_subtree", () => {
     const root = span({
       costUsd: 1,

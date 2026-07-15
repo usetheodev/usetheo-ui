@@ -59,7 +59,9 @@ describe("buildLayeredGraph", () => {
 
   it("test_self_loop_nao_trava_o_layout", () => {
     const root = span({ id: "root", children: [span({ id: "self", parentId: "self" })] });
-    expect(() => buildLayeredGraph(root)).not.toThrow();
+    const g = buildLayeredGraph(root);
+    expect(g.nodes.find((n) => n.spanId === "self")).toBeDefined(); // nó preservado, não dropado
+    expect(g.nodes).toHaveLength(2);
   });
 
   it("test_on_path_marca_cadeia_root_ate_selected", () => {

@@ -4,15 +4,8 @@
   "type": "registry:ui",
   "title": "Toast",
   "description": "Transient notification built on Radix Toast.",
-  "dependencies": [
-    "@radix-ui/react-toast",
-    "class-variance-authority",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-toast", "class-variance-authority", "lucide-react"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/toast/toast.tsx",

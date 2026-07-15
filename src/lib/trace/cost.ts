@@ -27,9 +27,18 @@ export function spanCostUsd(span: TraceSpan): number {
   return 0;
 }
 
-/** Sum a span's own cost + all descendants' (`∑`). Total: missing cost counts as 0, never NaN. */
+/**
+ * Sum a span's own cost + all descendants' (`∑`). Total: missing cost counts as 0, never NaN.
+ * Cycle-safe: a repeated/self-referential child is counted at most once (no stack overflow).
+ */
 export function aggregateCost(span: TraceSpan): number {
-  let total = spanCostUsd(span);
-  for (const c of span.children ?? []) total += aggregateCost(c);
-  return total;
+  const seen = new Set<string>();
+  const walk = (s: TraceSpan): number => {
+    if (seen.has(s.id)) return 0;
+    seen.add(s.id);
+    let total = spanCostUsd(s);
+    for (const c of s.children ?? []) total += walk(c);
+    return total;
+  };
+  return walk(span);
 }

@@ -29,7 +29,7 @@ describe("IOCards", () => {
     render(<IOCards value={CHAT} />);
     const cards = screen.getAllByTestId("io-card");
     // system + user + assistant(tool_call has no body → no MessageCard) = system + user
-    expect(cards.length).toBeGreaterThanOrEqual(2);
+    expect(cards).toHaveLength(3); // system + user + assistant(com corpo) — tool-result/tool-call não são io-card
     expect(screen.getByText("user")).toBeInTheDocument();
     expect(screen.getByText("assistant")).toBeInTheDocument();
   });

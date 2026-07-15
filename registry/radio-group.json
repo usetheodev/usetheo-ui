@@ -4,14 +4,8 @@
   "type": "registry:ui",
   "title": "RadioGroup",
   "description": "Built on Radix RadioGroup — accessible radio group with roving focus and orientation control.",
-  "dependencies": [
-    "@radix-ui/react-radio-group",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-radio-group", "lucide-react"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/radio-group/radio-group.tsx",

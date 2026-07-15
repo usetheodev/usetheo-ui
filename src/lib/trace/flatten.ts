@@ -15,17 +15,33 @@ import type { FlatSpan, TraceSpan, TranscriptRow } from "./types.js";
  */
 export const VIRTUALIZE_THRESHOLD = 200;
 
-/** Depth-first flatten of ALL spans (ignores collapse) — resolve-by-id / envelope input. */
+/**
+ * Depth-first flatten of ALL spans (ignores collapse) — resolve-by-id / envelope input. Cycle-safe:
+ * a self-referential or repeated child is visited at most once (a malformed trace cannot stack-overflow).
+ */
 export function flattenAll(root: TraceSpan): TraceSpan[] {
-  const out: TraceSpan[] = [root];
-  for (const c of root.children ?? []) out.push(...flattenAll(c));
+  const out: TraceSpan[] = [];
+  const seen = new Set<string>();
+  const walk = (span: TraceSpan) => {
+    if (seen.has(span.id)) return;
+    seen.add(span.id);
+    out.push(span);
+    for (const c of span.children ?? []) walk(c);
+  };
+  walk(root);
   return out;
 }
 
-/** Depth-first flatten of VISIBLE spans (a node in `collapsed` contributes no descendants). */
+/**
+ * Depth-first flatten of VISIBLE spans (a node in `collapsed` contributes no descendants). Cycle-safe:
+ * each span id is emitted at most once.
+ */
 export function flattenVisible(root: TraceSpan, collapsed: Set<string>): FlatSpan[] {
   const out: FlatSpan[] = [];
+  const seen = new Set<string>();
   const walk = (span: TraceSpan, depth: number) => {
+    if (seen.has(span.id)) return;
+    seen.add(span.id);
     out.push({ span, depth });
     if (!collapsed.has(span.id)) for (const c of span.children ?? []) walk(c, depth + 1);
   };

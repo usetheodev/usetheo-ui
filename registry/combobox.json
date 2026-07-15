@@ -4,15 +4,8 @@
   "type": "registry:ui",
   "title": "Combobox",
   "description": "Single-select typeahead over the cmdk engine with an inline listbox: sync/async filtering (shouldFilter=false), empty and loading states, full keyboard nav, APG combobox ARIA contract.",
-  "dependencies": [
-    "cmdk",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "cn",
-    "input",
-    "tailwind-preset"
-  ],
+  "dependencies": ["cmdk", "lucide-react"],
+  "registryDependencies": ["cn", "input", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/combobox/combobox.tsx",

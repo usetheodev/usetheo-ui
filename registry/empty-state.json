@@ -4,11 +4,7 @@
   "type": "registry:ui",
   "title": "EmptyState",
   "description": "Visual placeholder for empty lists / first-run screens.",
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset",
-    "types"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset", "types"],
   "files": [
     {
       "path": "components/primitives/empty-state/empty-state.tsx",

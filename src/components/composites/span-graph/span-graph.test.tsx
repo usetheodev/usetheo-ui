@@ -32,6 +32,17 @@ describe("SpanGraph", () => {
     expect(orphan).toBeInTheDocument();
   });
 
+  it("test_skew_e_in_flight_renderizam_sem_throw_no_componente", () => {
+    // MALFORMED_TRACE carries a clock-skewed span + an in-flight (endTime null) span.
+    const { container } = render(<SpanGraph {...props({ root: MALFORMED_TRACE })} />);
+    expect(
+      container.querySelector('[data-slot="span-graph-node"][data-span-id="skewed"]'),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-slot="span-graph-node"][data-span-id="inflight"]'),
+    ).toBeInTheDocument();
+  });
+
   it("test_node_click_seleciona", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();

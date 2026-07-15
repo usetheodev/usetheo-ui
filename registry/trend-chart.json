@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "TrendChart",
   "description": "Multi-series time-trend chart in pure SVG (zero chart-lib deps): value formatter, color legend, sparse-series markers, explicit empty state and a screen-reader data table keyed by shared period axis.",
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/trend-chart/trend-chart.tsx",

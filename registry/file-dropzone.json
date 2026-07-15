@@ -4,10 +4,7 @@
   "type": "registry:ui",
   "title": "FileDropzone",
   "description": "Drag-drop + file-picker upload primitive, dependency-free (native HTML5 DnD): typed rejections (invalid type / too large / too small / too many), accept map with MIME wildcard and extension matching, nested-drag target counting, keyboard-accessible picker, idle/drag-over/drag-reject/disabled states.",
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/file-dropzone/file-dropzone.tsx",

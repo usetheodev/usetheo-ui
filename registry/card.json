@@ -4,13 +4,8 @@
   "type": "registry:ui",
   "title": "Card",
   "description": "Surface container for grouping related content.",
-  "dependencies": [
-    "@radix-ui/react-slot"
-  ],
-  "registryDependencies": [
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["@radix-ui/react-slot"],
+  "registryDependencies": ["cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/primitives/card/card.tsx",

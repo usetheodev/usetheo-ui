@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "title": "MetricCard",
   "description": "Dashboard metric tile composite — title + value + delta with trend semantics. Supports invertTrend for cost/churn metrics (EC-17).",
-  "dependencies": [
-    "lucide-react"
-  ],
+  "dependencies": ["lucide-react"],
   "registryDependencies": [
     "https://usetheodev.github.io/usetheo-ui/r/card.json",
     "https://usetheodev.github.io/usetheo-ui/r/cn.json",

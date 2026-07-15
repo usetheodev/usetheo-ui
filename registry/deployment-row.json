@@ -4,14 +4,8 @@
   "type": "registry:block",
   "title": "DeploymentRow",
   "description": "One row in a deployment list (table-ish layout).",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "badge",
-    "cn",
-    "tailwind-preset"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["badge", "cn", "tailwind-preset"],
   "files": [
     {
       "path": "components/composites/deployment-row/deployment-row.tsx",
