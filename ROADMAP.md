@@ -216,7 +216,7 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 1. Trabalho cross-repo (dashboard e studio têm ciclos próprios) atrasar a adoção — mitigação: PRs de adoção preparados junto com cada release da lib, não ao final.
 2. O DESIGN.md do dashboard exigir ajustes finos nos componentes promovidos — mitigação: DoD de cada milestone já valida contra o consumidor de origem.
 
-### M8 — [ ] Lens Observability Kit (trace-native)
+### M8 — [x] Lens Observability Kit (trace-native)
 
 > Added 2026-07-15 by `/roadmap-feature` (slug: `lens-observability-kit`). See CHANGELOG `[Unreleased] § Added`.
 
@@ -224,11 +224,11 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] 7 componentes trace-native publicados com DoD padrão da lib (stories + axe + testes + registry válido): `SpanWaterfall`, `SpanTree`, `TraceTranscript`, `AttributesTable` (com masking/reveal), `IOCards`, `SpanGraph`, `TraceCompare`.
-- [ ] theo-lens adota os 7 e deleta os hand-rolled correspondentes (waterfall 208, tree 433, transcript 300, io-cards 283, attributes 177, span-graph 141, compare 312 LoC — SHAs de deleção registrados no audit).
-- [ ] North-star delta registrado em `knowledge-base/audits/` (baseline pós-M7: 48 símbolos únicos).
-- [ ] Zero nova dependência de chart — ADR "SVG puro" mantido (waterfall/graph em SVG nativo).
-- [ ] Release semver cortado e consumidores bumpados.
+- [x] 7 componentes trace-native publicados com DoD padrão da lib (stories + axe + testes + registry válido): `SpanWaterfall`, `SpanTree`, `TraceTranscript`, `AttributesTable` (com masking/reveal), `IOCards`, `SpanGraph`, `TraceCompare`.
+- [x] theo-lens adota os 7 e deleta os hand-rolled correspondentes (waterfall 208, tree 433, transcript 300, io-cards 283, attributes 177, span-graph 141, compare 312 LoC — SHAs de deleção registrados no audit).
+- [x] North-star delta registrado em `knowledge-base/audits/` (baseline pós-M7: 48 símbolos únicos).
+- [x] Zero nova dependência de chart — ADR "SVG puro" mantido (waterfall/graph em SVG nativo).
+- [x] Release semver cortado e consumidores bumpados.
 
 **Dependencies:** M2 (JsonViewer/DescriptionList — payloads de span), M6 (DataTable virtualizado — listas de traces/attributes), M7 (playbook de adoção+dedup validado; consumidores em 0.22.x).
 
