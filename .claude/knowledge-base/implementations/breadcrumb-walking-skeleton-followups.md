@@ -31,3 +31,6 @@ Oportunidades detectadas durante o halt-loop, explicitamente NÃO incluídas nos
 8. **Lib: tsup stripa "use client" do bundle de TODOS os componentes stateful** (pré-existente,
    pego pelo review M2) — consumidores RSC via pacote npm precisam da diretiva; avaliar
    `banner`/`esbuild` option para preservar. (review M2, F-dom-1 nota honesta)
+9. **Kit: diff_symbols.py derivava exports de *.stories.tsx/*.test.tsx como símbolos de produção**
+   (pillar a cobrava caller para stories Ladle — falso HIGH no mini-review M3). Fix aplicado:
+   parser agora rastreia o arquivo corrente nos headers +++ e pula stories/tests. (M3, 2026-07-15)

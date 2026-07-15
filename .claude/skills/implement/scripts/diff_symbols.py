@@ -77,9 +77,16 @@ def added_symbols_from_shas(repo_root: Path, shas: list[str]) -> set[str]:
         return set()
 
     symbols: set[str] = set()
+    # Ladle stories and co-located tests export documentation/fixtures, not
+    # production symbols — pillar (a) does not apply to them (plan-family ADR
+    # D3/D4; kit followup #9). Track the current file from diff headers.
+    skip_current_file = False
     for line in result.stdout.splitlines():
-        # Added content lines start with a single '+'; diff headers start with '+++'.
-        if not line.startswith("+") or line.startswith("+++"):
+        if line.startswith("+++"):
+            skip_current_file = line.endswith((".stories.tsx", ".test.tsx", ".stories.ts", ".test.ts"))
+            continue
+        # Added content lines start with a single '+'.
+        if not line.startswith("+") or skip_current_file:
             continue
         added = line[1:]
         for pattern in _COMPILED:
