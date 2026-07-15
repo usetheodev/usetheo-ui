@@ -10,12 +10,12 @@
 | ID | Phase | Task | Status |
 |---|---|---|---|
 | T1.1 | 1 | Dep @tanstack/react-virtual + baseline bundle | committed |
-| T1.2 | 1 | União de tipos + corpo virtual + 14 REDs | pending |
-| T1.3 | 1 | Stories (2) + smoke | pending |
-| T2.1 | 2 | Barrel (tipo) + smoke | pending |
-| T2.2 | 2 | Registry (dep + 2º file) | pending |
-| T2.3 | 2 | CHANGELOG § Added | pending |
-| Final | — | Integration Validation | pending |
+| T1.2 | 1 | União de tipos + corpo virtual + 14 REDs | committed |
+| T1.3 | 1 | Stories (2) + smoke | committed |
+| T2.1 | 2 | Barrel (tipo) + smoke | committed |
+| T2.2 | 2 | Registry (dep + 2º file) | committed |
+| T2.3 | 2 | CHANGELOG § Added | committed |
+| Final | — | Integration Validation | PASS — test 892 + tc + lint + registry 68 + build |
 
 ## Medições (ADR D1 do plano)
 
