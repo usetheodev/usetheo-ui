@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "percentile-chart",
+  "type": "registry:ui",
+  "title": "PercentileChart",
+  "description": "p50/p95/p99 over time as shaded bands (not three flat lines) in pure SVG. The p50–p95 and p95–p99 spans render as filled areas + a p50 reference line, so the spread reads at a glance. Honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax/seriesPath from TrendChart.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "trend-chart", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/percentile-chart/percentile-chart.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/percentile-chart.tsx"
+    }
+  ]
+}

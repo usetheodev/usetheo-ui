@@ -255,3 +255,32 @@ export type {
   TraceCompareProps,
   CompareLane,
 } from "./components/composites/trace-compare/index.js";
+export { aggregateSession, sessionBounds } from "./lib/session/index.js";
+export type { SessionTraceItem, SessionMetrics } from "./lib/session/index.js";
+export { SessionSummary } from "./components/composites/session-summary/index.js";
+export type { SessionSummaryProps } from "./components/composites/session-summary/index.js";
+export { SessionTimeline } from "./components/composites/session-timeline/index.js";
+export type { SessionTimelineProps } from "./components/composites/session-timeline/index.js";
+export { computeHistogram } from "./lib/chart/index.js";
+export type { HistogramBin } from "./lib/chart/index.js";
+export { Histogram } from "./components/composites/histogram/index.js";
+export type { HistogramProps } from "./components/composites/histogram/index.js";
+export { PercentileChart } from "./components/composites/percentile-chart/index.js";
+export type {
+  PercentileBucket,
+  PercentileChartProps,
+} from "./components/composites/percentile-chart/index.js";
+export {
+  AnnotationInput,
+  isCategoricalConfig,
+  isContinuousConfig,
+  isFreeformConfig,
+} from "./components/composites/annotation-input/index.js";
+export type {
+  AnnotationInputProps,
+  CategoricalOption,
+  AnnotationCategoricalConfig,
+  AnnotationContinuousConfig,
+  AnnotationFreeformConfig,
+  AnnotationConfig,
+} from "./components/composites/annotation-input/index.js";

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart",
+  "type": "registry:lib",
+  "title": "Chart core (computeHistogram)",
+  "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/chart/histogram.ts",
+      "type": "registry:lib",
+      "target": "lib/chart/histogram.ts"
+    },
+    {
+      "path": "lib/chart/index.ts",
+      "type": "registry:lib",
+      "target": "lib/chart/index.ts"
+    }
+  ]
+}

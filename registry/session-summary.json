@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "session-summary",
+  "type": "registry:ui",
+  "title": "SessionSummary",
+  "description": "A dl of honest aggregate metrics over a session's traces: trace count, wall-clock window, \u2211cost, \u2211tokens, error count (destructive when >0), distinct models. Sums of zero are honest, never an em-dash.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "badge", "card", "session", "trace", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/session-summary/session-summary.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/session-summary.tsx"
+    }
+  ]
+}

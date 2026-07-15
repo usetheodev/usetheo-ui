@@ -31,6 +31,12 @@
       "description": "Persistent inline notice primitive. Four intents (info / success / warning / destructive) with mapped lucide icons (Info / CheckCircle2 / TriangleAlert / AlertCircle) and design tokens. Optional title, description, action slot, and onDismiss handler. destructive intent renders role=alert (assertive); other intents render role=status (polite). Distinct from Toast (transient, auto-dismiss) and EmptyState (centered card)."
     },
     {
+      "name": "annotation-input",
+      "type": "registry:ui",
+      "title": "AnnotationInput",
+      "description": "Controlled, config-driven human annotation input. Dispatches on config.type (Phoenix's three-type model): categorical -> RadioGroup over named options; continuous -> number input bounded by the config; freeform -> textarea. Fully controlled (value + onValueChange); the consumer owns the config (fixture or backend store) and the submission. Composes the DS form primitives."
+    },
+    {
       "name": "attributes-table",
       "type": "registry:ui",
       "title": "AttributesTable",
@@ -65,6 +71,12 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "Surface container for grouping related content."
+    },
+    {
+      "name": "chart",
+      "type": "registry:lib",
+      "title": "Chart core (computeHistogram)",
+      "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic."
     },
     {
       "name": "checkbox",
@@ -181,6 +193,12 @@
       "description": "Composition wrapper for accessible form rows."
     },
     {
+      "name": "histogram",
+      "type": "registry:ui",
+      "title": "Histogram",
+      "description": "Distribution of numeric values as pure-SVG bars (no chart lib). Accepts pre-computed bins OR raw values + binCount (binned client-side via computeHistogram). Bar height scaled via niceMax; honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax from TrendChart."
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
@@ -241,6 +259,12 @@
       "description": "Accessible page-number navigation primitive. Renders <nav aria-label=Pagination> with first/prev/numbers/next/last buttons and visual ellipses when totalPages exceeds the visible range. Active page carries aria-current=page. Keyboard nav: ArrowLeft / ArrowRight / Home / End. Configurable siblingCount + optional jump buttons. Returns null when totalPages <= 1. Exports a pure computePageRange helper for unit testing the range logic in isolation."
     },
     {
+      "name": "percentile-chart",
+      "type": "registry:ui",
+      "title": "PercentileChart",
+      "description": "p50/p95/p99 over time as shaded bands (not three flat lines) in pure SVG. The p50–p95 and p95–p99 spans render as filled areas + a p50 reference line, so the spread reads at a glance. Honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax/seriesPath from TrendChart."
+    },
+    {
       "name": "pin-input",
       "type": "registry:ui",
       "title": "PinInput",
@@ -299,6 +323,24 @@
       "type": "registry:ui",
       "title": "Select",
       "description": "Styled wrapper around Radix Select."
+    },
+    {
+      "name": "session-summary",
+      "type": "registry:ui",
+      "title": "SessionSummary",
+      "description": "A dl of honest aggregate metrics over a session's traces: trace count, wall-clock window, ∑cost, ∑tokens, error count (destructive when >0), distinct models. Sums of zero are honest, never an em-dash."
+    },
+    {
+      "name": "session-timeline",
+      "type": "registry:ui",
+      "title": "SessionTimeline",
+      "description": "Temporal replay of a session: one row per trace sorted by start time, each with timestamp, name, a duration bar relative to the session window (reuses the trace-core bar layout), status, and cost. Controlled selection; virtualizes above a threshold."
+    },
+    {
+      "name": "session",
+      "type": "registry:lib",
+      "title": "Session core (SessionTraceItem + aggregateSession)",
+      "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, ∑cost, ∑tokens, error count, distinct models). Pure, total — absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization."
     },
     {
       "name": "sheet",

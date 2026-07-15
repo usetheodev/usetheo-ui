@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "session-summary",
+  "type": "registry:ui",
+  "title": "SessionSummary",
+  "description": "A dl of honest aggregate metrics over a session's traces: trace count, wall-clock window, ∑cost, ∑tokens, error count (destructive when >0), distinct models. Sums of zero are honest, never an em-dash.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/badge.json",
+    "https://usetheodev.github.io/usetheo-ui/r/card.json",
+    "https://usetheodev.github.io/usetheo-ui/r/session.json",
+    "https://usetheodev.github.io/usetheo-ui/r/trace.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/composites/session-summary/session-summary.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/session-summary.tsx",
+      "content": "import { useMemo } from \"react\";\nimport { cn } from \"@/lib/cn\";\nimport { aggregateSession } from \"@/lib/session/aggregate\";\nimport type { SessionMetrics, SessionTraceItem } from \"@/lib/session/types\";\nimport { formatDurationMs } from \"@/lib/trace/duration\";\nimport { Badge } from \"@/components/ui/badge\";\n\nexport interface SessionSummaryProps {\n  /** The session's traces — aggregated internally. Supply `metrics` instead to pass a pre-aggregate. */\n  items?: SessionTraceItem[];\n  /** Pre-computed metrics (overrides `items`). */\n  metrics?: SessionMetrics;\n  /** USD cost formatter. Default `$0.0000`. */\n  formatCostUsd?: (usd: number) => string;\n  className?: string;\n  \"aria-label\"?: string;\n}\n\nconst defaultCost = (usd: number) => `$${usd.toFixed(4)}`;\n\n/**\n * SessionSummary — a `<dl>` of honest aggregate metrics over a session's traces: trace count, the\n * session wall-clock window, ∑ cost, ∑ tokens, error count (highlighted destructive when > 0), and\n * the distinct models. Sums of zero are honest (`$0.0000`, `0`), never an em-dash. Pass `items` (it\n * aggregates via `aggregateSession`) or a pre-computed `metrics`.\n */\nexport function SessionSummary({\n  items,\n  metrics,\n  formatCostUsd = defaultCost,\n  className,\n  \"aria-label\": ariaLabel = \"Session summary\",\n}: SessionSummaryProps) {\n  const m = useMemo(() => metrics ?? aggregateSession(items ?? []), [metrics, items]);\n  return (\n    <dl\n      data-slot=\"session-summary\"\n      aria-label={ariaLabel}\n      className={cn(\n        \"grid grid-cols-2 gap-3 rounded-md border border-border bg-muted/20 p-3 text-xs sm:grid-cols-3 lg:grid-cols-6\",\n        className,\n      )}\n    >\n      <Stat label=\"Traces\" value={String(m.traceCount)} />\n      <Stat\n        label=\"Duration\"\n        value={m.windowMs > 0 ? formatDurationMs(m.windowMs) : \"—\"}\n        testId=\"session-duration\"\n      />\n      <Stat label=\"Cost\" value={formatCostUsd(m.totalCostUsd)} testId=\"session-cost\" />\n      <Stat label=\"Tokens\" value={String(m.totalTokens)} testId=\"session-tokens\" />\n      <div>\n        <dt className=\"text-muted-foreground\">Errors</dt>\n        <dd\n          data-slot=\"session-error\"\n          data-error={m.errorCount > 0 ? \"true\" : undefined}\n          className={cn(\n            \"font-medium font-mono tabular-nums\",\n            m.errorCount > 0 && \"text-destructive\",\n          )}\n        >\n          {m.errorCount}\n        </dd>\n      </div>\n      <div className=\"min-w-0\">\n        <dt className=\"text-muted-foreground\">Models</dt>\n        <dd data-testid=\"session-models\" className=\"flex flex-wrap gap-1\">\n          {m.models.length > 0 ? (\n            m.models.map((model) => (\n              <Badge key={model} variant=\"outline\" className=\"font-mono\">\n                {model}\n              </Badge>\n            ))\n          ) : (\n            <span className=\"text-muted-foreground\">—</span>\n          )}\n        </dd>\n      </div>\n    </dl>\n  );\n}\n\nfunction Stat({ label, value, testId }: { label: string; value: string; testId?: string }) {\n  return (\n    <div>\n      <dt className=\"text-muted-foreground\">{label}</dt>\n      <dd data-testid={testId} className=\"font-medium font-mono tabular-nums\">\n        {value}\n      </dd>\n    </div>\n  );\n}\n"
+    }
+  ]
+}

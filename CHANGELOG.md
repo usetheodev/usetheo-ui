@@ -14,6 +14,30 @@
 
 ### Security
 
+## [0.26.0] - 2026-07-15
+
+### Added
+- `AnnotationInput` composite — input de anotação humana controlado e config-driven (categorical→RadioGroup / continuous→number input com bounds / freeform→Textarea), modelo de 3 tipos do Phoenix; compõe os primitivos do DS (RadioGroup/Input/Textarea/Label) — zero dep nova; a11y (radiogroup via aria-labelledby, aria-required/describedby) + axe (M12 T2.0)
+- Tipos de annotation config (`AnnotationConfig` union discriminada: `AnnotationCategoricalConfig`/`AnnotationContinuousConfig`/`AnnotationFreeformConfig` + `CategoricalOption`) e type guards `isCategoricalConfig`/`isContinuousConfig`/`isFreeformConfig` (M12 T1.0)
+
+## [0.25.0] - 2026-07-15
+
+### Added
+- `PercentileChart` composite — p50/p95/p99 por bucket temporal como BANDAS sombreadas (área p50–p95 + p95–p99 mais clara + linha p50) em SVG puro; leitura instantânea de spread (upgrade do overlay de 3 linhas, padrão phoenix); reusa `linScale`/`niceMax`/`seriesPath` do TrendChart — zero dep nova (M11 T3.0)
+- `Histogram` composite — distribuição de valores numéricos em barras SVG puras (aceita `bins` pré-computados OU `values`+`binCount` binado client-side via `computeHistogram`; altura via `niceMax`; empty state honesto; tabela sr-only para paridade a11y; reusa `linScale`/`niceMax` do TrendChart — zero dep nova) (M11 T2.0)
+- `computeHistogram(values, binCount)` helper puro em `src/lib/chart` — distribui valores numéricos em bins de largura igual (count por bin; não-finitos filtrados; range degenerado colapsa em 1 bin; borda superior inclusiva no último bin) (M11 T1.0)
+
+### Fixed
+- `PercentileChart` — percentil ausente (não-finito) agora vira gap honesto (bandas quebram em sub-bandas contíguas de pontos finitos) em vez de emitir `NaN` no path SVG; tabela sr-only mostra `—` (M11 review M-1)
+
+## [0.24.0] - 2026-07-15
+
+### Added
+- `SessionTimeline` composite — replay temporal da sessão (uma linha por trace, ordenada por startTime, barra de duração relativa à janela via trace-core, status honesto, custo, virtualização) (M9 T3.0)
+- `SessionSummary` composite — `<dl>` de métricas honestas de sessão (traceCount/janela/∑custo/∑tokens/erros-em-destructive/models); sums de zero honestos, nunca em-dash (M9 T2.0)
+- `session` core: tipo `SessionTraceItem` + `aggregateSession` (métricas honestas de sessão — traceCount/janela/∑custo/∑tokens/erros/models; custo-ausente=0 nunca NaN) (M9 T1.0)
+- Roadmap V2 declarado (fechamento do gap SOTA vs Arize/Phoenix/Langfuse): M9 Sessions ricas, M10 Prompt management, M11 Analytics time-series, M12 Annotation platform, M13 Monitors+automations — baseado em `.claude/knowledge-base/audits/sota-gap-analysis-2026-07-15.md`
+
 ## [0.23.0] - 2026-07-15
 
 ### Added

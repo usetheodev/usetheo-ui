@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "histogram",
+  "type": "registry:ui",
+  "title": "Histogram",
+  "description": "Distribution of numeric values as pure-SVG bars (no chart lib). Accepts pre-computed bins OR raw values + binCount (binned client-side via computeHistogram). Bar height scaled via niceMax; honest empty state; sr-only table for a11y parity. Reuses linScale/niceMax from TrendChart.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "chart", "trend-chart", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/histogram/histogram.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/histogram.tsx"
+    }
+  ]
+}
