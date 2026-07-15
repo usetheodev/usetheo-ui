@@ -1,4 +1,4 @@
-import { Command as CommandPrimitive } from "cmdk";
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { Check, Loader2 } from "lucide-react";
 import {
   createContext,
@@ -195,6 +195,24 @@ interface ComboboxContentProps extends HTMLAttributes<HTMLDivElement> {
 const Content = forwardRef<HTMLDivElement, ComboboxContentProps>(
   ({ className, children, loading, ...props }, ref) => {
     const { open, listId } = useComboboxContext("Content");
+    const resultCount = useCommandState((state) => state.filtered.count);
+    const listRef = useRef<HTMLDivElement | null>(null);
+
+    // An empty listbox violates aria-required-children (axe); cmdk always
+    // renders role="listbox". Same adapter pattern as the Input: demote the
+    // role to presentation while there are no options, after every commit.
+    useEffect(() => {
+      const el = listRef.current;
+      if (!el) return;
+      if (resultCount === 0) {
+        el.setAttribute("role", "presentation");
+        el.removeAttribute("aria-label");
+      } else {
+        el.setAttribute("role", "listbox");
+        if (!el.getAttribute("aria-label")) el.setAttribute("aria-label", "Suggestions");
+      }
+    });
+
     if (!open) return null;
     return (
       <div
@@ -217,7 +235,7 @@ const Content = forwardRef<HTMLDivElement, ComboboxContentProps>(
             Loading…
           </div>
         ) : (
-          <CommandPrimitive.List className="max-h-64 overflow-y-auto">
+          <CommandPrimitive.List ref={listRef} className="max-h-64 overflow-y-auto">
             {children}
           </CommandPrimitive.List>
         )}

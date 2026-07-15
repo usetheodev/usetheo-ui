@@ -3,6 +3,16 @@
 ## [Unreleased]
 
 ### Added
+- `Slider` primitive — range input over Radix Slider (new dep `@radix-ui/react-slider`):
+  single or multi-thumb, decimal steps (0-1 thresholds), clickable labelled `marks`,
+  controlled values clamped to `[min, max]`, accessible thumb labels, vertical orientation.
+  15 behavior tests (axe: zero violations), 5 Ladle stories, registry item `slider`. (usetheo-ui#M1)
+- `Combobox` primitive — single-select typeahead over the installed `cmdk` engine with an
+  inline listbox (zero new deps): sync filtering with `Empty` on no-match, async mode via
+  `shouldFilter={false}`, `loading` state with `aria-busy`, full keyboard nav
+  (ArrowDown/Enter/Escape), outside-click close, APG combobox ARIA contract enforced even
+  where cmdk hardcodes attributes. 20 behavior tests (axe: zero violations), 5 Ladle stories
+  (including the "query playground" composition with two sliders), registry item `combobox`. (usetheo-ui#M1)
 
 ### Changed
 

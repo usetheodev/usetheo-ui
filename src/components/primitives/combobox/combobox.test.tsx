@@ -7,7 +7,7 @@ import { axe } from "vitest-axe";
 import { Combobox as ComboboxFromBarrel } from "../../../index.js";
 import type { ComboboxProps } from "./combobox.js";
 import { Combobox } from "./combobox.js";
-import { Basic as BasicStory } from "./combobox.stories.js";
+import { Basic as BasicStory, QueryPlayground } from "./combobox.stories.js";
 
 const FRUITS = ["Apple", "Banana", "Cherry"];
 
@@ -256,5 +256,14 @@ describe("Combobox — story smoke", () => {
 describe("Combobox — barrel", () => {
   it("barrel exports the same symbol", () => {
     expect(ComboboxFromBarrel).toBe(Combobox);
+  });
+});
+
+describe("Query playground composition (M1 DoD bullet 3)", () => {
+  it("renders two sliders + combobox with zero axe violations", async () => {
+    const { container } = render(<QueryPlayground />);
+    expect(screen.getAllByRole("slider")).toHaveLength(2);
+    expect(screen.getByPlaceholderText("Select a collection")).toBeInTheDocument();
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

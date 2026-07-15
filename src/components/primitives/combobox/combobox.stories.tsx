@@ -1,5 +1,6 @@
 import type { Story } from "@ladle/react";
 import { useMemo, useState } from "react";
+import { Slider } from "../slider/slider.js";
 import { Combobox } from "./combobox.js";
 
 export default {
@@ -79,3 +80,34 @@ export const EmptyState: Story = () => (
     </Combobox>
   </div>
 );
+
+/**
+ * Query playground — a composição que os produtos theo-memory (recall) e
+ * theo-rag (retrieval) montam: topK + threshold + collection picker.
+ * Evidência executável do DoD bullet 3 do M1 (axe-validada em teste).
+ */
+export const QueryPlayground: Story = () => {
+  const [collection, setCollection] = useState<string>();
+  return (
+    <form aria-label="Query playground" className="grid max-w-sm gap-6">
+      <div className="grid gap-2">
+        <span className="text-caption text-muted-foreground">Top K (1-100)</span>
+        <Slider aria-label="Top K" min={1} max={100} defaultValue={[5]} marks={[{ value: 50 }]} />
+      </div>
+      <div className="grid gap-2">
+        <span className="text-caption text-muted-foreground">Threshold (0-1)</span>
+        <Slider aria-label="Threshold" min={0} max={1} step={0.05} defaultValue={[0.5]} />
+      </div>
+      <div className="grid gap-2">
+        <span className="text-caption text-muted-foreground">Collection</span>
+        <Combobox aria-label="Collection" value={collection} onValueChange={setCollection}>
+          <Combobox.Input placeholder="Select a collection" />
+          <Combobox.Content>
+            <Combobox.Empty>No collections found.</Combobox.Empty>
+            {collectionItems(COLLECTIONS)}
+          </Combobox.Content>
+        </Combobox>
+      </div>
+    </form>
+  );
+};
