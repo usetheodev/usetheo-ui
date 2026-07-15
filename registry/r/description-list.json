@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "description-list",
+  "type": "registry:ui",
+  "title": "DescriptionList",
+  "description": "Semantic key/value pairs on native dl/dt/dd: vertical or horizontal (grid) layouts, dense mode, composable Item/Term/Detail subs.",
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/primitives/description-list/description-list.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/description-list.tsx",
+      "content": "import { createElement, forwardRef } from \"react\";\nimport type { HTMLAttributes } from \"react\";\nimport { cn } from \"@/lib/cn\";\n\n/**\n * DescriptionList — semantic key/value pairs on native `dl/dt/dd`.\n *\n * Layouts: `vertical` (default — stacked groups) and `horizontal` (two-column\n * grid: terms in a fixed max-content column, details beside them; the Item\n * wrapper uses `display: contents` so dt/dd participate in the root grid).\n * `dense` tightens the gaps for crowded detail panels.\n *\n *   <DescriptionList layout=\"horizontal\">\n *     <DescriptionList.Item>\n *       <DescriptionList.Term>Status</DescriptionList.Term>\n *       <DescriptionList.Detail><Badge>live</Badge></DescriptionList.Detail>\n *     </DescriptionList.Item>\n *   </DescriptionList>\n *\n * One Term per Item; multiple Details per Term are valid HTML and supported.\n * Composing dd without a preceding dt is the consumer's responsibility\n * (invalid HTML — same contract as Breadcrumb.Page placement).\n */\n\ninterface DescriptionListProps extends HTMLAttributes<HTMLDListElement> {\n  /** vertical (default): stacked groups. horizontal: term column + detail column. */\n  layout?: \"vertical\" | \"horizontal\";\n  /** Compact spacing for dense detail panels. */\n  dense?: boolean;\n}\n\n/** Presentational sub factory (same idiom as Breadcrumb's `sub()` — M0). */\nfunction sub<E extends HTMLElement>(\n  tag: string,\n  slot: string,\n  displayName: string,\n  baseClass: string,\n) {\n  const Component = forwardRef<E, HTMLAttributes<E>>(({ className, children, ...props }, ref) =>\n    createElement(\n      tag,\n      { \"data-slot\": slot, ref, className: cn(baseClass, className), ...props },\n      children,\n    ),\n  );\n  Component.displayName = displayName;\n  return Component;\n}\n\nconst Root = forwardRef<HTMLDListElement, DescriptionListProps>(\n  ({ className, layout = \"vertical\", dense, ...props }, ref) => (\n    <dl\n      data-slot=\"description-list\"\n      data-layout={layout}\n      data-dense={dense ? \"true\" : undefined}\n      ref={ref}\n      className={cn(\n        \"text-body-sm\",\n        layout === \"vertical\" && (dense ? \"grid gap-2\" : \"grid gap-4\"),\n        layout === \"horizontal\" &&\n          \"grid grid-cols-[max-content_1fr] items-baseline [&>div]:contents\",\n        layout === \"horizontal\" && (dense ? \"gap-x-4 gap-y-1.5\" : \"gap-x-6 gap-y-3\"),\n        className,\n      )}\n      {...props}\n    />\n  ),\n);\nRoot.displayName = \"DescriptionList\";\n\nconst Item = sub<HTMLDivElement>(\n  \"div\",\n  \"description-list-item\",\n  \"DescriptionList.Item\",\n  \"grid gap-1\",\n);\n\nconst Term = sub<HTMLElement>(\n  \"dt\",\n  \"description-list-term\",\n  \"DescriptionList.Term\",\n  \"font-medium text-muted-foreground\",\n);\n\nconst Detail = sub<HTMLElement>(\n  \"dd\",\n  \"description-list-detail\",\n  \"DescriptionList.Detail\",\n  \"m-0 text-foreground\",\n);\n\nconst DescriptionList = Object.assign(Root, { Item, Term, Detail });\n\nexport { DescriptionList };\nexport type { DescriptionListProps };\n"
+    }
+  ]
+}

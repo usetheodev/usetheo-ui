@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "description-list",
+  "type": "registry:ui",
+  "title": "DescriptionList",
+  "description": "Semantic key/value pairs on native dl/dt/dd: vertical or horizontal (grid) layouts, dense mode, composable Item/Term/Detail subs.",
+  "registryDependencies": [
+    "cn",
+    "tailwind-preset"
+  ],
+  "files": [
+    {
+      "path": "components/primitives/description-list/description-list.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/description-list.tsx"
+    }
+  ]
+}

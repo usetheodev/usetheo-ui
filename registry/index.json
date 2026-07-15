@@ -121,6 +121,12 @@
       "description": "One row in a deployment list (table-ish layout)."
     },
     {
+      "name": "description-list",
+      "type": "registry:ui",
+      "title": "DescriptionList",
+      "description": "Semantic key/value pairs on native dl/dt/dd: vertical or horizontal (grid) layouts, dense mode, composable Item/Term/Detail subs."
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
@@ -167,6 +173,12 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "Text input primitive with focus ring, error state, and form-field composition support."
+    },
+    {
+      "name": "json-viewer",
+      "type": "registry:ui",
+      "title": "JsonViewer",
+      "description": "Read-only collapsible JSON tree, dependency-free: boolean/depth collapse with lazy subtrees, per-type rendering (BigInt, Date, undefined), long-string truncation, circular-safe rendering and copy via CopyButton."
     },
     {
       "name": "label",
