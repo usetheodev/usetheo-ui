@@ -371,6 +371,118 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
+## V3 — Componentes SOTA restantes (pós-V2)
+
+> Added 2026-07-15 via `/roadmap-feature`. Fundamentado no gap analysis component-by-component vs langfuse (MIT-core) + phoenix (ELv2 study-only) — evidência por file:line em `.claude/knowledge-base/grills/v3-sota-components-feature-grill.md`. **Só componentes DS-now** (puros/controlados, 100% funcionais como artefato de DS independente de backend); os backend-gated (`ExecutionHistoryTable`, `HeatmapCard`, playground streaming, `ExperimentMetricsChart`, `VersionHistoryPanel`) ficam **deferred** até a plataforma existir. **Escopo = `@usetheo/ui` (design system) + adoção no consumidor onde houver superfície; NÃO inclui backend de plataforma.**
+
+### M14 — [ ] Diff viewing (DiffView + PromptVersionDiff + DatasetItemDiff)
+
+**Objective:** Fechar o gap de versionamento visual. Langfuse (`PromptVersionDiffDialog.tsx`) e Phoenix (`PromptVersionDiffView.tsx`) mostram diffs lado-a-lado. Promover um primitivo `DiffView` (diff por linha/palavra, puro) + os composites `PromptVersionDiff` (dois prompts) e `DatasetItemDiff` (input/output/metadata de item de dataset) que o reusam.
+
+**Definition of done:**
+
+- [ ] `DiffView` (primitivo, SVG/DOM puro, sem lib de diff pesada — avaliar rung 4) + `PromptVersionDiff` + `DatasetItemDiff` publicados (stories + axe + testes + registry).
+- [ ] Adoção no lens onde houver superfície de diff (ex.: `trace-compare` já compara — avaliar reuso do `DiffView`); onde não houver, componente 100% funcional em Ladle é o entregável.
+- [ ] North-star delta; zero dep nova de diff (ou uma dep madura auditada se o diff-core justificar — decisão na fase deps-audit).
+
+**Dependencies:** M12 (DS baseline @ 0.26.0).
+
+**Top risks (new):** (1) diff-core pode tentar puxar lib pesada — mitigação: LCS puro em ~40 linhas ou dep madura mínima, decidido no deps-audit. (2) diff de config estruturada (não só texto) — mitigação: DiffView aceita render de célula.
+
+**Why now:** versionamento é a base de prompt/dataset ops que os 2 concorrentes têm.
+
+---
+
+### M15 — [ ] Cost & token visibility (TokenCostBreakdown + PriceBreakdown)
+
+**Objective:** Phoenix tem 4 variantes de `TokenCostsDetails` (span/session/trace) + Langfuse `PriceBreakdownTooltip`. Promover `TokenCostBreakdown` (input/output/cache tokens + custo, controlado) + `PriceBreakdown` (tabela de preço por-unidade/1K/1M). O lens JÁ tem `costUsd`/`totalTokens` por trace → adoção real imediata.
+
+**Definition of done:**
+
+- [ ] `TokenCostBreakdown` + `PriceBreakdown` publicados (stories + axe + testes + registry); zeros honestos, nunca fabricar custo.
+- [ ] theo-lens: adoção em span/trace detail (o dado de custo/tokens já existe) — adoção 100% funcional com evidência.
+- [ ] North-star delta; zero dep nova.
+
+**Dependencies:** M12 (DS baseline).
+
+**Top risks (new):** (1) modelos de pricing variam (cache tokens nem sempre presentes) — mitigação: campos opcionais, em-dash honesto para ausente. (2) precisão float de custo — mitigação: formatação consistente reusando o padrão de custo do M9.
+
+**Why now:** visibilidade de custo é demanda direta de quem opera agentes; o dado já está no backend.
+
+---
+
+### M16 — [ ] SeverityBadge (badge de severidade por enum)
+
+**Objective:** Langfuse `MonitorSeverityBadge.tsx` (OK/WARNING/ALERT/NO_DATA/UNKNOWN/PAUSED com mapeamento de cor). Promover `SeverityBadge` reusando o `Badge` existente (variants success/warning/destructive/outline). Reusável por alerts/monitors/anomalies. (Era o componente condicional do M13 — agora justificado como átomo de DS standalone: o lens `alerts.tsx` já renderiza status, e monitors o fará → ≥2 telas.)
+
+**Definition of done:**
+
+- [ ] `SeverityBadge` publicado (mapeia enum de severidade → variant do Badge; stories + axe + testes + registry).
+- [ ] theo-lens: adoção em `alerts.tsx` (substitui o `alertStatusVariant` local) — adoção 100% funcional; segunda tela (monitors) quando a plataforma a construir.
+- [ ] North-star delta; zero dep nova (compõe `Badge`).
+
+**Dependencies:** M12 (DS baseline).
+
+**Top risks (new):** (1) vocabulário de severidade pode divergir entre alerts e monitors futuros — mitigação: enum aberto via prop de mapa. (2) risco de duplicar `StatusIndicator` — mitigação: SeverityBadge é especialização de severidade multi-nível, verificado no review.
+
+**Why now:** átomo pequeno, alto reuso, adotável imediatamente no `alerts.tsx`.
+
+---
+
+### M17 — [ ] Collaboration (CommentThread + TagInput)
+
+**Objective:** Langfuse `comments/` + `tag/` — comentários inline e tags em traces. Promover `CommentThread` (lista + composer, controlado) + `TagInput` (adicionar/remover tags com combobox, controlado). Componentes DS-now; adoção plena precisa de backend de comments/tags (gated).
+
+**Definition of done:**
+
+- [ ] `CommentThread` + `TagInput` publicados (controlados via value/onChange; stories + axe + testes + registry).
+- [ ] Adoção no lens quando o backend de comments/tags existir; até lá, componentes 100% funcionais em Ladle com fixtures são o entregável do DS.
+- [ ] North-star delta; zero dep nova.
+
+**Dependencies:** M12 (DS baseline).
+
+**Top risks (new):** (1) backend de comments/tags não existe (adoção plena gated) — mitigação: componentes controlados por props, migração aditiva (padrão M12). (2) threading (respostas aninhadas) pode inflar escopo — mitigação: V3 entrega thread flat; aninhado é futuro.
+
+**Why now:** colaboração humana é gap que Langfuse-core tem; o componente é DS-now mesmo sem o backend.
+
+---
+
+### M18 — [ ] Eval authoring (EvaluatorForm + AnnotationSummaryGroup)
+
+**Objective:** Phoenix `CodeEvaluatorForm.tsx` (builder de evaluators built-in: exact_match/regex/levenshtein/json_distance/contains) + `AnnotationSummaryGroup` (grupo colapsável de anotações com stats agregadas). Promover ambos, controlados/config-driven (reusa o padrão do `AnnotationInput` do M12).
+
+**Definition of done:**
+
+- [ ] `EvaluatorForm` (form polimórfico por tipo de evaluator, controlado) + `AnnotationSummaryGroup` (reusa `AnnotationConfig` do M12) publicados (stories + axe + testes + registry).
+- [ ] theo-lens: adoção em `evaluators.tsx` onde a superfície existir; senão entregável é o componente 100% funcional.
+- [ ] North-star delta; zero dep nova.
+
+**Dependencies:** M12 (reusa `AnnotationConfig`/`AnnotationInput`).
+
+**Top risks (new):** (1) cada evaluator tem campos distintos (form polimórfico) — mitigação: union discriminada como no M12 (Extract p/ TS#30581). (2) sandbox de code-evaluator é backend — mitigação: o form só edita config; execução é plataforma.
+
+**Why now:** autoria de eval é diferencial dos 2 concorrentes; reusa a fundação de config do M12.
+
+---
+
+### M19 — [ ] Chat & message components (ChatMessageCard + MessageBranchSelector + PromptTemplateEditor)
+
+**Objective:** Phoenix `ChatTemplateMessageCard.tsx` (mensagem role + parts: texto/tool-calls/tool-results), `MessageBranchSelector.tsx` (navegar alternativas de resposta ← →), `TemplateEditor.tsx` (editor de template com autocomplete de variáveis f-string/mustache). Promover os 3, controlados/puros.
+
+**Definition of done:**
+
+- [ ] `ChatMessageCard` + `MessageBranchSelector` + `PromptTemplateEditor` publicados (stories + axe + testes + registry).
+- [ ] theo-lens: adoção onde houver superfície (ex.: `ChatMessageCard` no transcript/trace-detail; o dado de mensagem já existe); senão entregável é o componente 100% funcional.
+- [ ] North-star delta; zero dep nova (editor reusa `Textarea`/`code-block`).
+
+**Dependencies:** M12 (DS baseline).
+
+**Top risks (new):** (1) autocomplete de variáveis pode puxar lib de editor pesada — mitigação: overlay simples sobre `Textarea` (rung 5), não CodeMirror. (2) render de tool-calls estruturados — mitigação: `ChatMessageCard` reusa `io-cards`/`code-block`.
+
+**Why now:** o transcript do lens já mostra mensagens; estes componentes formalizam o padrão chat/agent que Phoenix tem rico.
+
+---
+
 ## State-of-the-art references
 
 Peers cloned under `.claude/knowledge-base/references/`. See `_catalog.md` in that folder for license-gate decisions and study notes.

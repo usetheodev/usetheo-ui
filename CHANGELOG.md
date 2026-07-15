@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Roadmap V3 — 6 milestones de componentes SOTA restantes (só DS-now, fundamentado em gap analysis langfuse+phoenix): M14 Diff viewing, M15 Cost & token visibility, M16 SeverityBadge, M17 Collaboration, M18 Eval authoring, M19 Chat & message (`/roadmap-feature v3-sota-components`)
 
 ### Changed
 
