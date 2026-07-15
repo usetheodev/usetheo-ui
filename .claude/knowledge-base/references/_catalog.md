@@ -294,3 +294,17 @@ git clone --depth 1 --filter=blob:none https://github.com/tremorlabs/tremor .cla
 - **Remove a peer:** delete its folder under this directory AND remove its entry from this catalog in the same commit.
 - **Update a peer (refresh clone):** `cd .claude/knowledge-base/references/{peer}/ && git pull` — record the new commit SHA in this catalog.
 - **Replace a peer with a better one:** treat as remove + add. Do NOT rename folders; symbolic continuity is meaningless when the underlying repo changed.
+
+## phoenix
+- **Repo:** https://github.com/Arize-ai/phoenix
+- **License:** Elastic License 2.0 (ELv2) — ⚠️ NÃO-OSI: referência de ESTUDO apenas; proibido copiar código. Padrões de UI/UX de LLM tracing (waterfall, span tree, transcript) podem ser estudados e reimplementados do zero.
+- **Why:** a UI open-source mais próxima da Arize (mesma empresa) — waterfall/tree/transcript/evals reais de produção.
+- **added_by:** roadmap-feature
+- **added_for_milestone:** M8
+
+## langfuse
+- **Repo:** https://github.com/langfuse/langfuse
+- **License:** MIT (core) — ⚠️ diretórios `ee/`, `web/src/ee/`, `worker/src/ee/` são Enterprise License: EXCLUÍDOS do estudo.
+- **Why:** segunda referência independente de LLM tracing UI (trace detail, sessions, scores) — evita single-source (R1 do M8).
+- **added_by:** roadmap-feature
+- **added_for_milestone:** M8
