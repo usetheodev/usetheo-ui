@@ -10,7 +10,7 @@
   tudo-ou-nada de maxFiles, contagem de targets para drag aninhado (double-fire do Firefox
   coberto), picker acessível por teclado (Space/Enter), estados
   idle/drag-over/drag-reject/disabled e região de rejeições em texto. Helpers puros
-  `matchesAccept`/`validateFiles` exportados. 34 testes de comportamento (axe: zero
+  `matchesAccept`/`validateFiles` exportados. 41 testes de comportamento (axe: zero
   violations em idle/rejected/disabled), 4 Ladle stories (incl. ingest do theo-rag composto
   com `Progress`), registry item `file-dropzone`. Zero dependências novas. (usetheo-ui#M5)
 
