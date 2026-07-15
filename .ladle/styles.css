@@ -1,0 +1,32 @@
+/* Ladle-only entry (dev tooling — não é shipped no pacote).
+ *
+ * Ordem: tokens (valores OKLCH Violet Forge) → tailwind v4 core →
+ * config JS (carrega o theoUIPreset deste repo: cores via
+ * `oklch(from var(--x) …)`, typescale Geist, radii, shadows, motion,
+ * tailwindcss-animate). O preset é a fonte única (DRY) — nada de
+ * duplicar tema aqui.
+ */
+@import "./tokens.css";
+@import "./fonts-cdn.css";
+@import "tailwindcss";
+@config "./tailwind.config.ts";
+@source "../src";
+
+@layer base {
+  * {
+    border-color: oklch(from var(--border) l c h);
+  }
+  html {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: oklch(from var(--background) l c h);
+    color: oklch(from var(--foreground) l c h);
+  }
+  /* Tailwind v4 preflight removeu o cursor:pointer de botões (v3 tinha). */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

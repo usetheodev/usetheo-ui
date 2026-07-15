@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Preview local dos componentes: `pnpm dev` sobe o Ladle com o tema Violet Forge completo (tokens OKLCH + preset + Tailwind v4 via `@tailwindcss/vite`) — setup dev-only em `.ladle/`, nada é shipped no pacote (#dev-preview)
 
 ### Changed
 
