@@ -307,3 +307,12 @@ describe("FileDropzone — story smoke", () => {
     expect(container.querySelector('[role="progressbar"]')).not.toBeNull();
   });
 });
+
+describe("FileDropzone — barrel", () => {
+  it("test_barrel_exports_file_dropzone", async () => {
+    const barrel = await import("../../../index.js");
+    expect(barrel.FileDropzone).toBe(FileDropzone);
+    expect(barrel.matchesAccept).toBe(matchesAccept);
+    expect(barrel.validateFiles).toBe(validateFiles);
+  });
+});
