@@ -1,6 +1,43 @@
 // @usetheo/ui barrel — seeded from theo-ui (pivot M-B). 54 non-AI components + Violet Forge foundation.
 
 export { cn } from "./lib/cn.js";
+export {
+  aggregateCost,
+  asChat,
+  buildLayeredGraph,
+  computeBarLayout,
+  computeTraceBounds,
+  deriveSpanKind,
+  durationMs,
+  flattenAll,
+  flattenVisible,
+  GRAPH_NODE_CAP,
+  isSpanError,
+  KIND_LABEL,
+  niceAxisTicks,
+  packRows,
+  prettyValue,
+  spanCostUsd,
+  toNs,
+  toTranscriptRows,
+  VIRTUALIZE_THRESHOLD,
+} from "./lib/trace/index.js";
+export type {
+  AxisTick,
+  BarLayout,
+  ChatMessage,
+  FlatSpan,
+  GraphEdge,
+  GraphNode,
+  LayeredGraph,
+  SpanKind,
+  SpanStatus,
+  ToolCall,
+  TraceSpan,
+  TranscriptRow,
+  TranscriptRowStats,
+} from "./lib/trace/index.js";
+
 export { Button, buttonVariants, type ButtonProps } from "./components/primitives/button/index.js";
 export { Badge, badgeVariants, type BadgeProps } from "./components/primitives/badge/index.js";
 export {

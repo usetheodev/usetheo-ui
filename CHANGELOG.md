@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `trace-core`: tipo `TraceSpan` (interseção phoenix/langfuse/lens) + helpers puros de observabilidade — `toNs`, `durationMs`, `computeTraceBounds`, `computeBarLayout`, `niceAxisTicks`, `packRows`, `spanCostUsd`/`aggregateCost`, `flattenVisible`/`flattenAll`, `toTranscriptRows`, `asChat`/`prettyValue`, `deriveSpanKind`, `buildLayeredGraph` (M8 T1.0)
 - Roadmap amended: added M8 Lens Observability Kit (`/roadmap-feature lens-observability-kit`)
 - Preview local dos componentes: `pnpm dev` sobe o Ladle com o tema Violet Forge completo (tokens OKLCH + preset + Tailwind v4 via `@tailwindcss/vite`) — setup dev-only em `.ladle/`, nada é shipped no pacote (#dev-preview)
 - Preview local: paridade real com o ecossistema — base layer canônica `global-v4.css` + `tokens-v4.css` (@theme), `bg-dotted-violet`/`container` no provider e Geist via `<link>` no head (o `@import` externo era ignorado pós-inline do Tailwind); a investigação expôs a regressão dos assets CSS públicos não publicados no pacote (#10)
