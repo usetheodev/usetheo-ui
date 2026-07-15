@@ -124,6 +124,7 @@ describe("JsonViewer — circular & copy (negatives)", () => {
     const { container } = renderJson(obj, { enableCopy: true });
     const copy = container.querySelector('[data-slot="json-viewer-copy"] button');
     if (!copy) throw new Error("copy button missing");
+    expect(copy).toHaveAttribute("aria-label", expect.stringContaining("Copy"));
     await user.click(copy);
     expect(writeText).toHaveBeenCalledTimes(1);
     const written = writeText.mock.calls[0]?.[0] as string;
