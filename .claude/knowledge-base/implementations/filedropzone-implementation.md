@@ -9,13 +9,13 @@
 
 | ID | Phase | Task | Status |
 |---|---|---|---|
-| T1.1 | 1 | Helpers puros matchesAccept/validateFiles (14 REDs) | pending |
-| T1.2 | 1 | Componente FileDropzone (18 REDs) | pending |
-| T1.3 | 1 | Stories (4) + smoke | pending |
-| T2.1 | 2 | Barrel + smoke identidade | pending |
-| T2.2 | 2 | Registry (68 itens) | pending |
-| T2.3 | 2 | CHANGELOG § Added | pending |
-| Final | — | Integration Validation | pending |
+| T1.1 | 1 | Helpers puros matchesAccept/validateFiles (14 REDs) | committed |
+| T1.2 | 1 | Componente FileDropzone (18 REDs) | committed |
+| T1.3 | 1 | Stories (4) + smoke | committed |
+| T2.1 | 2 | Barrel + smoke identidade | committed |
+| T2.2 | 2 | Registry (68 itens) | committed |
+| T2.3 | 2 | CHANGELOG § Added | committed |
+| Final | — | Integration Validation | PASS — run_validation exit 0 |
 
 ## Wiring triad (ADR D4 do plano — adaptação aprovada M0-M4)
 
