@@ -1,0 +1,31 @@
+{
+  "slug": "slider-combobox-playground",
+  "questions": {
+    "Q1": {
+      "status": "done"
+    },
+    "Q2": {
+      "status": "done"
+    },
+    "Q3": {
+      "status": "done"
+    },
+    "Q4": {
+      "status": "done"
+    },
+    "Q5": {
+      "status": "done"
+    },
+    "Q6": {
+      "status": "done"
+    },
+    "Q7": {
+      "status": "done"
+    }
+  },
+  "consumer_requirements": "done",
+  "blocked": [],
+  "iterations": 7,
+  "promise": "BLUEPRINT_COMPLETE",
+  "completed_at": "2026-07-14"
+}
