@@ -356,7 +356,7 @@ Commits pushed; WIP alheio intocado; north-star registrado.
 
 (none — no external I/O touched: componentes recebem dados via props; o fetch dos traces-por-sessão fica no consumidor, que já trata erro/empty via os padrões da traces page)
 
-## Critical paths (para D4 mutation, se rodar)
+## Critical paths (para mutation testing, se rodar)
 
 `src/lib/session/aggregate.ts` — a agregação honesta (custo/tokens/erro/janela) é onde mutantes sobrevivem silenciosamente.
 
