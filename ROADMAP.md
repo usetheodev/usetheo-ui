@@ -88,9 +88,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `Slider` (Radix) com suporte a range, step, marcas de valor e label acessível; DoD padrão da lib.
-- [ ] `Combobox` construído sobre o `cmdk` já instalado (zero dep nova), com filtro assíncrono opcional, estados empty/loading e keyboard nav completa; DoD padrão da lib.
-- [ ] Ambos usados em tela real do studio (playground M5) ou em story de composição "query playground" validada com axe.
+- [x] `Slider` (Radix) com suporte a range, step, marcas de valor e label acessível; DoD padrão da lib.
+- [x] `Combobox` construído sobre o `cmdk` já instalado (zero dep nova), com filtro assíncrono opcional, estados empty/loading e keyboard nav completa; DoD padrão da lib.
+- [x] Ambos usados em tela real do studio (playground M5) ou em story de composição "query playground" validada com axe.
 
 **Dependencies:** M0.
 
@@ -107,9 +107,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `DescriptionList` primitive (term/detail, layouts horizontal/vertical, densidade) com DoD padrão da lib.
-- [ ] `JsonViewer` composite dependency-free (tree colapsável, controle de profundidade inicial, copy por nó via `CopyButton` existente, truncamento de strings longas, safe contra referências circulares) com DoD padrão da lib.
-- [ ] Studio event inspector (payloads em `<details>` hoje) coberto por story de composição equivalente; JsonViewer testado com payloads reais dos fixtures do studio.
+- [x] `DescriptionList` primitive (term/detail, layouts horizontal/vertical, densidade) com DoD padrão da lib.
+- [x] `JsonViewer` composite dependency-free (tree colapsável, controle de profundidade inicial, copy por nó via `CopyButton` existente, truncamento de strings longas, safe contra referências circulares) com DoD padrão da lib.
+- [x] Studio event inspector (payloads em `<details>` hoje) coberto por story de composição equivalente; JsonViewer testado com payloads reais dos fixtures do studio.
 
 **Dependencies:** M0.
 
@@ -126,9 +126,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `TrendChart` composite multi-série com legend, tooltip nativo, formatters de eixo e fallback `<table>` acessível; zero dependência de chart lib (mantém ADR).
-- [ ] Código seeded do dashboard com API generalizada (sem nomes de domínio lens/deploy); DoD padrão da lib.
-- [ ] Story reproduzindo o caso analytics do theo-rag (série temporal p50/p95) e o caso de uso do dashboard atual.
+- [x] `TrendChart` composite multi-série com legend, tooltip nativo, formatters de eixo e fallback `<table>` acessível; zero dependência de chart lib (mantém ADR).
+- [x] Código seeded do dashboard com API generalizada (sem nomes de domínio lens/deploy); DoD padrão da lib.
+- [x] Story reproduzindo o caso analytics do theo-rag (série temporal p50/p95) e o caso de uso do dashboard atual.
 
 **Dependencies:** M0 (pipeline provado); código-fonte no repo do dashboard.
 
@@ -145,9 +145,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `Stepper` composite com estados por etapa (pending/active/done/failed), orientações horizontal/vertical, timestamps opcionais e suporte a etapa com erro + retry slot; DoD padrão da lib.
-- [ ] API validada contra os dois casos reais: ingest pipeline do theo-rag e build timeline do dashboard.
-- [ ] Story de composição com `StatusDot`/`Badge` existentes (sem duplicar semântica de status).
+- [x] `Stepper` composite com estados por etapa (pending/active/done/failed), orientações horizontal/vertical, timestamps opcionais e suporte a etapa com erro + retry slot; DoD padrão da lib.
+- [x] API validada contra os dois casos reais: ingest pipeline do theo-rag e build timeline do dashboard.
+- [x] Story de composição com `StatusDot`/`Badge` existentes (sem duplicar semântica de status).
 
 **Dependencies:** M0.
 
@@ -164,9 +164,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] `FileDropzone` primitive com drag-drop + file picker, validação (tipo/tamanho/quantidade) com erros tipados, estados idle/drag-over/rejected, acessível por teclado (padrão estudado em `react-dropzone`); dependency-free (HTML5 DnD nativo).
-- [ ] Integração composable com `Progress` existente para upload em andamento (story de composição).
-- [ ] DoD padrão da lib.
+- [x] `FileDropzone` primitive com drag-drop + file picker, validação (tipo/tamanho/quantidade) com erros tipados, estados idle/drag-over/rejected, acessível por teclado (padrão estudado em `react-dropzone`); dependency-free (HTML5 DnD nativo).
+- [x] Integração composable com `Progress` existente para upload em andamento (story de composição).
+- [x] DoD padrão da lib.
 
 **Dependencies:** M0.
 
@@ -183,9 +183,9 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] ADR aprovado adicionando `@tanstack/react-virtual` como dependência (única nova do V1), com análise de custo no bundle e no copy-paste do registry.
-- [ ] `DataTable` com opção de virtualização (sticky header, alturas de linha fixas; limitações — sem expandable rows virtualizadas — documentadas), sem breaking na API atual.
-- [ ] Prova com dataset de 10K+ linhas em story + teste de comportamento; DoD padrão da lib.
+- [x] ADR aprovado adicionando `@tanstack/react-virtual` como dependência (única nova do V1), com análise de custo no bundle e no copy-paste do registry.
+- [x] `DataTable` com opção de virtualização (sticky header, alturas de linha fixas; limitações — sem expandable rows virtualizadas — documentadas), sem breaking na API atual.
+- [x] Prova com dataset de 10K+ linhas em story + teste de comportamento; DoD padrão da lib.
 
 **Dependencies:** M0; recomendado após M3-M5 (padrão de promoção rodado).
 
@@ -202,10 +202,10 @@ Expandir o design system Violet Forge (`@usetheo/ui`) com os padrões genéricos
 
 **Definition of done:**
 
-- [ ] Dashboard atualizado do skew `@usetheo/ui@0.13.2` para a versão corrente (migração do breaking 0.15.0 documentada e aplicada).
-- [ ] Dashboard: `metric-trend-chart`, `build-timeline`, `virtual-table` e breadcrumb hand-rolled substituídos pelos componentes da lib (PRs merged ou abertos), com deleção dos arquivos duplicados.
-- [ ] Studio: Tier 1 completo em uso real (Breadcrumb no shell, Slider/Combobox no playground, JsonViewer no event inspector, DescriptionList em detail views).
-- [ ] Contagem north-star registrada (baseline vs pós-adoção) em `knowledge-base/audits/`.
+- [x] Dashboard atualizado do skew `@usetheo/ui@0.13.2` para a versão corrente (migração do breaking 0.15.0 documentada e aplicada).
+- [x] Dashboard: `metric-trend-chart`, `build-timeline`, `virtual-table` e breadcrumb hand-rolled substituídos pelos componentes da lib (PRs merged ou abertos), com deleção dos arquivos duplicados.
+- [x] Studio: Tier 1 completo em uso real (Breadcrumb no shell, Slider/Combobox no playground, JsonViewer no event inspector, DescriptionList em detail views).
+- [x] Contagem north-star registrada (baseline vs pós-adoção) em `knowledge-base/audits/`.
 
 **Dependencies:** M0-M6.
 
