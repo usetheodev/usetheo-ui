@@ -298,3 +298,12 @@ describe("FileDropzone — wiring & a11y", () => {
     expect(await axe(rejected.container)).toHaveNoViolations();
   });
 });
+
+describe("FileDropzone — story smoke", () => {
+  it("test_ingest_upload_story_renders_dropzone_with_progress", async () => {
+    const { IngestUpload } = await import("./file-dropzone.stories.js");
+    const { container } = render(<IngestUpload />);
+    expect(container.querySelectorAll('[data-slot="file-dropzone"]')).toHaveLength(1);
+    expect(container.querySelector('[role="progressbar"]')).not.toBeNull();
+  });
+});
