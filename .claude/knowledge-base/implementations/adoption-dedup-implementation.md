@@ -9,13 +9,13 @@
 
 | ID | Repo | Task | Status |
 |---|---|---|---|
-| T1.0 | lib | Audit north-star baseline | pending |
-| T2.0 | dashboard | bump 0.22.0 + @theokit/ui + retarget 7 | pending |
-| T2.1 | dashboard | TrendChart substitui metric-trend-chart | pending |
-| T2.2 | dashboard | Stepper no build-timeline-live | pending |
-| T2.3 | dashboard | Breadcrumb no trace-detail | pending |
-| T2.4 | dashboard | deleções secas | pending |
-| T3.0 | studio | bump ^0.22.0 | pending |
-| T3.1 | studio | JsonViewer + DescriptionList no inspector | pending |
-| T3.2 | studio | painel de params (Slider+Combobox) | pending |
-| T4.0 | lib | Delta north-star | pending |
+| T1.0 | lib | Audit north-star baseline | committed |
+| T2.0 | dashboard | bump 0.22.0 + @theokit/ui + retarget 7 | committed |
+| T2.1 | dashboard | TrendChart substitui metric-trend-chart | committed |
+| T2.2 | dashboard | Stepper no build-timeline-live | committed |
+| T2.3 | dashboard | Breadcrumb no trace-detail | committed |
+| T2.4 | dashboard | deleções secas | committed |
+| T3.0 | studio | bump ^0.22.0 | committed |
+| T3.1 | studio | JsonViewer + DescriptionList no inspector | committed |
+| T3.2 | studio | painel de params (Slider+Combobox) | committed |
+| T4.0 | lib | Delta north-star | committed |
