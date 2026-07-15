@@ -14,6 +14,20 @@
 
 ### Security
 
+## [0.21.0] - 2026-07-15
+
+### Added
+- `FileDropzone` primitive — upload por drag-drop + file picker, dependency-free (HTML5
+  DnD nativo; react-dropzone estudado como referência e dispensado com evidência): validação
+  com rejeições tipadas (`file-invalid-type`/`file-too-large`/`file-too-small`/`too-many-files`
+  + validator custom), accept map com MIME exato/wildcard/extensão, regra coletiva
+  tudo-ou-nada de maxFiles, contagem de targets para drag aninhado (double-fire do Firefox
+  coberto), picker acessível por teclado (Space/Enter), estados
+  idle/drag-over/drag-reject/disabled e região de rejeições em texto. Helpers puros
+  `matchesAccept`/`validateFiles` exportados. 41 testes de comportamento (axe: zero
+  violations em idle/rejected/disabled), 4 Ladle stories (incl. ingest do theo-rag composto
+  com `Progress`), registry item `file-dropzone`. Zero dependências novas. (usetheo-ui#M5)
+
 ## [0.20.0] - 2026-07-15
 
 ### Added

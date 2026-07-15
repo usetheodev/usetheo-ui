@@ -141,6 +141,17 @@ export {
   type StepperProps,
   type StepperStepData,
 } from "./components/composites/stepper/index.js";
+export {
+  FileDropzone,
+  matchesAccept,
+  validateFiles,
+  type FileDropzoneError,
+  type FileDropzoneErrorCode,
+  type FileDropzoneProps,
+  type FileDropzoneState,
+  type FileRejection,
+  type ValidateFilesOptions,
+} from "./components/primitives/file-dropzone/index.js";
 export { MetricsPanel, type Metric } from "./components/primitives/metrics-panel/index.js";
 export {
   SocialAuthRow,

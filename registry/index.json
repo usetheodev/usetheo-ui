@@ -163,6 +163,12 @@
       "description": "Typed environment helpers (isDev / isProd) reading NODE_ENV through a single accessor that works in browser bundlers, Node/SSR, and unbundled browsers."
     },
     {
+      "name": "file-dropzone",
+      "type": "registry:ui",
+      "title": "FileDropzone",
+      "description": "Drag-drop + file-picker upload primitive, dependency-free (native HTML5 DnD): typed rejections (invalid type / too large / too small / too many), accept map with MIME wildcard and extension matching, nested-drag target counting, keyboard-accessible picker, idle/drag-over/drag-reject/disabled states."
+    },
+    {
       "name": "form-field",
       "type": "registry:ui",
       "title": "FormField",
