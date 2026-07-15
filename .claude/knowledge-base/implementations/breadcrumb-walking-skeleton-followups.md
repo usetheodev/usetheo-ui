@@ -28,3 +28,6 @@ Oportunidades detectadas durante o halt-loop, explicitamente NÃO incluídas nos
    (pnpm-lock.yaml 7398 linhas → FAIL no M1). Fix: excluir lockfiles (pnpm-lock.yaml,
    package-lock.json), dist/ e registry/r/ do gate de file-size (o budget do architecture.md
    é para módulos-fonte). (validação M1, 2026-07-14)
+8. **Lib: tsup stripa "use client" do bundle de TODOS os componentes stateful** (pré-existente,
+   pego pelo review M2) — consumidores RSC via pacote npm precisam da diretiva; avaliar
+   `banner`/`esbuild` option para preservar. (review M2, F-dom-1 nota honesta)
