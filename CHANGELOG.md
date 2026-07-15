@@ -3,6 +3,15 @@
 ## [Unreleased]
 
 ### Added
+- `Stepper` composite — pipeline de progresso multi-etapas promovido do build-timeline do
+  dashboard theo-cloud: estado explícito por etapa (`pending/active/done/failed` — falha pode
+  ocorrer em etapa arbitrária), orientações vertical (default) e horizontal, slot de timestamp
+  por etapa, slot de retry renderizado apenas em etapas com falha, truncamento de labels longos
+  com tooltip, e acessibilidade nativa (`ol` + `aria-current="step"` + estado de falha em texto,
+  não só cor). Helper puro `deriveSteps(defs, activeIndex)` exportado para o caso wizard-simples.
+  25 testes de comportamento (axe: zero violations nas duas orientações), 4 Ladle stories
+  (build pipeline com retry, ingest do theo-rag com timestamps, composição com StatusDot/Badge,
+  horizontal), registry item `stepper`. Zero dependências novas. (usetheo-ui#M4)
 
 ### Changed
 
