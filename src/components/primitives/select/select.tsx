@@ -15,7 +15,7 @@ import { cn } from "../../../lib/cn.js";
  */
 const selectTriggerVariants = cva(
   [
-    "flex w-full items-center justify-between gap-2 rounded-md border border-input bg-card",
+    "flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-card",
     "text-foreground placeholder:text-muted-foreground",
     "transition-[border-color,box-shadow] duration-base ease-out-soft",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
@@ -28,7 +28,7 @@ const selectTriggerVariants = cva(
     variants: {
       size: {
         sm: "h-8 px-2.5 py-1 text-body-sm",
-        md: "h-[var(--theo-control-h,2.25rem)] px-[var(--theo-control-px,0.875rem)] py-1.5 text-body-sm",
+        md: "h-[var(--theo-control-h,2rem)] px-[var(--theo-control-px,0.75rem)] py-1.5 text-body-sm",
         lg: "h-11 px-4 py-2.5 text-body-md",
       },
     },

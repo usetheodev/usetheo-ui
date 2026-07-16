@@ -375,7 +375,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 > Added 2026-07-15 via `/roadmap-feature`. Fundamentado no gap analysis component-by-component vs langfuse (MIT-core) + phoenix (ELv2 study-only) — evidência por file:line em `.claude/knowledge-base/grills/v3-sota-components-feature-grill.md`. **Só componentes DS-now** (puros/controlados, 100% funcionais como artefato de DS independente de backend); os backend-gated (`ExecutionHistoryTable`, `HeatmapCard`, playground streaming, `ExperimentMetricsChart`, `VersionHistoryPanel`) ficam **deferred** até a plataforma existir. **Escopo = `@usetheo/ui` (design system) + adoção no consumidor onde houver superfície; NÃO inclui backend de plataforma.**
 
-### M14 — [ ] Diff viewing (DiffView + PromptVersionDiff + DatasetItemDiff)
+### M14 — [x] Diff viewing (DiffView + PromptVersionDiff + DatasetItemDiff)
 
 **Objective:** Fechar o gap de versionamento visual. Langfuse (`PromptVersionDiffDialog.tsx`) e Phoenix (`PromptVersionDiffView.tsx`) mostram diffs lado-a-lado. Promover um primitivo `DiffView` (diff por linha/palavra, puro) + os composites `PromptVersionDiff` (dois prompts) e `DatasetItemDiff` (input/output/metadata de item de dataset) que o reusam.
 
@@ -393,7 +393,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M15 — [ ] Cost & token visibility (TokenCostBreakdown + PriceBreakdown)
+### M15 — [x] Cost & token visibility (TokenCostBreakdown + PriceBreakdown)
 
 **Objective:** Phoenix tem 4 variantes de `TokenCostsDetails` (span/session/trace) + Langfuse `PriceBreakdownTooltip`. Promover `TokenCostBreakdown` (input/output/cache tokens + custo, controlado) + `PriceBreakdown` (tabela de preço por-unidade/1K/1M). O lens JÁ tem `costUsd`/`totalTokens` por trace → adoção real imediata.
 
@@ -411,7 +411,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M16 — [ ] SeverityBadge (badge de severidade por enum)
+### M16 — [x] SeverityBadge (badge de severidade por enum)
 
 **Objective:** Langfuse `MonitorSeverityBadge.tsx` (OK/WARNING/ALERT/NO_DATA/UNKNOWN/PAUSED com mapeamento de cor). Promover `SeverityBadge` reusando o `Badge` existente (variants success/warning/destructive/outline). Reusável por alerts/monitors/anomalies. (Era o componente condicional do M13 — agora justificado como átomo de DS standalone: o lens `alerts.tsx` já renderiza status, e monitors o fará → ≥2 telas.)
 
@@ -429,7 +429,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M17 — [ ] Collaboration (CommentThread + TagInput)
+### M17 — [x] Collaboration (CommentThread + TagInput)
 
 **Objective:** Langfuse `comments/` + `tag/` — comentários inline e tags em traces. Promover `CommentThread` (lista + composer, controlado) + `TagInput` (adicionar/remover tags com combobox, controlado). Componentes DS-now; adoção plena precisa de backend de comments/tags (gated).
 
@@ -447,7 +447,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M18 — [ ] Eval authoring (EvaluatorForm + AnnotationSummaryGroup)
+### M18 — [x] Eval authoring (EvaluatorForm + AnnotationSummaryGroup)
 
 **Objective:** Phoenix `CodeEvaluatorForm.tsx` (builder de evaluators built-in: exact_match/regex/levenshtein/json_distance/contains) + `AnnotationSummaryGroup` (grupo colapsável de anotações com stats agregadas). Promover ambos, controlados/config-driven (reusa o padrão do `AnnotationInput` do M12).
 
@@ -465,7 +465,7 @@ V1 (M0–M7) concluído com o playbook de promoção+dedup provado nos dois cons
 
 ---
 
-### M19 — [ ] Chat & message components (ChatMessageCard + MessageBranchSelector + PromptTemplateEditor)
+### M19 — [x] Chat & message components (ChatMessageCard + MessageBranchSelector + PromptTemplateEditor)
 
 **Objective:** Phoenix `ChatTemplateMessageCard.tsx` (mensagem role + parts: texto/tool-calls/tool-results), `MessageBranchSelector.tsx` (navegar alternativas de resposta ← →), `TemplateEditor.tsx` (editor de template com autocomplete de variáveis f-string/mustache). Promover os 3, controlados/puros.
 

@@ -68,7 +68,7 @@ describe("Select", () => {
       </Select>,
     );
     const trigger = screen.getByLabelText("m");
-    expect(trigger.className).toContain("h-[var(--theo-control-h,2.25rem)]");
+    expect(trigger.className).toContain("h-[var(--theo-control-h,2rem)]");
     expect(trigger.className).toContain("text-body-sm");
   });
 

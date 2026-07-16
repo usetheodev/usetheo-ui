@@ -5,7 +5,7 @@ import { cn } from "../../../lib/cn.js";
 
 const inputVariants = cva(
   [
-    "flex w-full rounded-md border border-input bg-card",
+    "flex w-full rounded-lg border border-input bg-card",
     "text-foreground placeholder:text-muted-foreground",
     "transition-[box-shadow,border-color] duration-base ease-out-soft",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
@@ -18,7 +18,7 @@ const inputVariants = cva(
       size: {
         sm: "h-8 px-2.5 py-1 text-body-sm",
         // md: density-tunable via CSS var. Comfortable (default) = 36px.
-        md: "h-[var(--theo-control-h,2.25rem)] px-[var(--theo-control-px,0.875rem)] py-1.5 text-body-sm",
+        md: "h-[var(--theo-control-h,2rem)] px-[var(--theo-control-px,0.75rem)] py-1.5 text-body-sm",
         lg: "h-11 px-4 py-2.5 text-body-md",
       },
     },
@@ -31,7 +31,7 @@ const inputVariants = cva(
  *
  * Violet Forge specifics:
  *   - height 40px (h-10) matching default Button md.
- *   - rounded-md (6px) — slightly less than buttons to differentiate.
+ *   - rounded-lg (8px) — matches buttons (compact Builder identity, 2026-07-16).
  *   - focus uses violet ring (--ring).
  *   - placeholder uses --muted-foreground.
  *
