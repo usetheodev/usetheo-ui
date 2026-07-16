@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "severity-badge",
+  "type": "registry:ui",
+  "title": "Severity Badge",
+  "description": "Labeled multi-level severity indicator. Maps a Severity level (ok/warning/alert/no_data/unknown/paused — langfuse MonitorSeverity vocabulary, lowercased) to a Badge variant, with a human-readable default label. Per-severity variant/label overrides via props; unmapped values fall back to the neutral outline variant. Composes the Badge primitive — not a status dot (distinct from StatusIndicator).",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/badge.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/composites/severity-badge/severity-badge.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/severity-badge.tsx",
+      "content": "import { type HTMLAttributes, forwardRef } from \"react\";\n\nimport { cn } from \"@/lib/cn\";\nimport { Badge, type BadgeProps } from \"@/components/ui/badge\";\n\n/**\n * SeverityBadge — labeled, multi-level severity indicator (composite).\n *\n * Composes the `Badge` primitive: maps a `Severity` level (langfuse's\n * MonitorSeverity vocabulary, lowercased) to a Badge `variant`, rendering a\n * human-readable label.\n *\n * NOT a duplicate of `StatusIndicator`: StatusIndicator is a small colored\n * *status dot* (online/offline/degraded/info) conveying component liveness.\n * SeverityBadge is a *labeled Badge* conveying a multi-level severity grade\n * (ok/warning/alert/no_data/unknown/paused) — different semantics, different\n * surface (bordered pill with text, not a dot). See plan ADR D2.\n *\n * @example\n *   <SeverityBadge severity=\"alert\" />                    // \"Alert\", destructive\n *   <SeverityBadge severity=\"ok\" label=\"Healthy\" />       // custom label\n *   <SeverityBadge severity=\"warning\" variantMap={{ warning: \"accent\" }} />\n */\n\n/** Severity level. langfuse MonitorSeverity vocabulary, lowercased. */\nexport type Severity = \"ok\" | \"warning\" | \"alert\" | \"no_data\" | \"unknown\" | \"paused\";\n\n/** A Badge visual variant (derived from the Badge primitive). */\nexport type BadgeVariant = NonNullable<BadgeProps[\"variant\"]>;\n\nexport interface SeverityBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, \"children\"> {\n  /** Severity level to convey. */\n  severity: Severity;\n  /** Overrides the default human-readable label derived from the severity. */\n  label?: string;\n  /** Per-severity overrides of the default severity → Badge variant map. */\n  variantMap?: Partial<Record<Severity, BadgeVariant>>;\n}\n\n/** Default severity → Badge variant map. Alert/warning/ok are semantic; the\n * remaining \"no signal\" states map to the neutral `outline` variant. */\nconst DEFAULT_VARIANT_MAP: Record<Severity, BadgeVariant> = {\n  alert: \"destructive\",\n  warning: \"warning\",\n  ok: \"success\",\n  no_data: \"outline\",\n  unknown: \"outline\",\n  paused: \"outline\",\n};\n\n/** Default human-readable labels. Keeps \"OK\" upper-cased and \"No data\"\n * space-separated instead of naive capitalization of the enum token. */\nconst DEFAULT_LABEL: Record<Severity, string> = {\n  ok: \"OK\",\n  warning: \"Warning\",\n  alert: \"Alert\",\n  no_data: \"No data\",\n  unknown: \"Unknown\",\n  paused: \"Paused\",\n};\n\n/** Neutral fallback for values outside the Severity union — fail honestly, never crash. */\nconst NEUTRAL_VARIANT: BadgeVariant = \"outline\";\n\nfunction deriveLabel(severity: Severity): string {\n  return DEFAULT_LABEL[severity] ?? severity;\n}\n\nexport const SeverityBadge = forwardRef<HTMLSpanElement, SeverityBadgeProps>(\n  ({ severity, label, variantMap, className, ...rest }, ref) => {\n    const variant = variantMap?.[severity] ?? DEFAULT_VARIANT_MAP[severity] ?? NEUTRAL_VARIANT;\n    const text = label ?? deriveLabel(severity);\n    return (\n      <Badge\n        data-slot=\"severity-badge\"\n        data-severity={severity}\n        ref={ref}\n        variant={variant}\n        className={cn(className)}\n        {...rest}\n      >\n        {text}\n      </Badge>\n    );\n  },\n);\nSeverityBadge.displayName = \"SeverityBadge\";\n"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "severity-badge",
+  "type": "registry:ui",
+  "title": "Severity Badge",
+  "description": "Labeled multi-level severity indicator. Maps a Severity level (ok/warning/alert/no_data/unknown/paused — langfuse MonitorSeverity vocabulary, lowercased) to a Badge variant, with a human-readable default label. Per-severity variant/label overrides via props; unmapped values fall back to the neutral outline variant. Composes the Badge primitive — not a status dot (distinct from StatusIndicator).",
+  "dependencies": [],
+  "registryDependencies": ["cn", "badge", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/severity-badge/severity-badge.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/severity-badge.tsx"
+    }
+  ]
+}

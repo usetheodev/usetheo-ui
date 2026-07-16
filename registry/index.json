@@ -373,6 +373,12 @@
       "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, ∑cost, ∑tokens, error count, distinct models). Pure, total — absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization."
     },
     {
+      "name": "severity-badge",
+      "type": "registry:ui",
+      "title": "Severity Badge",
+      "description": "Labeled multi-level severity indicator. Maps a Severity level (ok/warning/alert/no_data/unknown/paused — langfuse MonitorSeverity vocabulary, lowercased) to a Badge variant, with a human-readable default label. Per-severity variant/label overrides via props; unmapped values fall back to the neutral outline variant. Composes the Badge primitive — not a status dot (distinct from StatusIndicator)."
+    },
+    {
       "name": "sheet",
       "type": "registry:ui",
       "title": "Sheet",

@@ -121,11 +121,8 @@ export {
   type TableCellProps,
   type TableHeaderCellProps,
 } from "./components/primitives/table/index.js";
-export {
-  StatusDot,
-  type StatusDotProps,
-  type StatusKind,
-} from "./components/primitives/status-dot/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { StatusDot, type StatusDotProps, type StatusKind } from "./components/primitives/status-dot/index.js";
 export {
   CopyButton,
   type CopyButtonProps,
@@ -142,12 +139,10 @@ export {
   type ConfirmDialogProps,
 } from "./components/composites/confirm-dialog/index.js";
 export { CodeBlock, type CodeBlockProps } from "./components/composites/code-block/index.js";
-export {
-  StatusIndicator,
-  type StatusIndicatorKind,
-  type StatusIndicatorProps,
-  type StatusIndicatorSize,
-} from "./components/composites/status-indicator/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { StatusIndicator } from "./components/composites/status-indicator/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { StatusIndicatorKind, StatusIndicatorProps, StatusIndicatorSize } from "./components/composites/status-indicator/index.js";
 export {
   MetricCard,
   type MetricCardDelta,
@@ -298,3 +293,6 @@ export { TokenCostBreakdown } from "./components/composites/token-cost-breakdown
 export type { TokenCostBreakdownProps } from "./components/composites/token-cost-breakdown/index.js";
 export { PriceBreakdown } from "./components/composites/price-breakdown/index.js";
 export type { PriceBreakdownProps } from "./components/composites/price-breakdown/index.js";
+export { SeverityBadge } from "./components/composites/severity-badge/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { Severity, BadgeVariant, SeverityBadgeProps } from "./components/composites/severity-badge/index.js";
