@@ -301,6 +301,12 @@
       "description": "Preview environment card surfacing all services from one PR."
     },
     {
+      "name": "price-breakdown",
+      "type": "registry:ui",
+      "title": "PriceBreakdown",
+      "description": "A table of unit prices scaled to per-unit, per-1K, and per-1M columns (price, price x 1000, price x 1_000_000). Controlled and pure: consumer supplies a prices map of usage-type label to price per unit. Empty prices render an honest empty state; sr-only caption for a11y."
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -491,6 +497,12 @@
       "type": "registry:ui",
       "title": "Toast",
       "description": "Transient notification built on Radix Toast."
+    },
+    {
+      "name": "token-cost-breakdown",
+      "type": "registry:ui",
+      "title": "TokenCostBreakdown",
+      "description": "A dl breakdown of a request/span/trace token usage and USD cost: input, output, cache tokens, total, and cost. Controlled and pure. Honest zeros (M9 SessionSummary convention): a real 0 renders 0 / $0.0000; an absent field renders an em-dash; all-absent renders an honest empty state."
     },
     {
       "name": "tooltip",

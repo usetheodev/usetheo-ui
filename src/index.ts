@@ -278,10 +278,8 @@ export type { DatasetItemDiffProps, DatasetItemSnapshot } from "./components/com
 export { Histogram } from "./components/composites/histogram/index.js";
 export type { HistogramProps } from "./components/composites/histogram/index.js";
 export { PercentileChart } from "./components/composites/percentile-chart/index.js";
-export type {
-  PercentileBucket,
-  PercentileChartProps,
-} from "./components/composites/percentile-chart/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { PercentileBucket, PercentileChartProps } from "./components/composites/percentile-chart/index.js";
 export {
   AnnotationInput,
   isCategoricalConfig,
@@ -296,3 +294,7 @@ export type {
   AnnotationFreeformConfig,
   AnnotationConfig,
 } from "./components/composites/annotation-input/index.js";
+export { TokenCostBreakdown } from "./components/composites/token-cost-breakdown/index.js";
+export type { TokenCostBreakdownProps } from "./components/composites/token-cost-breakdown/index.js";
+export { PriceBreakdown } from "./components/composites/price-breakdown/index.js";
+export type { PriceBreakdownProps } from "./components/composites/price-breakdown/index.js";

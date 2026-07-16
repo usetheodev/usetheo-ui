@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Added
+- `TokenCostBreakdown` composite — breakdown `<dl>` de uso de tokens (input / output / cache / total) + custo USD de um request/span/trace; controlado e puro; zeros honestos (padrão M9 `SessionSummary`): `0` real renderiza `0` / `$0.0000`, ausente renderiza em-dash (`—`), todos ausentes → empty state honesto; `forwardRef` + `cn`; zero dep nova; axe limpo (M15 T1.0)
+- `PriceBreakdown` composite — `<table>` de preço por-unidade / por-1K / por-1M (escala = `price`, `price×1000`, `price×1e6`) sobre um map `prices` (label→preço/unidade); `unit` default `"token"`; `prices` vazio → empty state honesto; `<caption>` sr-only; `forwardRef` + `cn`; zero dep nova; axe limpo (M15 T2.0)
 - `DatasetItemDiff` composite — diff de duas versões de um dataset-item (input / expectedOutput / metadata stringificados; string passa direto, senão JSON pretty); campo ausente em AMBOS os itens é omitido honestamente (sem tabela vazia); reusa `DiffView`; zero dep nova; helper puro `fieldToText`/`fieldPresent` testado + axe (M14 T3.0)
 - `PromptVersionDiff` composite — diff de duas versões de prompt (template string OU chat-array normalizado para `role: content`; config em JSON pretty); DiffView de config omitido honestamente quando ambos os configs ausentes; reusa `DiffView`; zero dep nova; helper puro `templateToText`/`configToText` testado + axe (M14 T3.0)
 - `DiffView` primitivo — diff de texto por linha renderizado como `<table>` semântica sobre o `diffLines` puro (sem lib de diff); `mode="split"` (2 colunas, default) ou `"unified"` (inline); cada linha alterada carrega marker textual `+`/`-` + `data-diff` (a11y, não só cor); empty state honesto "No changes"; `<caption>` sr-only; `forwardRef`; reusa `cn` + o core `diff`; axe limpo (M14 T2.0)
