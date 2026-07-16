@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "diff-view",
+  "type": "registry:ui",
+  "title": "DiffView",
+  "description": "Controlled line-level text diff rendered as a semantic table over the pure diffLines LCS (no diff lib). Split (two columns, default) or unified (inline) via mode; every changed row carries a textual +/- marker plus data-diff (a11y, not color-alone); honest 'No changes' empty state; sr-only caption. Reuses cn + the diff core.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "diff", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/diff-view/diff-view.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/diff-view/diff-view.tsx"
+    },
+    {
+      "path": "components/composites/diff-view/diff-section.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/diff-view/diff-section.tsx"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "token-cost-breakdown",
+  "type": "registry:ui",
+  "title": "TokenCostBreakdown",
+  "description": "A dl breakdown of a request/span/trace token usage and USD cost: input, output, cache tokens, total, and cost. Controlled and pure. Honest zeros (M9 SessionSummary convention): a real 0 renders 0 / $0.0000; an absent field renders an em-dash; all-absent renders an honest empty state.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/token-cost-breakdown/token-cost-breakdown.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/token-cost-breakdown.tsx"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-input",
+  "type": "registry:ui",
+  "title": "TagInput",
+  "description": "Controlled multi-value tag editor. Renders one removable chip per tag (Badge + per-tag x button) plus a text input to add a new tag on Enter. Fully controlled (value: string[] + onChange). Dedup is built-in: adding an existing or empty/whitespace tag is a no-op; new tags are trimmed. disabled blocks add and remove. Optional suggestions power a native datalist (zero-dep autocomplete). Composes Input + Badge — no Combobox, no new dependency.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "input", "badge", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/tag-input/tag-input.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/tag-input/tag-input.tsx"
+    }
+  ]
+}

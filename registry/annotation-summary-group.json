@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "annotation-summary-group",
+  "type": "registry:ui",
+  "title": "AnnotationSummaryGroup",
+  "description": "Collapsible group showing aggregate stats over a list of annotation values for one AnnotationConfig. Reuses the AnnotationConfig contract and dispatches on config.type: continuous -> mean of the finite numeric values + count; categorical -> count per option label + total count; freeform -> count of non-empty values. Controlled and pure -- the consumer owns values; this component only summarizes. Native details/summary for zero-JS collapsibility; composes Card/Badge.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "annotation-input", "badge", "card", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/annotation-summary-group/annotation-summary-group.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/annotation-summary-group/annotation-summary-group.tsx"
+    }
+  ]
+}

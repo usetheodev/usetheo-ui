@@ -37,6 +37,12 @@
       "description": "Controlled, config-driven human annotation input. Dispatches on config.type (Phoenix's three-type model): categorical -> RadioGroup over named options; continuous -> number input bounded by the config; freeform -> textarea. Fully controlled (value + onValueChange); the consumer owns the config (fixture or backend store) and the submission. Composes the DS form primitives."
     },
     {
+      "name": "annotation-summary-group",
+      "type": "registry:ui",
+      "title": "AnnotationSummaryGroup",
+      "description": "Collapsible group showing aggregate stats over a list of annotation values for one AnnotationConfig. Reuses the AnnotationConfig contract and dispatches on config.type: continuous -> mean of the finite numeric values + count; categorical -> count per option label + total count; freeform -> count of non-empty values. Controlled and pure -- the consumer owns values; this component only summarizes. Native details/summary for zero-JS collapsibility; composes Card/Badge."
+    },
+    {
       "name": "attributes-table",
       "type": "registry:ui",
       "title": "AttributesTable",
@@ -79,6 +85,12 @@
       "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic."
     },
     {
+      "name": "chat-message-card",
+      "type": "registry:ui",
+      "title": "ChatMessageCard",
+      "description": "A single chat message rendered as a card (an atom): a role Badge (user/assistant/tool/system, unknown roles fall back to a neutral outline), the text content, and any structured tool-calls / tool-results rendered via the existing CodeBlock composite (not hand-rolled). Reuses the trace-core ToolCall type so an assistant span's tool_calls drop in directly. Empty (no content, no tools) reads as an honest placeholder. Distinct from TraceTranscript (a feed) — this is one controlled message. Composes Badge/CodeBlock — zero new dependency."
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -109,6 +121,12 @@
       "description": "Cmd+K-style global launcher with arrow-key navigation, fuzzy ranking, and Enter/Escape behavior — built on cmdk + Theo Dialog."
     },
     {
+      "name": "comment-thread",
+      "type": "registry:ui",
+      "title": "CommentThread",
+      "description": "Controlled comment thread + composer. Renders an ordered list of comments (Avatar + author + Timestamp + body) followed by a composer (Textarea + submit Button). The list is controlled via comments; only the composer draft is local state. A non-empty trimmed body calls onSubmit(body) and clears the draft; empty/whitespace never submits. No comments -> honest empty state, composer still shows. Composes Avatar/Textarea/Button/Timestamp — zero new dependency."
+    },
+    {
       "name": "confirm-dialog",
       "type": "registry:ui",
       "title": "ConfirmDialog",
@@ -133,6 +151,12 @@
       "description": "Generic, sortable, expandable composite over <Table>. Operator-grade entity-list patterns: sortable headers (controlled OR uncontrolled), sticky header, expandable rows (multi default + expandMode='single' opt-in), row action menus via DropdownMenu, client-side pagination, loading skeleton, empty state. Generic over T (e.g. DataTable<Domain>). Virtualized mode (10K+ rows over @tanstack/react-virtual): fixed row heights, sticky header, mutually exclusive with pagination/expandable at the type level."
     },
     {
+      "name": "dataset-item-diff",
+      "type": "registry:ui",
+      "title": "DatasetItemDiff",
+      "description": "Diffs two dataset-item versions by stringifying each field (input / expectedOutput / metadata; string passthrough, else pretty JSON) and composing a labeled DiffView per field. A field absent in BOTH items is omitted honestly (no empty table). Zero new dependency — reuses the DiffView primitive."
+    },
+    {
       "name": "deployment-row",
       "type": "registry:block",
       "title": "DeploymentRow",
@@ -149,6 +173,18 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "Modal overlay built on Radix Dialog."
+    },
+    {
+      "name": "diff-view",
+      "type": "registry:ui",
+      "title": "DiffView",
+      "description": "Controlled line-level text diff rendered as a semantic table over the pure diffLines LCS (no diff lib). Split (two columns, default) or unified (inline) via mode; every changed row carries a textual +/- marker plus data-diff (a11y, not color-alone); honest 'No changes' empty state; sr-only caption. Reuses cn + the diff core."
+    },
+    {
+      "name": "diff",
+      "type": "registry:lib",
+      "title": "Diff core (diffLines)",
+      "description": "Pure line-level text diff via Longest Common Subsequence. diffLines(oldText, newText) returns aligned rows (eq/del/add) with honest 1-based line numbers (del has no rightNo, add has no leftNo). Zero dependency, O(n·m), total, deterministic — never throws."
     },
     {
       "name": "domain-config",
@@ -179,6 +215,12 @@
       "type": "registry:lib",
       "title": "Environment helpers",
       "description": "Typed environment helpers (isDev / isProd) reading NODE_ENV through a single accessor that works in browser bundlers, Node/SSR, and unbundled browsers."
+    },
+    {
+      "name": "evaluator-form",
+      "type": "registry:ui",
+      "title": "EvaluatorForm",
+      "description": "Controlled, config-driven builder for a built-in evaluator. Dispatches on value.type (Phoenix's code-evaluator model): a select switches the evaluator type; the fields below edit the config for the current type -- exact_match/contains -> a target string; regex -> pattern + optional flags; levenshtein/json_distance -> a numeric threshold. Switching type emits a fresh config of that type with sensible defaults. Fully controlled (value + onChange); the form only edits -- execution/sandboxing of the evaluator is a platform concern. Composes DS primitives."
     },
     {
       "name": "file-dropzone",
@@ -235,6 +277,12 @@
       "description": "50/50 split shell for authentication screens — form pane on the left, illustration on the right."
     },
     {
+      "name": "message-branch-selector",
+      "type": "registry:ui",
+      "title": "MessageBranchSelector",
+      "description": "Controlled navigator across alternative message branches (e.g. regenerated responses): '‹ 2 / 5 ›' with prev/next Buttons (accessible labels 'Previous branch' / 'Next branch'). Fully controlled — the consumer owns index and reacts to onPrev/onNext; regenerate/streaming is a platform concern. Prev is disabled at the first branch, next at the last; a single branch (count <= 1) renders nothing. Composes Button — zero new dependency."
+    },
+    {
       "name": "metric-card",
       "type": "registry:ui",
       "title": "MetricCard",
@@ -283,6 +331,12 @@
       "description": "Preview environment card surfacing all services from one PR."
     },
     {
+      "name": "price-breakdown",
+      "type": "registry:ui",
+      "title": "PriceBreakdown",
+      "description": "A table of unit prices scaled to per-unit, per-1K, and per-1M columns (price, price x 1000, price x 1_000_000). Controlled and pure: consumer supplies a prices map of usage-type label to price per unit. Empty prices render an honest empty state; sr-only caption for a11y."
+    },
+    {
       "name": "progress",
       "type": "registry:ui",
       "title": "Progress",
@@ -293,6 +347,18 @@
       "type": "registry:block",
       "title": "ProjectCard",
       "description": "Surface for a project in a project listing."
+    },
+    {
+      "name": "prompt-template-editor",
+      "type": "registry:ui",
+      "title": "PromptTemplateEditor",
+      "description": "Controlled prompt-template editor: a Textarea plus a simple hint area listing available variables and which are used vs missing. The hint is a lightweight overlay over the plain textarea (no CodeMirror / editor library) — variable detection uses the pure extractVars helper that recognizes both mustache ({{name}}) and f-string ({name}) placeholders, deduped in order. 'Used' = the variable appears in the value; 'missing' = used in the value but not declared. Composes Textarea/Badge — zero new dependency."
+    },
+    {
+      "name": "prompt-version-diff",
+      "type": "registry:ui",
+      "title": "PromptVersionDiff",
+      "description": "Diffs two prompt versions by normalizing each snapshot's template (string passthrough; chat array -> 'role: content' text) and config (pretty JSON) to plain text, then composing DiffView for content and, when present, config. The config diff is omitted honestly when both versions have no config. Zero new dependency — reuses the DiffView primitive."
     },
     {
       "name": "radio-group",
@@ -341,6 +407,12 @@
       "type": "registry:lib",
       "title": "Session core (SessionTraceItem + aggregateSession)",
       "description": "Trace-level session data contract + honest metric aggregation (traceCount, wall-clock window, ∑cost, ∑tokens, error count, distinct models). Pure, total — absent cost/tokens count as 0, never NaN. Reuses the trace-core timestamp normalization."
+    },
+    {
+      "name": "severity-badge",
+      "type": "registry:ui",
+      "title": "Severity Badge",
+      "description": "Labeled multi-level severity indicator. Maps a Severity level (ok/warning/alert/no_data/unknown/paused — langfuse MonitorSeverity vocabulary, lowercased) to a Badge variant, with a human-readable default label. Per-severity variant/label overrides via props; unmapped values fall back to the neutral outline variant. Composes the Badge primitive — not a status dot (distinct from StatusIndicator)."
     },
     {
       "name": "sheet",
@@ -433,6 +505,12 @@
       "description": "Built on Radix Tabs with active-underline styling and focus-visible ring."
     },
     {
+      "name": "tag-input",
+      "type": "registry:ui",
+      "title": "TagInput",
+      "description": "Controlled multi-value tag editor. Renders one removable chip per tag (Badge + per-tag x button) plus a text input to add a new tag on Enter. Fully controlled (value: string[] + onChange). Dedup is built-in: adding an existing or empty/whitespace tag is a no-op; new tags are trimmed. disabled blocks add and remove. Optional suggestions power a native datalist (zero-dep autocomplete). Composes Input + Badge — no Combobox, no new dependency."
+    },
+    {
       "name": "tailwind-preset",
       "type": "registry:lib",
       "title": "Theo UI Tailwind preset",
@@ -467,6 +545,12 @@
       "type": "registry:ui",
       "title": "Toast",
       "description": "Transient notification built on Radix Toast."
+    },
+    {
+      "name": "token-cost-breakdown",
+      "type": "registry:ui",
+      "title": "TokenCostBreakdown",
+      "description": "A dl breakdown of a request/span/trace token usage and USD cost: input, output, cache tokens, total, and cost. Controlled and pure. Honest zeros (M9 SessionSummary convention): a real 0 renders 0 / $0.0000; an absent field renders an em-dash; all-absent renders an honest empty state."
     },
     {
       "name": "tooltip",

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "prompt-version-diff",
+  "type": "registry:ui",
+  "title": "PromptVersionDiff",
+  "description": "Diffs two prompt versions by normalizing each snapshot's template (string passthrough; chat array -> 'role: content' text) and config (pretty JSON) to plain text, then composing DiffView for content and, when present, config. The config diff is omitted honestly when both versions have no config. Zero new dependency — reuses the DiffView primitive.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "diff-view", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/prompt-version-diff/to-diff-text.ts",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-version-diff/to-diff-text.ts"
+    },
+    {
+      "path": "components/composites/prompt-version-diff/prompt-version-diff.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-version-diff/prompt-version-diff.tsx"
+    }
+  ]
+}

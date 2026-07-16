@@ -1,0 +1,92 @@
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { axe } from "vitest-axe";
+import { CommentThread as CommentThreadFromBarrel } from "../../../index.js";
+import { CommentThread } from "./comment-thread.js";
+import type { Comment } from "./comment-thread.js";
+
+const COMMENTS: Comment[] = [
+  { id: "1", author: "Ada", body: "First look at the trace.", createdAt: "2026-07-10T10:00:00Z" },
+  { id: "2", author: "Alan", body: "Latency looks high here.", createdAt: 1_720_000_000_000 },
+];
+
+describe("CommentThread", () => {
+  it("renderiza um item por comentário", () => {
+    render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.getByText("First look at the trace.")).toBeInTheDocument();
+    expect(screen.getByText("Latency looks high here.")).toBeInTheDocument();
+    expect(screen.getByText("Ada")).toBeInTheDocument();
+  });
+
+  it("submit emite o body trimado", () => {
+    const onSubmit = vi.fn();
+    render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
+    fireEvent.change(screen.getByLabelText(/add a comment/i), {
+      target: { value: "  looks good  " },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /comment|submit/i }));
+    expect(onSubmit).toHaveBeenCalledWith("looks good");
+  });
+
+  it("body vazio não submete", () => {
+    const onSubmit = vi.fn();
+    render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
+    fireEvent.click(screen.getByRole("button", { name: /comment|submit/i }));
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("body só com whitespace não submete", () => {
+    const onSubmit = vi.fn();
+    render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
+    fireEvent.change(screen.getByLabelText(/add a comment/i), { target: { value: "   " } });
+    fireEvent.click(screen.getByRole("button", { name: /comment|submit/i }));
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("composer limpa após submit", () => {
+    render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
+    const ta = screen.getByLabelText(/add a comment/i) as HTMLTextAreaElement;
+    fireEvent.change(ta, { target: { value: "nice" } });
+    fireEvent.click(screen.getByRole("button", { name: /comment|submit/i }));
+    expect(ta.value).toBe("");
+  });
+
+  it("sem comentários mostra empty state honesto + composer", () => {
+    const { container } = render(<CommentThread comments={[]} onSubmit={() => {}} />);
+    expect(container.querySelector('[data-slot="comment-thread-empty"]')).not.toBeNull();
+    // composer still present
+    expect(screen.getByLabelText(/add a comment/i)).toBeInTheDocument();
+  });
+
+  it("disabled desabilita o composer", () => {
+    const onSubmit = vi.fn();
+    render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} disabled />);
+    expect(screen.getByLabelText(/add a comment/i)).toBeDisabled();
+    expect(screen.getByRole("button", { name: /comment|submit/i })).toBeDisabled();
+  });
+
+  it("expõe data-slot no root e ref", () => {
+    const ref = { current: null as HTMLDivElement | null };
+    const { container } = render(
+      <CommentThread ref={ref} comments={COMMENTS} onSubmit={() => {}} />,
+    );
+    const root = container.querySelector('[data-slot="comment-thread"]');
+    expect(root).not.toBeNull();
+    expect(ref.current).toBe(root);
+  });
+
+  it("é exportado pelo barrel raiz", () => {
+    expect(CommentThreadFromBarrel).toBe(CommentThread);
+  });
+
+  it("sem violações axe — com comentários", async () => {
+    const { container } = render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it("sem violações axe — empty state", async () => {
+    const { container } = render(<CommentThread comments={[]} onSubmit={() => {}} />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});

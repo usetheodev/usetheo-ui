@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "prompt-template-editor",
+  "type": "registry:ui",
+  "title": "PromptTemplateEditor",
+  "description": "Controlled prompt-template editor: a Textarea plus a simple hint area listing available variables and which are used vs missing. The hint is a lightweight overlay over the plain textarea (no CodeMirror / editor library) — variable detection uses the pure extractVars helper that recognizes both mustache ({{name}}) and f-string ({name}) placeholders, deduped in order. 'Used' = the variable appears in the value; 'missing' = used in the value but not declared. Composes Textarea/Badge — zero new dependency.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "textarea", "badge", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/prompt-template-editor/prompt-template-editor.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-template-editor/prompt-template-editor.tsx"
+    },
+    {
+      "path": "components/composites/prompt-template-editor/extract-vars.ts",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-template-editor/extract-vars.ts"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "price-breakdown",
+  "type": "registry:ui",
+  "title": "PriceBreakdown",
+  "description": "A table of unit prices scaled to per-unit, per-1K, and per-1M columns (price, price x 1000, price x 1_000_000). Controlled and pure: consumer supplies a prices map of usage-type label to price per unit. Empty prices render an honest empty state; sr-only caption for a11y.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/price-breakdown/price-breakdown.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/price-breakdown.tsx"
+    }
+  ]
+}

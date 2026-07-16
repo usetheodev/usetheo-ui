@@ -48,14 +48,10 @@ export type {
 
 export { Button, buttonVariants, type ButtonProps } from "./components/primitives/button/index.js";
 export { Badge, badgeVariants, type BadgeProps } from "./components/primitives/badge/index.js";
-export {
-  Breadcrumb,
-  type BreadcrumbLinkProps,
-} from "./components/primitives/breadcrumb/index.js";
-export {
-  DescriptionList,
-  type DescriptionListProps,
-} from "./components/primitives/description-list/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { Breadcrumb, type BreadcrumbLinkProps } from "./components/primitives/breadcrumb/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { DescriptionList, type DescriptionListProps } from "./components/primitives/description-list/index.js";
 export { JsonViewer, type JsonViewerProps } from "./components/primitives/json-viewer/index.js";
 export {
   Combobox,
@@ -64,15 +60,10 @@ export {
   type ComboboxItemProps,
   type ComboboxProps,
 } from "./components/primitives/combobox/index.js";
-export {
-  Slider,
-  type SliderMark,
-  type SliderProps,
-} from "./components/primitives/slider/index.js";
-export {
-  UpdateBanner,
-  type UpdateBannerProps,
-} from "./components/primitives/update-banner/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { Slider, type SliderMark, type SliderProps } from "./components/primitives/slider/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { UpdateBanner, type UpdateBannerProps } from "./components/primitives/update-banner/index.js";
 export { Card } from "./components/primitives/card/index.js";
 export { Input, type InputProps } from "./components/primitives/input/index.js";
 export { Dialog } from "./components/primitives/dialog/index.js";
@@ -121,11 +112,8 @@ export {
   type TableCellProps,
   type TableHeaderCellProps,
 } from "./components/primitives/table/index.js";
-export {
-  StatusDot,
-  type StatusDotProps,
-  type StatusKind,
-} from "./components/primitives/status-dot/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { StatusDot, type StatusDotProps, type StatusKind } from "./components/primitives/status-dot/index.js";
 export {
   CopyButton,
   type CopyButtonProps,
@@ -142,12 +130,10 @@ export {
   type ConfirmDialogProps,
 } from "./components/composites/confirm-dialog/index.js";
 export { CodeBlock, type CodeBlockProps } from "./components/composites/code-block/index.js";
-export {
-  StatusIndicator,
-  type StatusIndicatorKind,
-  type StatusIndicatorProps,
-  type StatusIndicatorSize,
-} from "./components/composites/status-indicator/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { StatusIndicator } from "./components/composites/status-indicator/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { StatusIndicatorKind, StatusIndicatorProps, StatusIndicatorSize } from "./components/composites/status-indicator/index.js";
 export {
   MetricCard,
   type MetricCardDelta,
@@ -263,24 +249,47 @@ export { SessionTimeline } from "./components/composites/session-timeline/index.
 export type { SessionTimelineProps } from "./components/composites/session-timeline/index.js";
 export { computeHistogram } from "./lib/chart/index.js";
 export type { HistogramBin } from "./lib/chart/index.js";
+export { diffLines } from "./lib/diff/index.js";
+export type { DiffRow, DiffRowKind } from "./lib/diff/index.js";
+export { DiffView } from "./components/composites/diff-view/index.js";
+export type { DiffViewProps, DiffViewMode } from "./components/composites/diff-view/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { PromptVersionDiff, templateToText, configToText } from "./components/composites/prompt-version-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { PromptVersionDiffProps, PromptSnapshot } from "./components/composites/prompt-version-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { DatasetItemDiff, fieldToText, fieldPresent } from "./components/composites/dataset-item-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { DatasetItemDiffProps, DatasetItemSnapshot } from "./components/composites/dataset-item-diff/index.js";
 export { Histogram } from "./components/composites/histogram/index.js";
 export type { HistogramProps } from "./components/composites/histogram/index.js";
 export { PercentileChart } from "./components/composites/percentile-chart/index.js";
-export type {
-  PercentileBucket,
-  PercentileChartProps,
-} from "./components/composites/percentile-chart/index.js";
-export {
-  AnnotationInput,
-  isCategoricalConfig,
-  isContinuousConfig,
-  isFreeformConfig,
-} from "./components/composites/annotation-input/index.js";
-export type {
-  AnnotationInputProps,
-  CategoricalOption,
-  AnnotationCategoricalConfig,
-  AnnotationContinuousConfig,
-  AnnotationFreeformConfig,
-  AnnotationConfig,
-} from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { PercentileBucket, PercentileChartProps } from "./components/composites/percentile-chart/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { AnnotationInput, isCategoricalConfig, isContinuousConfig, isFreeformConfig } from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { AnnotationInputProps, CategoricalOption, AnnotationCategoricalConfig, AnnotationContinuousConfig, AnnotationFreeformConfig, AnnotationConfig } from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { EvaluatorForm, defaultEvaluatorConfig, isTargetEvaluator, isRegexEvaluator, isThresholdEvaluator } from "./components/composites/evaluator-form/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { EvaluatorFormProps, EvaluatorConfig, EvaluatorType, ExactMatchEvaluatorConfig, ContainsEvaluatorConfig, RegexEvaluatorConfig, LevenshteinEvaluatorConfig, JsonDistanceEvaluatorConfig } from "./components/composites/evaluator-form/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { AnnotationSummaryGroup, type AnnotationSummaryGroupProps } from "./components/composites/annotation-summary-group/index.js";
+export { TokenCostBreakdown } from "./components/composites/token-cost-breakdown/index.js";
+export type { TokenCostBreakdownProps } from "./components/composites/token-cost-breakdown/index.js";
+export { PriceBreakdown } from "./components/composites/price-breakdown/index.js";
+export type { PriceBreakdownProps } from "./components/composites/price-breakdown/index.js";
+export { SeverityBadge } from "./components/composites/severity-badge/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { Severity, BadgeVariant, SeverityBadgeProps } from "./components/composites/severity-badge/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { TagInput, type TagInputProps } from "./components/composites/tag-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { CommentThread, type Comment, type CommentThreadProps } from "./components/composites/comment-thread/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { ChatMessageCard, type ChatMessageCardProps } from "./components/composites/chat-message-card/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { MessageBranchSelector, type MessageBranchSelectorProps } from "./components/composites/message-branch-selector/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { PromptTemplateEditor, extractVars, type PromptTemplateEditorProps } from "./components/composites/prompt-template-editor/index.js";
