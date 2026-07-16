@@ -125,7 +125,7 @@ const EvaluatorForm = forwardRef<HTMLDivElement, EvaluatorFormProps>(
             disabled={disabled}
             onChange={(e) => onChange(defaultEvaluatorConfig(e.target.value as EvaluatorType))}
             className={cn(
-              "flex h-[var(--theo-control-h,2.25rem)] w-full rounded-md border border-input bg-card px-[var(--theo-control-px,0.875rem)] py-1.5 text-body-sm text-foreground",
+              "flex h-[var(--theo-control-h,2rem)] w-full rounded-lg border border-input bg-card px-[var(--theo-control-px,0.75rem)] py-1.5 text-body-sm text-foreground",
               "focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}

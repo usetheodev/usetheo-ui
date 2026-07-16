@@ -5,6 +5,7 @@
 ### Added
 
 ### Changed
+- **Identidade compacta (density shift)** — o default de controle do DS passa a 32px, alinhando com a linguagem do theokit-studio (Builder): `--theo-control-h` 2.25rem→**2rem (32px)** e `--theo-control-px` 0.875rem→**0.75rem (12px)** (fallback dos primitivos `Button`/`Input`/`Select`/`Textarea`, tier `md`); inputs (`Input`/`Select`/`Textarea`) `rounded-md`→**`rounded-lg`** (igualando os botões); token de tipografia `body-sm` **13px→14px** (line-height 1.46→1.43), afetando todo o texto de apoio do DS. Consumidores podem restaurar 36px via `--theo-control-h: 2.25rem` no `:root`. Testes de densidade atualizados; suíte 1300/1300; zero mudança de API (visual-only).
 
 ### Deprecated
 

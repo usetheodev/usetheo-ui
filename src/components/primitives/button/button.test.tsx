@@ -79,9 +79,9 @@ describe("Button", () => {
 
   // T1.1 — FAANG-density: md tier reads from CSS var; sm and lg stay hardcoded.
   // EC-1 fix: density-driven default does NOT override explicit size prop.
-  it("md (default) reads height from --theo-control-h CSS var (36px comfortable)", () => {
+  it("md (default) reads height from --theo-control-h CSS var (32px compact)", () => {
     render(<Button>x</Button>);
-    expect(screen.getByRole("button").className).toContain("h-[var(--theo-control-h,2.25rem)]");
+    expect(screen.getByRole("button").className).toContain("h-[var(--theo-control-h,2rem)]");
   });
 
   it("sm stays hardcoded h-8 (32px) regardless of density", () => {
@@ -101,7 +101,7 @@ describe("Button", () => {
   it("icon size mirrors md CSS var (square)", () => {
     render(<Button size="icon" aria-label="x" />);
     const cls = screen.getByRole("button").className;
-    expect(cls).toContain("h-[var(--theo-control-h,2.25rem)]");
-    expect(cls).toContain("w-[var(--theo-control-h,2.25rem)]");
+    expect(cls).toContain("h-[var(--theo-control-h,2rem)]");
+    expect(cls).toContain("w-[var(--theo-control-h,2rem)]");
   });
 });

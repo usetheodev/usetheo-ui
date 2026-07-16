@@ -51,7 +51,7 @@ describe("Input", () => {
   it("md (default) reads height from --theo-control-h CSS var + text-body-sm (FAANG density)", () => {
     render(<Input data-testid="i" />);
     const input = screen.getByTestId("i");
-    expect(input.className).toContain("h-[var(--theo-control-h,2.25rem)]");
+    expect(input.className).toContain("h-[var(--theo-control-h,2rem)]");
     expect(input.className).toContain("text-body-sm");
   });
 
