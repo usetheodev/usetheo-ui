@@ -48,14 +48,10 @@ export type {
 
 export { Button, buttonVariants, type ButtonProps } from "./components/primitives/button/index.js";
 export { Badge, badgeVariants, type BadgeProps } from "./components/primitives/badge/index.js";
-export {
-  Breadcrumb,
-  type BreadcrumbLinkProps,
-} from "./components/primitives/breadcrumb/index.js";
-export {
-  DescriptionList,
-  type DescriptionListProps,
-} from "./components/primitives/description-list/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { Breadcrumb, type BreadcrumbLinkProps } from "./components/primitives/breadcrumb/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { DescriptionList, type DescriptionListProps } from "./components/primitives/description-list/index.js";
 export { JsonViewer, type JsonViewerProps } from "./components/primitives/json-viewer/index.js";
 export {
   Combobox,
@@ -296,3 +292,7 @@ export type { PriceBreakdownProps } from "./components/composites/price-breakdow
 export { SeverityBadge } from "./components/composites/severity-badge/index.js";
 // biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
 export type { Severity, BadgeVariant, SeverityBadgeProps } from "./components/composites/severity-badge/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { TagInput, type TagInputProps } from "./components/composites/tag-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { CommentThread, type Comment, type CommentThreadProps } from "./components/composites/comment-thread/index.js";

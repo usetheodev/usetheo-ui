@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "comment-thread",
+  "type": "registry:ui",
+  "title": "CommentThread",
+  "description": "Controlled comment thread + composer. Renders an ordered list of comments (Avatar + author + Timestamp + body) followed by a composer (Textarea + submit Button). The list is controlled via comments; only the composer draft is local state. A non-empty trimmed body calls onSubmit(body) and clears the draft; empty/whitespace never submits. No comments -> honest empty state, composer still shows. Composes Avatar/Textarea/Button/Timestamp — zero new dependency.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "avatar", "textarea", "button", "timestamp", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/comment-thread/comment-thread.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/comment-thread/comment-thread.tsx"
+    }
+  ]
+}
