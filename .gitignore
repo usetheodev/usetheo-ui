@@ -16,3 +16,6 @@ coverage
 .claude/knowledge-base/discoveries/snapshots/**
 .claude/agents/**
 .claude/.attestations/
+
+# Ladle static preview build (artefato local)
+build/
