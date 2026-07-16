@@ -28,6 +28,17 @@ describe("PromptTemplateEditor", () => {
     expect(labels).toContain("city");
   });
 
+  it("dedup: variables duplicadas não geram chips repetidos (review V3 LOW-1)", () => {
+    const { container } = render(
+      <PromptTemplateEditor value="" onChange={() => {}} variables={["name", "name", "city"]} />,
+    );
+    const labels = Array.from(
+      container.querySelectorAll('[data-slot="prompt-template-editor-var"]'),
+    ).map((c) => c.textContent);
+    expect(labels.filter((l) => l === "name")).toHaveLength(1);
+    expect(labels).toContain("city");
+  });
+
   it("marca variável como usada quando aparece no value (data-used)", () => {
     const { container } = render(
       <PromptTemplateEditor value="Hi {{name}}" onChange={() => {}} variables={["name", "city"]} />,

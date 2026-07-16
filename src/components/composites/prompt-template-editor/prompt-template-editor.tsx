@@ -34,7 +34,8 @@ type VarChip = { name: string; used: boolean; missing: boolean };
 function deriveChips(value: string, variables: string[]): VarChip[] {
   const used = new Set(extractVars(value));
   const declared = new Set(variables);
-  const names = [...variables, ...[...used].filter((v) => !declared.has(v))];
+  // dedup declared vars via the Set so duplicate `variables` never yield duplicate chip keys
+  const names = [...declared, ...[...used].filter((v) => !declared.has(v))];
   return names.map((name) => ({
     name,
     used: used.has(name),
