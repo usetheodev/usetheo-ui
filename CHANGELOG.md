@@ -3,6 +3,20 @@
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [0.27.0] - 2026-07-15
+
+### Added
 - `ChatMessageCard` composite — card de UMA mensagem de chat (átomo): `Badge` de role (`user`/`assistant`/`tool`/`system`, role desconhecido cai em `outline` neutro honestamente) + `content` como texto + `toolCalls`/`toolResults` renderizados via `CodeBlock` existente (não hand-rolled — ADR D2, DRY); reusa o tipo trace-core `ToolCall` (`{ id; function?: { name?; arguments? } }`) — os `tool_calls` de um span de assistant entram direto; sem content e sem tools → empty state honesto (`data-slot="chat-message-card-empty"`); distinto do `TraceTranscript` (feed) — este é UMA mensagem controlada; `data-slot`/`data-role`; `forwardRef` + `cn`; zero dep nova; axe limpo (M19 T1.0)
 - `MessageBranchSelector` composite — navegador controlado entre branches alternativos de mensagem (ex.: respostas regeneradas): "‹ 2 / 5 ›" com `Button`s prev/next (labels acessíveis "Previous branch"/"Next branch"); totalmente controlado (ADR D3) — o consumidor detém `index` e reage a `onPrev`/`onNext`; regenerate/streaming é plataforma; prev desabilitado no primeiro branch, next no último; `count <= 1` não renderiza nada (nada a navegar); compõe `Button` — zero dep nova; `data-slot`; `forwardRef` + `cn`; axe limpo (M19 T2.0)
 - `PromptTemplateEditor` composite — editor de template controlado: `Textarea` + hint simples listando variáveis disponíveis e quais estão usadas vs ausentes; overlay leve sobre o textarea (ADR D1 — sem CodeMirror/lib de editor); detecção via helper puro `extractVars` (público) que reconhece mustache (`{{name}}`) E f-string (`{name}`), deduped em ordem; "usada" = variável aparece no value, "ausente" = usada mas não declarada em `variables`; textarea rotulado (`aria-labelledby`); compõe `Textarea`/`Badge` — zero dep nova; `data-slot`; `forwardRef` + `cn`; axe limpo (M19 T3.0)
@@ -19,15 +33,8 @@
 - `diffLines(oldText, newText)` helper puro em `src/lib/diff` — diff por linha via LCS (zero dep; rows eq/del/add com numeração honesta) (M14 T1.0)
 - Roadmap V3 — 6 milestones de componentes SOTA restantes (só DS-now, fundamentado em gap analysis langfuse+phoenix): M14 Diff viewing, M15 Cost & token visibility, M16 SeverityBadge, M17 Collaboration, M18 Eval authoring, M19 Chat & message (`/roadmap-feature v3-sota-components`)
 
-### Changed
-
-### Deprecated
-
-### Removed
-
 ### Fixed
-
-### Security
+- `PromptTemplateEditor` — `variables` com nomes duplicados não geram mais chips repetidos (dedup via Set; review V3 L-1)
 
 ## [0.26.0] - 2026-07-15
 
