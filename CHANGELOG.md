@@ -2,17 +2,18 @@
 
 ## [Unreleased]
 
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## [0.28.1] - 2026-07-16
 
 ### Fixed
-
-### Security
+- Tipografia e menus voltam a bater 1:1 com o `@theokit/ui` (o DS de referência), eliminando o
+  degradê visual quando as duas libs coexistem numa tela (ex.: Builder do studio): o token
+  `body-sm` volta a **13px / line-height 1.46** — a 0.28.0 o havia posto em 14px, mas o
+  `@theokit/ui` e o próprio `tokens-v4.css` deste pacote já estavam em 13px, então os itens de
+  menu (`DropdownMenu.Item` usa `text-body-sm`) e o texto de apoio destoavam 1px entre os dois
+  escopos. O popover do `DropdownMenu` (Content + SubContent) passa a usar `bg-popover` + `border`
+  (era `bg-card` + `border-border/40`), igualando o `Select` e os dropdowns do `@theokit/ui` — no
+  dark os menus deixam de abrir num tom mais escuro. Visual-only, zero mudança de API; suíte
+  1300/1300 (#ui-scope-parity)
 
 ## [0.28.0] - 2026-07-16
 
