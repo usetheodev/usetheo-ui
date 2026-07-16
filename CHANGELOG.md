@@ -2,13 +2,7 @@
 
 ## [Unreleased]
 
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## [0.28.1] - 2026-07-16
 
 ### Fixed
 - Tipografia e menus voltam a bater 1:1 com o `@theokit/ui` (o DS de referência), eliminando o
@@ -20,8 +14,6 @@
   (era `bg-card` + `border-border/40`), igualando o `Select` e os dropdowns do `@theokit/ui` — no
   dark os menus deixam de abrir num tom mais escuro. Visual-only, zero mudança de API; suíte
   1300/1300 (#ui-scope-parity)
-
-### Security
 
 ## [0.28.0] - 2026-07-16
 
