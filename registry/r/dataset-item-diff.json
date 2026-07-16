@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dataset-item-diff",
+  "type": "registry:ui",
+  "title": "DatasetItemDiff",
+  "description": "Diffs two dataset-item versions by stringifying each field (input / expectedOutput / metadata; string passthrough, else pretty JSON) and composing a labeled DiffView per field. A field absent in BOTH items is omitted honestly (no empty table). Zero new dependency — reuses the DiffView primitive.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/diff-view.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/composites/dataset-item-diff/to-diff-text.ts",
+      "type": "registry:ui",
+      "target": "components/ui/dataset-item-diff/to-diff-text.ts",
+      "content": "/**\n * Pure normalizers for dataset-item snapshots (M14 ADR D3). Turns each field\n * (input / expectedOutput / metadata), whose value is `unknown`, into the plain\n * text a `DiffView` diffs. No React, no I/O; total and deterministic.\n */\n\n/** A dataset item version. Fields are optional so absent ones can be omitted. */\nexport interface DatasetItemSnapshot {\n  input: unknown;\n  expectedOutput?: unknown;\n  metadata?: Record<string, unknown>;\n}\n\n/**\n * Stringify a field value for diffing: a string passes through unchanged;\n * `undefined`/`null` become \"\"; anything else is pretty-printed JSON. Keeping\n * strings raw avoids wrapping user text in quotes/escapes in the diff.\n */\nexport function fieldToText(value: unknown): string {\n  if (value === undefined || value === null) return \"\";\n  if (typeof value === \"string\") return value;\n  return JSON.stringify(value, null, 2);\n}\n\n/**\n * True when a field is present on either side — the caller renders a section\n * only for present fields, omitting one absent in BOTH items honestly.\n */\nexport function fieldPresent(a: unknown, b: unknown): boolean {\n  return (a !== undefined && a !== null) || (b !== undefined && b !== null);\n}\n"
+    },
+    {
+      "path": "components/composites/dataset-item-diff/dataset-item-diff.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/dataset-item-diff/dataset-item-diff.tsx",
+      "content": "import type { HTMLAttributes } from \"react\";\nimport { cn } from \"@/lib/cn\";\nimport { DiffSection, type DiffSectionCommon } from \"@/components/ui/diff-view/diff-section\";\nimport { type DatasetItemSnapshot, fieldPresent, fieldToText } from \"@/components/ui/dataset-item-diff/to-diff-text\";\n\n/**\n * DatasetItemDiff — diffs two dataset-item versions (M14 ADR D3). Stringifies\n * each field (input / expectedOutput / metadata) and composes a labeled\n * `DiffView` per field. Zero new dependency — reuses the DS diff primitive.\n *\n * A field absent in BOTH items is omitted honestly (no empty \"No changes\"\n * table); a field present on either side is rendered so an add/remove shows.\n *\n *   <DatasetItemDiff oldItem={v1} newItem={v2} />\n */\n\nexport type DatasetItemDiffProps = Omit<HTMLAttributes<HTMLDivElement>, \"children\"> &\n  DiffSectionCommon & {\n    oldItem: DatasetItemSnapshot;\n    newItem: DatasetItemSnapshot;\n  };\n\n/** The three diffable fields, in reading order, with their section titles. */\nconst FIELDS: ReadonlyArray<{ key: keyof DatasetItemSnapshot; title: string }> = [\n  { key: \"input\", title: \"Input\" },\n  { key: \"expectedOutput\", title: \"Expected output\" },\n  { key: \"metadata\", title: \"Metadata\" },\n];\n\nfunction DatasetItemDiff(props: DatasetItemDiffProps) {\n  const { oldItem, newItem, mode, oldLabel, newLabel, className, ...rest } = props;\n  const shared = { mode, oldLabel, newLabel };\n\n  return (\n    <div data-slot=\"dataset-item-diff\" className={cn(\"space-y-4\", className)} {...rest}>\n      {FIELDS.filter((f) => fieldPresent(oldItem[f.key], newItem[f.key])).map((f) => (\n        <DiffSection\n          key={f.key}\n          title={f.title}\n          oldText={fieldToText(oldItem[f.key])}\n          newText={fieldToText(newItem[f.key])}\n          {...shared}\n        />\n      ))}\n    </div>\n  );\n}\n\nexport { DatasetItemDiff };\n"
+    }
+  ]
+}

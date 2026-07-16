@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "diff",
+  "type": "registry:lib",
+  "title": "Diff core (diffLines)",
+  "description": "Pure line-level text diff via Longest Common Subsequence. diffLines(oldText, newText) returns aligned rows (eq/del/add) with honest 1-based line numbers (del has no rightNo, add has no leftNo). Zero dependency, O(n·m), total, deterministic — never throws.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/diff/diff-lines.ts",
+      "type": "registry:lib",
+      "target": "lib/diff/diff-lines.ts",
+      "content": "/**\n * Pure line-level diff via Longest Common Subsequence (M14 ADR D1 — zero\n * dependency, keeps the registry copy-pasteable; no `diff`/`@pierre/diffs`).\n * Suitable for the design-system case (prompts / JSON, < ~500 lines);\n * O(n·m) time. A row is `eq` (unchanged), `del` (only in old), or `add`\n * (only in new). Line numbers are honest: `del` has no rightNo, `add` has no\n * leftNo. Deterministic, total — never throws.\n */\n\nexport type DiffRowKind = \"eq\" | \"del\" | \"add\";\n\nexport interface DiffRow {\n  kind: DiffRowKind;\n  text: string;\n  /** 1-based line number in the old text (absent for `add`). */\n  leftNo?: number;\n  /** 1-based line number in the new text (absent for `del`). */\n  rightNo?: number;\n}\n\n/** Split into lines, treating \"\" as zero lines (not one empty line). */\nfunction toLines(text: string): string[] {\n  return text === \"\" ? [] : text.split(\"\\n\");\n}\n\n/**\n * Diff `oldText` against `newText` at line granularity. Returns the aligned\n * sequence of rows (eq / del / add) in reading order. `del` before `add` when a\n * line is replaced.\n */\nexport function diffLines(oldText: string, newText: string): DiffRow[] {\n  const a = toLines(oldText);\n  const b = toLines(newText);\n  const n = a.length;\n  const m = b.length;\n\n  // LCS length table: lcs[i][j] = LCS of a[i:] and b[j:]. Every access is\n  // within [0..n]×[0..m] by construction; the local `row`/`next` captures both\n  // satisfy `noUncheckedIndexedAccess` and read cleaner than nested indexing.\n  const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));\n  for (let i = n - 1; i >= 0; i--) {\n    const row = lcs[i] as number[];\n    const next = lcs[i + 1] as number[];\n    for (let j = m - 1; j >= 0; j--) {\n      row[j] =\n        a[i] === b[j]\n          ? (next[j + 1] as number) + 1\n          : Math.max(next[j] as number, row[j + 1] as number);\n    }\n  }\n\n  const rows: DiffRow[] = [];\n  let i = 0;\n  let j = 0;\n  while (i < n && j < m) {\n    const ai = a[i] as string;\n    const bj = b[j] as string;\n    if (ai === bj) {\n      rows.push({ kind: \"eq\", text: ai, leftNo: i + 1, rightNo: j + 1 });\n      i++;\n      j++;\n      continue;\n    }\n    // Prefer the deletion when it keeps the LCS at least as long (matches the\n    // eq/del/add reading order: del before add when a line is replaced).\n    const skipA = (lcs[i + 1] as number[])[j] as number;\n    const skipB = (lcs[i] as number[])[j + 1] as number;\n    if (skipA >= skipB) {\n      rows.push({ kind: \"del\", text: ai, leftNo: i + 1 });\n      i++;\n    } else {\n      rows.push({ kind: \"add\", text: bj, rightNo: j + 1 });\n      j++;\n    }\n  }\n  while (i < n) {\n    rows.push({ kind: \"del\", text: a[i] as string, leftNo: i + 1 });\n    i++;\n  }\n  while (j < m) {\n    rows.push({ kind: \"add\", text: b[j] as string, rightNo: j + 1 });\n    j++;\n  }\n  return rows;\n}\n"
+    },
+    {
+      "path": "lib/diff/index.ts",
+      "type": "registry:lib",
+      "target": "lib/diff/index.ts",
+      "content": "export * from \"@/lib/diff/diff-lines\";\n"
+    }
+  ]
+}

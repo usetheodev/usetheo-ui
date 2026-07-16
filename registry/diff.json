@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "diff",
+  "type": "registry:lib",
+  "title": "Diff core (diffLines)",
+  "description": "Pure line-level text diff via Longest Common Subsequence. diffLines(oldText, newText) returns aligned rows (eq/del/add) with honest 1-based line numbers (del has no rightNo, add has no leftNo). Zero dependency, O(n·m), total, deterministic — never throws.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "lib/diff/diff-lines.ts",
+      "type": "registry:lib",
+      "target": "lib/diff/diff-lines.ts"
+    },
+    {
+      "path": "lib/diff/index.ts",
+      "type": "registry:lib",
+      "target": "lib/diff/index.ts"
+    }
+  ]
+}

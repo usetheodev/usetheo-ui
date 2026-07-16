@@ -265,6 +265,16 @@ export { computeHistogram } from "./lib/chart/index.js";
 export type { HistogramBin } from "./lib/chart/index.js";
 export { diffLines } from "./lib/diff/index.js";
 export type { DiffRow, DiffRowKind } from "./lib/diff/index.js";
+export { DiffView } from "./components/composites/diff-view/index.js";
+export type { DiffViewProps, DiffViewMode } from "./components/composites/diff-view/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { PromptVersionDiff, templateToText, configToText } from "./components/composites/prompt-version-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { PromptVersionDiffProps, PromptSnapshot } from "./components/composites/prompt-version-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { DatasetItemDiff, fieldToText, fieldPresent } from "./components/composites/dataset-item-diff/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { DatasetItemDiffProps, DatasetItemSnapshot } from "./components/composites/dataset-item-diff/index.js";
 export { Histogram } from "./components/composites/histogram/index.js";
 export type { HistogramProps } from "./components/composites/histogram/index.js";
 export { PercentileChart } from "./components/composites/percentile-chart/index.js";

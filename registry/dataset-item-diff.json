@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dataset-item-diff",
+  "type": "registry:ui",
+  "title": "DatasetItemDiff",
+  "description": "Diffs two dataset-item versions by stringifying each field (input / expectedOutput / metadata; string passthrough, else pretty JSON) and composing a labeled DiffView per field. A field absent in BOTH items is omitted honestly (no empty table). Zero new dependency — reuses the DiffView primitive.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "diff-view", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/dataset-item-diff/to-diff-text.ts",
+      "type": "registry:ui",
+      "target": "components/ui/dataset-item-diff/to-diff-text.ts"
+    },
+    {
+      "path": "components/composites/dataset-item-diff/dataset-item-diff.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/dataset-item-diff/dataset-item-diff.tsx"
+    }
+  ]
+}

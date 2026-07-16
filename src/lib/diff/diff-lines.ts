@@ -34,11 +34,18 @@ export function diffLines(oldText: string, newText: string): DiffRow[] {
   const n = a.length;
   const m = b.length;
 
-  // LCS length table: lcs[i][j] = LCS of a[i:] and b[j:].
+  // LCS length table: lcs[i][j] = LCS of a[i:] and b[j:]. Every access is
+  // within [0..n]×[0..m] by construction; the local `row`/`next` captures both
+  // satisfy `noUncheckedIndexedAccess` and read cleaner than nested indexing.
   const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
   for (let i = n - 1; i >= 0; i--) {
+    const row = lcs[i] as number[];
+    const next = lcs[i + 1] as number[];
     for (let j = m - 1; j >= 0; j--) {
-      lcs[i][j] = a[i] === b[j] ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+      row[j] =
+        a[i] === b[j]
+          ? (next[j + 1] as number) + 1
+          : Math.max(next[j] as number, row[j + 1] as number);
     }
   }
 
@@ -46,24 +53,32 @@ export function diffLines(oldText: string, newText: string): DiffRow[] {
   let i = 0;
   let j = 0;
   while (i < n && j < m) {
-    if (a[i] === b[j]) {
-      rows.push({ kind: "eq", text: a[i], leftNo: i + 1, rightNo: j + 1 });
+    const ai = a[i] as string;
+    const bj = b[j] as string;
+    if (ai === bj) {
+      rows.push({ kind: "eq", text: ai, leftNo: i + 1, rightNo: j + 1 });
       i++;
       j++;
-    } else if (lcs[i + 1][j] >= lcs[i][j + 1]) {
-      rows.push({ kind: "del", text: a[i], leftNo: i + 1 });
+      continue;
+    }
+    // Prefer the deletion when it keeps the LCS at least as long (matches the
+    // eq/del/add reading order: del before add when a line is replaced).
+    const skipA = (lcs[i + 1] as number[])[j] as number;
+    const skipB = (lcs[i] as number[])[j + 1] as number;
+    if (skipA >= skipB) {
+      rows.push({ kind: "del", text: ai, leftNo: i + 1 });
       i++;
     } else {
-      rows.push({ kind: "add", text: b[j], rightNo: j + 1 });
+      rows.push({ kind: "add", text: bj, rightNo: j + 1 });
       j++;
     }
   }
   while (i < n) {
-    rows.push({ kind: "del", text: a[i], leftNo: i + 1 });
+    rows.push({ kind: "del", text: a[i] as string, leftNo: i + 1 });
     i++;
   }
   while (j < m) {
-    rows.push({ kind: "add", text: b[j], rightNo: j + 1 });
+    rows.push({ kind: "add", text: b[j] as string, rightNo: j + 1 });
     j++;
   }
   return rows;

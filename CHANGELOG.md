@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Added
+- `DatasetItemDiff` composite — diff de duas versões de um dataset-item (input / expectedOutput / metadata stringificados; string passa direto, senão JSON pretty); campo ausente em AMBOS os itens é omitido honestamente (sem tabela vazia); reusa `DiffView`; zero dep nova; helper puro `fieldToText`/`fieldPresent` testado + axe (M14 T3.0)
+- `PromptVersionDiff` composite — diff de duas versões de prompt (template string OU chat-array normalizado para `role: content`; config em JSON pretty); DiffView de config omitido honestamente quando ambos os configs ausentes; reusa `DiffView`; zero dep nova; helper puro `templateToText`/`configToText` testado + axe (M14 T3.0)
+- `DiffView` primitivo — diff de texto por linha renderizado como `<table>` semântica sobre o `diffLines` puro (sem lib de diff); `mode="split"` (2 colunas, default) ou `"unified"` (inline); cada linha alterada carrega marker textual `+`/`-` + `data-diff` (a11y, não só cor); empty state honesto "No changes"; `<caption>` sr-only; `forwardRef`; reusa `cn` + o core `diff`; axe limpo (M14 T2.0)
 - `diffLines(oldText, newText)` helper puro em `src/lib/diff` — diff por linha via LCS (zero dep; rows eq/del/add com numeração honesta) (M14 T1.0)
 - Roadmap V3 — 6 milestones de componentes SOTA restantes (só DS-now, fundamentado em gap analysis langfuse+phoenix): M14 Diff viewing, M15 Cost & token visibility, M16 SeverityBadge, M17 Collaboration, M18 Eval authoring, M19 Chat & message (`/roadmap-feature v3-sota-components`)
 

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "prompt-version-diff",
+  "type": "registry:ui",
+  "title": "PromptVersionDiff",
+  "description": "Diffs two prompt versions by normalizing each snapshot's template (string passthrough; chat array -> 'role: content' text) and config (pretty JSON) to plain text, then composing DiffView for content and, when present, config. The config diff is omitted honestly when both versions have no config. Zero new dependency — reuses the DiffView primitive.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/diff-view.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/composites/prompt-version-diff/to-diff-text.ts",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-version-diff/to-diff-text.ts",
+      "content": "/**\n * Pure normalizers that turn a prompt snapshot's domain shape into the plain\n * text `DiffView` diffs (M14 ADR D3 — composites normalize, DiffView diffs).\n * No React, no I/O; total and deterministic.\n */\n\n/** A single chat message in an array-shaped (ChatML-style) template. */\nexport interface ChatMessage {\n  role: string;\n  content: string;\n}\n\n/** A prompt version: either a raw string template or a chat-message array. */\nexport interface PromptSnapshot {\n  template: string | ChatMessage[];\n  config?: Record<string, unknown>;\n}\n\n/**\n * Normalize a template to readable text. A string passes through unchanged; a\n * chat array becomes one `role: content` line per message (blank line between\n * messages so multi-line contents stay legible in the diff).\n */\nexport function templateToText(template: string | ChatMessage[]): string {\n  if (typeof template === \"string\") return template;\n  return template.map((m) => `${m.role}: ${m.content}`).join(\"\\n\\n\");\n}\n\n/**\n * Pretty-print a config object to JSON. Absent/empty → \"\" (the caller omits the\n * config diff entirely when both sides are empty).\n */\nexport function configToText(config?: Record<string, unknown>): string {\n  if (!config || Object.keys(config).length === 0) return \"\";\n  return JSON.stringify(config, null, 2);\n}\n"
+    },
+    {
+      "path": "components/composites/prompt-version-diff/prompt-version-diff.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/prompt-version-diff/prompt-version-diff.tsx",
+      "content": "import type { HTMLAttributes } from \"react\";\nimport { cn } from \"@/lib/cn\";\nimport { DiffSection, type DiffSectionCommon } from \"@/components/ui/diff-view/diff-section\";\nimport { type PromptSnapshot, configToText, templateToText } from \"@/components/ui/prompt-version-diff/to-diff-text\";\n\n/**\n * PromptVersionDiff — diffs two prompt versions (M14 ADR D3). Normalizes each\n * snapshot's template (string passthrough; chat array → `role: content` text)\n * and config (pretty JSON) to plain text, then composes `DiffView` for content\n * and, when present, config. Zero new dependency — reuses the DS diff primitive.\n *\n * The config diff is omitted honestly when both versions have no config, rather\n * than rendering an empty \"No changes\" table nobody asked for.\n *\n *   <PromptVersionDiff oldPrompt={v1} newPrompt={v2} />\n */\n\nexport type PromptVersionDiffProps = Omit<HTMLAttributes<HTMLDivElement>, \"children\"> &\n  DiffSectionCommon & {\n    oldPrompt: PromptSnapshot;\n    newPrompt: PromptSnapshot;\n  };\n\nfunction PromptVersionDiff(props: PromptVersionDiffProps) {\n  const { oldPrompt, newPrompt, mode, oldLabel, newLabel, className, ...rest } = props;\n  const shared = { mode, oldLabel, newLabel };\n\n  const oldConfig = configToText(oldPrompt.config);\n  const newConfig = configToText(newPrompt.config);\n  const hasConfig = oldConfig !== \"\" || newConfig !== \"\";\n\n  return (\n    <div data-slot=\"prompt-version-diff\" className={cn(\"space-y-4\", className)} {...rest}>\n      <DiffSection\n        title=\"Content\"\n        oldText={templateToText(oldPrompt.template)}\n        newText={templateToText(newPrompt.template)}\n        {...shared}\n      />\n      {hasConfig && (\n        <DiffSection title=\"Config\" oldText={oldConfig} newText={newConfig} {...shared} />\n      )}\n    </div>\n  );\n}\n\nexport { PromptVersionDiff };\n"
+    }
+  ]
+}
