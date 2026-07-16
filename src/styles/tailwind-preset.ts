@@ -138,11 +138,13 @@ export const theoUIPreset: Partial<Config> = {
         "title-md": ["20px", { lineHeight: "1.4", letterSpacing: "-0.03em", fontWeight: "600" }],
         // Body tier — FAANG-density realignment 2026-05-22: body-md is the
         // industry-standard 14px (shadcn / Vercel Geist / Linear / Stripe /
-        // Mantine). The previous 15px was idiosyncratic. body-sm (14px label
-        // weight) remains separate via its line-height / weight signature.
+        // Mantine). The previous 15px was idiosyncratic. body-sm is 13px (its
+        // own line-height / weight signature), kept in lockstep with @theokit/ui
+        // and this preset's own tokens-v4.css so menu items / secondary text
+        // render at the same size across both scopes.
         "body-lg": ["18px", { lineHeight: "1.56", letterSpacing: "-0.01em", fontWeight: "400" }],
         "body-md": ["14px", { lineHeight: "1.43", letterSpacing: "0", fontWeight: "400" }],
-        "body-sm": ["14px", { lineHeight: "1.43", fontWeight: "400" }],
+        "body-sm": ["13px", { lineHeight: "1.46", fontWeight: "400" }],
         // Label tier — used on buttons, nav, secondary actions
         label: ["14px", { lineHeight: "1.43", fontWeight: "500" }],
         "label-caps": ["12px", { lineHeight: "1.33", letterSpacing: "0.04em", fontWeight: "500" }],
