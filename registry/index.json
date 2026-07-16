@@ -37,6 +37,12 @@
       "description": "Controlled, config-driven human annotation input. Dispatches on config.type (Phoenix's three-type model): categorical -> RadioGroup over named options; continuous -> number input bounded by the config; freeform -> textarea. Fully controlled (value + onValueChange); the consumer owns the config (fixture or backend store) and the submission. Composes the DS form primitives."
     },
     {
+      "name": "annotation-summary-group",
+      "type": "registry:ui",
+      "title": "AnnotationSummaryGroup",
+      "description": "Collapsible group showing aggregate stats over a list of annotation values for one AnnotationConfig. Reuses the AnnotationConfig contract and dispatches on config.type: continuous -> mean of the finite numeric values + count; categorical -> count per option label + total count; freeform -> count of non-empty values. Controlled and pure -- the consumer owns values; this component only summarizes. Native details/summary for zero-JS collapsibility; composes Card/Badge."
+    },
+    {
       "name": "attributes-table",
       "type": "registry:ui",
       "title": "AttributesTable",
@@ -203,6 +209,12 @@
       "type": "registry:lib",
       "title": "Environment helpers",
       "description": "Typed environment helpers (isDev / isProd) reading NODE_ENV through a single accessor that works in browser bundlers, Node/SSR, and unbundled browsers."
+    },
+    {
+      "name": "evaluator-form",
+      "type": "registry:ui",
+      "title": "EvaluatorForm",
+      "description": "Controlled, config-driven builder for a built-in evaluator. Dispatches on value.type (Phoenix's code-evaluator model): a select switches the evaluator type; the fields below edit the config for the current type -- exact_match/contains -> a target string; regex -> pattern + optional flags; levenshtein/json_distance -> a numeric threshold. Switching type emits a fresh config of that type with sensible defaults. Fully controlled (value + onChange); the form only edits -- execution/sandboxing of the evaluator is a platform concern. Composes DS primitives."
     },
     {
       "name": "file-dropzone",

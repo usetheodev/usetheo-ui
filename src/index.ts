@@ -271,20 +271,16 @@ export type { HistogramProps } from "./components/composites/histogram/index.js"
 export { PercentileChart } from "./components/composites/percentile-chart/index.js";
 // biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
 export type { PercentileBucket, PercentileChartProps } from "./components/composites/percentile-chart/index.js";
-export {
-  AnnotationInput,
-  isCategoricalConfig,
-  isContinuousConfig,
-  isFreeformConfig,
-} from "./components/composites/annotation-input/index.js";
-export type {
-  AnnotationInputProps,
-  CategoricalOption,
-  AnnotationCategoricalConfig,
-  AnnotationContinuousConfig,
-  AnnotationFreeformConfig,
-  AnnotationConfig,
-} from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { AnnotationInput, isCategoricalConfig, isContinuousConfig, isFreeformConfig } from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { AnnotationInputProps, CategoricalOption, AnnotationCategoricalConfig, AnnotationContinuousConfig, AnnotationFreeformConfig, AnnotationConfig } from "./components/composites/annotation-input/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { EvaluatorForm, defaultEvaluatorConfig, isTargetEvaluator, isRegexEvaluator, isThresholdEvaluator } from "./components/composites/evaluator-form/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export type { EvaluatorFormProps, EvaluatorConfig, EvaluatorType, ExactMatchEvaluatorConfig, ContainsEvaluatorConfig, RegexEvaluatorConfig, LevenshteinEvaluatorConfig, JsonDistanceEvaluatorConfig } from "./components/composites/evaluator-form/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { AnnotationSummaryGroup, type AnnotationSummaryGroupProps } from "./components/composites/annotation-summary-group/index.js";
 export { TokenCostBreakdown } from "./components/composites/token-cost-breakdown/index.js";
 export type { TokenCostBreakdownProps } from "./components/composites/token-cost-breakdown/index.js";
 export { PriceBreakdown } from "./components/composites/price-breakdown/index.js";

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "evaluator-form",
+  "type": "registry:ui",
+  "title": "EvaluatorForm",
+  "description": "Controlled, config-driven builder for a built-in evaluator. Dispatches on value.type (Phoenix's code-evaluator model): a select switches the evaluator type; the fields below edit the config for the current type -- exact_match/contains -> a target string; regex -> pattern + optional flags; levenshtein/json_distance -> a numeric threshold. Switching type emits a fresh config of that type with sensible defaults. Fully controlled (value + onChange); the form only edits -- execution/sandboxing of the evaluator is a platform concern. Composes DS primitives.",
+  "dependencies": [],
+  "registryDependencies": ["cn", "input", "label", "tailwind-preset"],
+  "files": [
+    {
+      "path": "components/composites/evaluator-form/types.ts",
+      "type": "registry:ui",
+      "target": "components/ui/evaluator-form/types.ts"
+    },
+    {
+      "path": "components/composites/evaluator-form/evaluator-form.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/evaluator-form/evaluator-form.tsx"
+    }
+  ]
+}
