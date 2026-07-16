@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.28.2] - 2026-07-16
+
+### Changed
+- Menus mais largos, alinhados com a dimensão dos dropdowns do `@theokit/ui`: o `DropdownMenu`
+  (Content + SubContent) e o `Select` (Content) passam de `min-w-32` / `min-w-[8rem]` (128px) para
+  **`min-w-[12rem]` (192px)** — a mesma largura-base dos menus do `@theokit/ui` (approval/model/intent).
+  Combinado com o `@theokit/ui@1.2.1` (que leva `--popover` ao tom escuro do card `#121212`), os menus
+  das duas libs passam a ter a mesma cor e largura quando coexistem numa tela (ex.: Builder do studio).
+  Ajuste equivalente no `--popover` do `.ladle/tokens.css` (dev/playground). Visual-only, zero mudança de
+  API; suíte 1300/1300. (#ui-scope-parity)
+
 ## [0.28.1] - 2026-07-16
 
 ### Fixed
