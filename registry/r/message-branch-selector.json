@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message-branch-selector",
+  "type": "registry:ui",
+  "title": "MessageBranchSelector",
+  "description": "Controlled navigator across alternative message branches (e.g. regenerated responses): '‹ 2 / 5 ›' with prev/next Buttons (accessible labels 'Previous branch' / 'Next branch'). Fully controlled — the consumer owns index and reacts to onPrev/onNext; regenerate/streaming is a platform concern. Prev is disabled at the first branch, next at the last; a single branch (count <= 1) renders nothing. Composes Button — zero new dependency.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://usetheodev.github.io/usetheo-ui/r/cn.json",
+    "https://usetheodev.github.io/usetheo-ui/r/button.json",
+    "https://usetheodev.github.io/usetheo-ui/r/tailwind-preset.json"
+  ],
+  "files": [
+    {
+      "path": "components/composites/message-branch-selector/message-branch-selector.tsx",
+      "type": "registry:ui",
+      "target": "components/ui/message-branch-selector.tsx",
+      "content": "import { forwardRef } from \"react\";\nimport type { HTMLAttributes } from \"react\";\nimport { cn } from \"@/lib/cn\";\nimport { Button } from \"@/components/ui/button\";\n\n/**\n * MessageBranchSelector — controlled navigator across alternative message\n * branches (e.g. regenerated responses): \"‹ 2 / 5 ›\" with prev/next buttons.\n *\n * Fully controlled (M19 ADR D3): the consumer owns `index` and reacts to\n * `onPrev` / `onNext`; regenerate / streaming is a platform concern, not the DS.\n * Prev is disabled at the first branch, next at the last. With a single branch\n * (`count <= 1`) there is nothing to navigate, so it renders nothing.\n *\n *   <MessageBranchSelector index={i} count={branches.length}\n *     onPrev={() => setI(i - 1)} onNext={() => setI(i + 1)} />\n */\nexport interface MessageBranchSelectorProps\n  extends Omit<HTMLAttributes<HTMLDivElement>, \"onChange\"> {\n  /** Zero-based index of the active branch. */\n  index: number;\n  /** Total number of branches. */\n  count: number;\n  /** Navigate to the previous branch. */\n  onPrev: () => void;\n  /** Navigate to the next branch. */\n  onNext: () => void;\n  /** Disable both controls (e.g. while a branch is loading). */\n  disabled?: boolean;\n}\n\nfunction NavButton(props: {\n  label: string;\n  glyph: string;\n  disabled: boolean;\n  onClick: () => void;\n}) {\n  return (\n    <Button\n      type=\"button\"\n      variant=\"ghost\"\n      size=\"icon\"\n      aria-label={props.label}\n      disabled={props.disabled}\n      onClick={props.onClick}\n    >\n      <span aria-hidden=\"true\">{props.glyph}</span>\n    </Button>\n  );\n}\n\nconst MessageBranchSelector = forwardRef<HTMLDivElement, MessageBranchSelectorProps>(\n  ({ className, index, count, onPrev, onNext, disabled = false, ...props }, ref) => {\n    // A single branch has nothing to navigate — render nothing honestly.\n    if (count <= 1) return null;\n\n    return (\n      <div\n        data-slot=\"message-branch-selector\"\n        ref={ref}\n        className={cn(\n          \"inline-flex items-center gap-1 text-body-sm text-muted-foreground\",\n          className,\n        )}\n        {...props}\n      >\n        <NavButton\n          label=\"Previous branch\"\n          glyph=\"‹\"\n          disabled={disabled || index <= 0}\n          onClick={onPrev}\n        />\n        <span data-slot=\"message-branch-selector-label\" className=\"tabular-nums\">\n          {index + 1} / {count}\n        </span>\n        <NavButton\n          label=\"Next branch\"\n          glyph=\"›\"\n          disabled={disabled || index >= count - 1}\n          onClick={onNext}\n        />\n      </div>\n    );\n  },\n);\nMessageBranchSelector.displayName = \"MessageBranchSelector\";\n\nexport { MessageBranchSelector };\n"
+    }
+  ]
+}

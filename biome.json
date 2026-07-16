@@ -89,6 +89,19 @@
           }
         }
       }
+    },
+    {
+      "include": [
+        "**/chat-message-card/chat-message-card.stories.tsx",
+        "**/chat-message-card/chat-message-card.test.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useValidAriaRole": "off"
+          }
+        }
+      }
     }
   ]
 }

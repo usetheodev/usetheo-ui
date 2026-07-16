@@ -60,15 +60,10 @@ export {
   type ComboboxItemProps,
   type ComboboxProps,
 } from "./components/primitives/combobox/index.js";
-export {
-  Slider,
-  type SliderMark,
-  type SliderProps,
-} from "./components/primitives/slider/index.js";
-export {
-  UpdateBanner,
-  type UpdateBannerProps,
-} from "./components/primitives/update-banner/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { Slider, type SliderMark, type SliderProps } from "./components/primitives/slider/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { UpdateBanner, type UpdateBannerProps } from "./components/primitives/update-banner/index.js";
 export { Card } from "./components/primitives/card/index.js";
 export { Input, type InputProps } from "./components/primitives/input/index.js";
 export { Dialog } from "./components/primitives/dialog/index.js";
@@ -292,3 +287,9 @@ export type { Severity, BadgeVariant, SeverityBadgeProps } from "./components/co
 export { TagInput, type TagInputProps } from "./components/composites/tag-input/index.js";
 // biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
 export { CommentThread, type Comment, type CommentThreadProps } from "./components/composites/comment-thread/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { ChatMessageCard, type ChatMessageCardProps } from "./components/composites/chat-message-card/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { MessageBranchSelector, type MessageBranchSelectorProps } from "./components/composites/message-branch-selector/index.js";
+// biome-ignore format: keep these barrel re-exports on single lines (file-length budget)
+export { PromptTemplateEditor, extractVars, type PromptTemplateEditorProps } from "./components/composites/prompt-template-editor/index.js";

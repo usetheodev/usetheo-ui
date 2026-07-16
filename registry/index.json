@@ -85,6 +85,12 @@
       "description": "Pure chart-data helpers. computeHistogram distributes numeric values into equal-width bins (count per bin; non-finite values dropped; degenerate range collapses to a single bin; upper edge inclusive on the last bin). Zero dependency, total, deterministic."
     },
     {
+      "name": "chat-message-card",
+      "type": "registry:ui",
+      "title": "ChatMessageCard",
+      "description": "A single chat message rendered as a card (an atom): a role Badge (user/assistant/tool/system, unknown roles fall back to a neutral outline), the text content, and any structured tool-calls / tool-results rendered via the existing CodeBlock composite (not hand-rolled). Reuses the trace-core ToolCall type so an assistant span's tool_calls drop in directly. Empty (no content, no tools) reads as an honest placeholder. Distinct from TraceTranscript (a feed) — this is one controlled message. Composes Badge/CodeBlock — zero new dependency."
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
@@ -271,6 +277,12 @@
       "description": "50/50 split shell for authentication screens — form pane on the left, illustration on the right."
     },
     {
+      "name": "message-branch-selector",
+      "type": "registry:ui",
+      "title": "MessageBranchSelector",
+      "description": "Controlled navigator across alternative message branches (e.g. regenerated responses): '‹ 2 / 5 ›' with prev/next Buttons (accessible labels 'Previous branch' / 'Next branch'). Fully controlled — the consumer owns index and reacts to onPrev/onNext; regenerate/streaming is a platform concern. Prev is disabled at the first branch, next at the last; a single branch (count <= 1) renders nothing. Composes Button — zero new dependency."
+    },
+    {
       "name": "metric-card",
       "type": "registry:ui",
       "title": "MetricCard",
@@ -335,6 +347,12 @@
       "type": "registry:block",
       "title": "ProjectCard",
       "description": "Surface for a project in a project listing."
+    },
+    {
+      "name": "prompt-template-editor",
+      "type": "registry:ui",
+      "title": "PromptTemplateEditor",
+      "description": "Controlled prompt-template editor: a Textarea plus a simple hint area listing available variables and which are used vs missing. The hint is a lightweight overlay over the plain textarea (no CodeMirror / editor library) — variable detection uses the pure extractVars helper that recognizes both mustache ({{name}}) and f-string ({name}) placeholders, deduped in order. 'Used' = the variable appears in the value; 'missing' = used in the value but not declared. Composes Textarea/Badge — zero new dependency."
     },
     {
       "name": "prompt-version-diff",
