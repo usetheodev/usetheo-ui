@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-07-20
+
+### Added
+- `TrendChart` `yMax?: number` prop — pin the top of the y-axis (e.g. `1` for a 0–1 score) instead of auto-fitting to the data max. Ignored when ≤ 0.
+
+### Fixed
+- `TrendChart` no longer stretches markers into ovals on wide containers: the SVG viewBox now tracks the element's real pixel width (via `ResizeObserver`) instead of a fixed 600-wide viewBox with `preserveAspectRatio="none"`. jsdom/SSR keeps the 600 fallback.
+- `niceMax` no longer returns binary-float artifacts (`Math.ceil(0.68 / 0.1) * 0.1` was `0.7000000000000001`, which rendered raw on the y-axis) — the bound is normalized via `toPrecision(12)`.
+
 ## [0.29.0] - 2026-07-20
 
 ### Added
