@@ -4,7 +4,7 @@
  * transcript) shares, so selection/keyboard indices agree across views.
  */
 
-import { spanCostUsd } from "./cost.js";
+import { spanOwnCostUsd } from "./cost.js";
 import { durationMs } from "./duration.js";
 import type { FlatSpan, TraceSpan, TranscriptRow } from "./types.js";
 
@@ -80,7 +80,7 @@ export function toTranscriptRows(root: TraceSpan): TranscriptRow[] {
       stats: {
         inputTokens: span.inputTokens ?? 0,
         outputTokens: span.outputTokens ?? 0,
-        costUsd: spanCostUsd(span),
+        costUsd: spanOwnCostUsd(span),
         durationMs: durationMs(span),
       },
     });

@@ -76,7 +76,12 @@ export interface FlatSpan {
 export interface TranscriptRowStats {
   inputTokens: number;
   outputTokens: number;
-  costUsd: number;
+  /**
+   * Per-span own cost. `undefined` when the span has no individually-computed cost — the feed
+   * renders `—` then, never a fabricated `$0.0000` (M52 / theo-lens#71 Finding 3). A real computed
+   * cost is a positive number.
+   */
+  costUsd: number | undefined;
   durationMs: number | null;
 }
 

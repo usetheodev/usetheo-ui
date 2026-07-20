@@ -142,7 +142,8 @@ function Row({ row, ...ctx }: { row: TranscriptRow } & RowCtx) {
         </Badge>
         {stats ? (
           <span className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
-            {stats.inputTokens}→{stats.outputTokens} · {ctx.formatCostUsd(stats.costUsd)} ·{" "}
+            {stats.inputTokens}→{stats.outputTokens} ·{" "}
+            {stats.costUsd === undefined ? "—" : ctx.formatCostUsd(stats.costUsd)} ·{" "}
             {formatDurationMs(stats.durationMs)}
           </span>
         ) : null}

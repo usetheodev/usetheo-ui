@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-07-20
+
+### Added
+- `spanOwnCostUsd(span): number | undefined` — the per-span DISPLAY cost helper. Unlike `spanCostUsd`
+  (which collapses absent/≤0 to `0` so `∑` badges stay honest), this returns `undefined` when a span
+  has **no individually-computed cost**, so per-span surfaces render `—` (em-dash) instead of a
+  fabricated `$0.0000`. (theo-lens#71 Finding 3 / M52)
+
+### Fixed
+- `TraceTranscript` per-row cost showed `$0.0000` for a span with no individually-computed cost — it
+  reused the aggregate helper (`spanCostUsd`, coalesces to 0) for a per-span display. It now uses
+  `spanOwnCostUsd` and renders `—`, matching the `TokenCostBreakdown` contract (absent → em-dash).
+  `TranscriptRowStats.costUsd` is now `number | undefined`. Cost is a core observability metric, so a
+  misleading `$0.0000` per span is a correctness bug. Suite 1310/1310. (theo-lens#71 Finding 3 / M52)
+
 ## [0.28.2] - 2026-07-16
 
 ### Changed

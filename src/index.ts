@@ -20,6 +20,7 @@ export {
   packRows,
   prettyValue,
   spanCostUsd,
+  spanOwnCostUsd,
   toNs,
   alignSpanTrees,
   groupByNamespace,

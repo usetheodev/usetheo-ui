@@ -59,9 +59,16 @@ describe("toTranscriptRows", () => {
     expect(rows[0]?.stats).toMatchObject({
       inputTokens: 0,
       outputTokens: 0,
-      costUsd: 0,
       durationMs: null,
     });
+    // Cost is a per-span DISPLAY value, not a sum: a span with no individually-computed cost
+    // carries `undefined` (→ em-dash in the feed), never a fabricated 0 (→ "$0.0000").
+    expect(rows[0]?.stats?.costUsd).toBeUndefined();
+  });
+
+  it("test_stats_com_custo_proprio_preserva_o_valor", () => {
+    const rows = toTranscriptRows(span({ id: "solo", costUsd: 0.0234 }));
+    expect(rows[0]?.stats?.costUsd).toBe(0.0234);
   });
 
   it("test_preview_trunca_em_uma_linha", () => {

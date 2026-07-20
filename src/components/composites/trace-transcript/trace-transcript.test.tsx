@@ -28,6 +28,30 @@ describe("TraceTranscript", () => {
     expect(screen.getByText("llm.plan")).toBeInTheDocument();
   });
 
+  it("test_span_sem_custo_proprio_mostra_em_dash_nao_zero", () => {
+    // M52 / theo-lens#71 Finding 3: a span with no individually-computed cost renders `—`
+    // (matching the Span I/O panel), never a misleading fabricated "$0.0000".
+    const noCost: React.ComponentProps<typeof TraceTranscript>["root"] = {
+      id: "x",
+      parentId: null,
+      name: "tool.call",
+    };
+    const { container } = render(<TraceTranscript root={noCost} selectedId="x" onSelect={() => {}} />);
+    expect(container.textContent).not.toContain("$0.0000");
+    expect(container.textContent).toContain("—");
+  });
+
+  it("test_span_com_custo_proprio_mostra_valor_formatado", () => {
+    const priced: React.ComponentProps<typeof TraceTranscript>["root"] = {
+      id: "y",
+      parentId: null,
+      name: "llm.call",
+      costUsd: 0.0234,
+    };
+    const { container } = render(<TraceTranscript root={priced} selectedId="y" onSelect={() => {}} />);
+    expect(container.textContent).toContain("$0.0234");
+  });
+
   it("test_group_header_colapsa_subtree", async () => {
     const user = userEvent.setup();
     function Controlled() {

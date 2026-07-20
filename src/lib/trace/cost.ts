@@ -28,6 +28,27 @@ export function spanCostUsd(span: TraceSpan): number {
 }
 
 /**
+ * A single span's own USD cost for PER-SPAN DISPLAY: the promoted `costUsd` field, else the first
+ * parseable cost attribute — but returns `undefined` when the span has no individually-computed
+ * cost (absent / non-numeric / ≤ 0). Distinct from `spanCostUsd` (which collapses to 0 for honest
+ * `∑` badges): a per-span cost is "exists or doesn't", not a sum, so the absent case renders `—`
+ * (em-dash) downstream instead of a fabricated `$0.0000` (M52 / theo-lens#71 Finding 3).
+ */
+export function spanOwnCostUsd(span: TraceSpan): number | undefined {
+  if (typeof span.costUsd === "number" && Number.isFinite(span.costUsd)) {
+    return span.costUsd > 0 ? span.costUsd : undefined;
+  }
+  const attrs = span.attributes ?? {};
+  for (const key of COST_ATTRIBUTE_KEYS) {
+    if (!(key in attrs)) continue;
+    const raw = attrs[key];
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : Number.NaN;
+    if (Number.isFinite(n)) return n > 0 ? n : undefined;
+  }
+  return undefined;
+}
+
+/**
  * Sum a span's own cost + all descendants' (`∑`). Total: missing cost counts as 0, never NaN.
  * Cycle-safe: a repeated/self-referential child is counted at most once (no stack overflow).
  */
