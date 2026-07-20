@@ -41,6 +41,13 @@ describe("TrendChart — pure helpers (ported)", () => {
     expect(niceMax([-5])).toBe(0);
   });
 
+  it("niceMax returns a clean float, not a binary-float artifact", () => {
+    // Math.ceil(0.68 / 0.1) * 0.1 === 0.7000000000000001 without the toPrecision fix.
+    expect(niceMax([0.68])).toBe(0.7);
+    expect(niceMax([0.5, 0.68])).toBe(0.7);
+    expect(niceMax([0.34])).toBe(0.4);
+  });
+
   it("seriesPath builds an SVG polyline with one coord per point", () => {
     const id = (v: number) => v;
     const d = seriesPath(pts(1, 2, 3), id, id);
@@ -57,6 +64,14 @@ describe("TrendChart — rendering (ported)", () => {
       series("p95", pts(2, 4, 6, 8, 10), "#f59e0b"),
     ]);
     expect(slots(container, "trend-chart-line")).toHaveLength(2);
+  });
+
+  it("yMax prop pins the top of the axis instead of auto-fitting to the data max", () => {
+    // data max 0.68 → without yMax the axis top is niceMax(0.68)=0.7; yMax={1} pins it to 1.
+    const { container } = renderChart([series("score", pts(0.5, 0.68))], { yMax: 1 });
+    const labels = [...container.querySelectorAll("svg text")].map((t) => t.textContent);
+    expect(labels).toContain("1"); // top axis label = valueFormatter(yMax=1)
+    expect(labels).not.toContain("0.7");
   });
 
   it("a11y table reads ragged series by shared period axis, not by position (M90)", () => {

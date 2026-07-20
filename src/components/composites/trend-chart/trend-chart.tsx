@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import type { HTMLAttributes } from "react";
 import { cn } from "../../../lib/cn.js";
 
@@ -47,7 +47,10 @@ export function niceMax(values: number[]): number {
   const m = Math.max(0, ...values.filter((v) => Number.isFinite(v)));
   if (m <= 0) return 0;
   const pow = 10 ** Math.floor(Math.log10(m));
-  return Math.ceil(m / pow) * pow;
+  // `Number(x.toPrecision(12))` strips the binary-float artifact a fractional `pow`
+  // introduces: Math.ceil(0.68 / 0.1) * 0.1 === 0.7000000000000001, which otherwise
+  // renders raw on the y-axis. toPrecision(12) → "0.700000000000" → 0.7.
+  return Number((Math.ceil(m / pow) * pow).toPrecision(12));
 }
 
 /** SVG path `d` for a polyline over the given scales. Non-finite points are skipped. */
@@ -77,13 +80,49 @@ export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
   height?: number;
   /** Formats y-axis labels and table cells (tremor vocabulary). */
   valueFormatter?: (v: number) => string;
+  /**
+   * Pin the top of the y-axis. Pass a fixed bound (e.g. `1` for a 0–1 score) so the
+   * scale is stable and comparable across renders instead of auto-fitting to the data
+   * max via {@link niceMax} (which makes 0.68 look near the top of a [0, 0.7] axis).
+   * Ignored when ≤ 0. Default: auto (`niceMax`).
+   */
+  yMax?: number;
 }
 
 const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
   (
-    { title, series, height = 180, valueFormatter = (v: number) => String(v), className, ...props },
+    {
+      title,
+      series,
+      height = 180,
+      valueFormatter = (v: number) => String(v),
+      yMax: yMaxProp,
+      className,
+      ...props
+    },
     ref,
   ) => {
+    // Width-aware viewBox: track the SVG's real pixel width so the viewBox is 1 unit = 1px.
+    // The chart previously used a FIXED 600-wide viewBox with preserveAspectRatio="none",
+    // so on a wider container everything stretched horizontally (round markers → ovals).
+    // Measuring the width keeps the geometry undistorted while still filling the width.
+    // jsdom/SSR has no ResizeObserver / zero clientWidth → we keep the VIEW_W fallback,
+    // so existing snapshot-style tests (viewBox "0 0 600 …") stay green.
+    const [viewW, setViewW] = useState<number>(VIEW_W);
+    const roRef = useRef<ResizeObserver | null>(null);
+    const setSvgNode = useCallback((node: SVGSVGElement | null) => {
+      roRef.current?.disconnect();
+      roRef.current = null;
+      if (!node || typeof ResizeObserver === "undefined") return;
+      const measure = () => {
+        const w = node.clientWidth;
+        if (w > 0) setViewW(w);
+      };
+      measure();
+      roRef.current = new ResizeObserver(measure);
+      roRef.current.observe(node);
+    }, []);
+
     const allPoints = series.flatMap((s) => s.points);
     const hasData = allPoints.some((p) => Number.isFinite(p.y));
 
@@ -113,7 +152,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     const xs = allPoints.map((p) => p.x);
     const xMin = Math.min(...xs);
     const xMax = Math.max(...xs);
-    const yMax = niceMax(allPoints.map((p) => p.y)) || 1;
+    const yMax =
+      yMaxProp != null && yMaxProp > 0 ? yMaxProp : niceMax(allPoints.map((p) => p.y)) || 1;
 
     // M90: the a11y-table row axis is the SORTED UNION of every series' x-values, so a
     // value is read under its own period — NOT positionally off series[0] (which
@@ -121,7 +161,7 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     // looks its cell up BY x; a period it has no point for renders "—".
     const axisXs = Array.from(new Set(allPoints.map((p) => p.x))).sort((a, b) => a - b);
     const yByX = series.map((s) => new Map(s.points.map((p) => [p.x, p.y] as const)));
-    const xScale = linScale([xMin, xMax], [PAD.left, VIEW_W - PAD.right]);
+    const xScale = linScale([xMin, xMax], [PAD.left, viewW - PAD.right]);
     const yScale = linScale([0, yMax], [height - PAD.bottom, PAD.top]); // inverted (SVG y grows down)
 
     return (
@@ -130,7 +170,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
           {title}
         </figcaption>
         <svg
-          viewBox={`0 0 ${VIEW_W} ${height}`}
+          ref={setSvgNode}
+          viewBox={`0 0 ${viewW} ${height}`}
           preserveAspectRatio="none"
           role="img"
           aria-label={`${title} trend`}
@@ -141,7 +182,7 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
           <line
             x1={PAD.left}
             y1={height - PAD.bottom}
-            x2={VIEW_W - PAD.right}
+            x2={viewW - PAD.right}
             y2={height - PAD.bottom}
             className="stroke-border"
             strokeWidth={1}
@@ -149,7 +190,7 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
           <line
             x1={PAD.left}
             y1={PAD.top}
-            x2={VIEW_W - PAD.right}
+            x2={viewW - PAD.right}
             y2={PAD.top}
             className="stroke-border/50"
             strokeWidth={1}
