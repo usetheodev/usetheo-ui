@@ -151,25 +151,29 @@ const Description = forwardRef<
 ));
 Description.displayName = "Sheet.Description";
 
-const Sheet = DialogPrimitive.Root as typeof DialogPrimitive.Root & {
-  Trigger: typeof DialogPrimitive.Trigger;
-  Close: typeof DialogPrimitive.Close;
-  Content: typeof Content;
-  Overlay: typeof Overlay;
-  Header: typeof Header;
-  Body: typeof Body;
-  Footer: typeof Footer;
-  Title: typeof Title;
-  Description: typeof Description;
-};
-Sheet.Trigger = DialogPrimitive.Trigger;
-Sheet.Close = DialogPrimitive.Close;
-Sheet.Content = Content;
-Sheet.Overlay = Overlay;
-Sheet.Header = Header;
-Sheet.Body = Body;
-Sheet.Footer = Footer;
-Sheet.Title = Title;
-Sheet.Description = Description;
+/**
+ * Own Root wrapper (NOT `DialogPrimitive.Root` itself). Sheet and Dialog share the
+ * same Radix `DialogPrimitive.Root`; assigning compound members onto that shared
+ * object made `Sheet.Content` (lateral) clobber `Dialog.Content` (centered), so a
+ * `<Dialog.Content>` rendered as a drawer. Wrapping Root in a passthrough gives Sheet
+ * its own object — the two compounds no longer collide. Radix context still flows via
+ * children passthrough (shadcn pattern).
+ */
+const Root = (props: ComponentPropsWithoutRef<typeof DialogPrimitive.Root>) => (
+  <DialogPrimitive.Root {...props} />
+);
+Root.displayName = "Sheet";
+
+const Sheet = /*#__PURE__*/ Object.assign(Root, {
+  Trigger: DialogPrimitive.Trigger,
+  Close: DialogPrimitive.Close,
+  Content,
+  Overlay,
+  Header,
+  Body,
+  Footer,
+  Title,
+  Description,
+});
 
 export { Sheet, sheetVariants };

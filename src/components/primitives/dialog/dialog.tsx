@@ -129,7 +129,21 @@ const Description = forwardRef<
 ));
 Description.displayName = "Dialog.Description";
 
-const Dialog = /*#__PURE__*/ Object.assign(DialogPrimitive.Root, {
+/**
+ * Own Root wrapper (NOT `DialogPrimitive.Root` itself). Dialog and Sheet are both
+ * built on the same Radix `DialogPrimitive.Root`; assigning the compound members
+ * directly onto that shared object made `Sheet.Content` clobber `Dialog.Content`
+ * (last module evaluated wins) — so every `<Dialog.Content>` rendered as a lateral
+ * drawer. Wrapping Root in a passthrough component gives Dialog its own object, so
+ * `Dialog.Content` (centered) and `Sheet.Content` (lateral) coexist. Radix context
+ * still flows because children pass through to the real Root (shadcn pattern).
+ */
+const Root = (props: ComponentPropsWithoutRef<typeof DialogPrimitive.Root>) => (
+  <DialogPrimitive.Root {...props} />
+);
+Root.displayName = "Dialog";
+
+const Dialog = /*#__PURE__*/ Object.assign(Root, {
   Trigger: DialogPrimitive.Trigger,
   Close: DialogPrimitive.Close,
   Content,

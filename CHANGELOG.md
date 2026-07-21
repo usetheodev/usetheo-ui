@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-## [0.30.0] - 2026-07-20
+## [0.31.0] - 2026-07-21
+
+### Fixed
+- **`Dialog` no longer renders as a lateral drawer.** `Dialog` and `Sheet` were both `DialogPrimitive.Root` — the *same object* — with their compound members assigned directly onto it, so `Sheet.Content` (a right-side drawer) clobbered `Dialog.Content` (centered) depending on module-evaluation order. Any `<Dialog.Content>` could open laterally instead of centered. Each now wraps Radix `Root` in its own passthrough component (shadcn pattern), so `Dialog.Content` (centered) and `Sheet.Content` (lateral) are distinct and coexist. Regression test imports both from the barrel and asserts Dialog renders centered (`left-1/2 top-1/2`) while Sheet renders lateral (`right-0 slide-in-from-right`), and that `Dialog.Content !== Sheet.Content`. No public API change — call sites are unaffected.
 
 ### Added
 - `TrendChart` `yMax?: number` prop — pin the top of the y-axis (e.g. `1` for a 0–1 score) instead of auto-fitting to the data max. Ignored when ≤ 0.
