@@ -53,17 +53,40 @@ export function niceMax(values: number[]): number {
   return Number((Math.ceil(m / pow) * pow).toPrecision(12));
 }
 
-/** SVG path `d` for a polyline over the given scales. Non-finite points are skipped. */
+/**
+ * SVG path `d` for a polyline over the given scales. A non-finite point is a GAP: the path BREAKS
+ * there and resumes with a new `M` subpath.
+ *
+ * M144 — this used to `filter(Number.isFinite)` and then join everything with `L`, which drew a
+ * continuous line straight over the hole. The filter is what made it wrong: it erased the
+ * information of WHERE the gap was, so the line could not break even in principle.
+ *
+ * Breaking is what every serious charting library does by default — `spanGaps` (Chart.js),
+ * `connectNulls` (Highcharts, ECharts, Recharts) and `connectgaps` (Plotly) all default to `false`,
+ * and Grafana ships "Connect null values: Never". It is also the only honest reading: connecting
+ * asserts continuity the data does not have, and the rest of THIS file already treats a non-finite
+ * `y` as absent (`niceMax` filters it, `hasData` filters it, and the accessible table renders `—`
+ * for a period a series has no point for).
+ *
+ * A run of one point emits a lone `M` and no `L` — a one-point line has no length, and the sparse
+ * marker is what makes it visible.
+ */
 export function seriesPath(
   points: TrendPoint[],
   xScale: (x: number) => number,
   yScale: (y: number) => number,
 ): string {
-  const finite = points.filter((p) => Number.isFinite(p.y));
-  if (finite.length === 0) return "";
-  return finite
-    .map((p, i) => `${i === 0 ? "M" : "L"}${xScale(p.x).toFixed(2)},${yScale(p.y).toFixed(2)}`)
-    .join(" ");
+  const out: string[] = [];
+  let emTrecho = false;
+  for (const p of points) {
+    if (!Number.isFinite(p.y)) {
+      emTrecho = false; // a lacuna fecha o trecho; o proximo ponto finito abre outro
+      continue;
+    }
+    out.push(`${emTrecho ? "L" : "M"}${xScale(p.x).toFixed(2)},${yScale(p.y).toFixed(2)}`);
+    emTrecho = true;
+  }
+  return out.join(" ");
 }
 
 // ---- component ----

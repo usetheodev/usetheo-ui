@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.32.0] - 2026-08-03
+
+### Fixed
+
+- **`TrendChart` desenhava uma linha contínua por cima do buraco.** Um ponto sem valor — um dia sem dado, um período sem medida — era **removido** da série antes do desenho, e a linha ligava os vizinhos como se nada faltasse. O gráfico afirmava continuidade que o dado não tem. Agora a linha **quebra** na lacuna e recomeça depois dela, que é o padrão de toda biblioteca séria (`spanGaps`, `connectNulls` e `connectgaps` são `false` por omissão em Chart.js, Highcharts, ECharts, Recharts e Plotly; o Grafana usa *Connect null values: Never*). O resto do componente já tratava valor ausente como ausente — o eixo Y o ignorava e a tabela acessível mostrava `—` —, então só o desenho da linha destoava. Gráficos com série completa não mudam em nada.
+
 ## [Unreleased]
 
 ## [0.31.0] - 2026-07-21

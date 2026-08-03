@@ -48,6 +48,56 @@ describe("TrendChart — pure helpers (ported)", () => {
     expect(niceMax([0.34])).toBe(0.4);
   });
 
+  /*
+   * M144 — A LACUNA.
+   *
+   * O docblock deste arquivo já declara que "non-finite points are skipped in the line and read as
+   * `—` in the table", e `niceMax`, `hasData` e a tabela acessível honram isso. `seriesPath` era o
+   * único que desmentia: ele FILTRAVA o ponto não-finito — apagando a informação de ONDE estava o
+   * buraco — e então ligava os sobreviventes com `L`, desenhando linha contínua por cima da lacuna.
+   *
+   * Quebrar é a convenção de toda biblioteca séria: `spanGaps` (Chart.js), `connectNulls`
+   * (Highcharts, ECharts, Recharts) e `connectgaps` (Plotly) são `false` por padrão, e o Grafana usa
+   * "Connect null values: Never". E é a única leitura honesta — ligar afirma continuidade que o dado
+   * não tem.
+   */
+  it("seriesPath quebra a linha na lacuna", () => {
+    const id = (v: number) => v;
+    const d = seriesPath(pts(1, undefined, 3), id, id);
+    // DOIS subcaminhos: um antes da lacuna, outro depois
+    expect(d.split("M")).toHaveLength(3); // "" + dois trechos
+    expect(d).not.toMatch(/M[^M]*L[^M]*L/); // nenhum trecho com 3 pontos ligados
+  });
+
+  it("seriesPath sem lacuna segue UM subcaminho", () => {
+    const id = (v: number) => v;
+    const d = seriesPath(pts(1, 2, 3), id, id);
+    // trava a nao-regressao: todo grafico existente tem serie densa
+    expect(d.split("M")).toHaveLength(2);
+    expect(d.split("L")).toHaveLength(3);
+  });
+
+  it("seriesPath com lacuna na ponta nao cria subcaminho vazio", () => {
+    const id = (v: number) => v;
+    for (const d of [seriesPath(pts(undefined, 1, 2), id, id), seriesPath(pts(1, 2, undefined), id, id)]) {
+      expect(d.split("M")).toHaveLength(2);
+      expect(d.trimEnd().endsWith("M")).toBe(false);
+    }
+  });
+
+  it("seriesPath com lacunas consecutivas produz DOIS subcaminhos, nao tres", () => {
+    const id = (v: number) => v;
+    // um trecho vazio nao e um trecho
+    expect(seriesPath(pts(1, undefined, undefined, 4), id, id).split("M")).toHaveLength(3);
+  });
+
+  it("seriesPath com ponto isolado entre lacunas produz um M sozinho", () => {
+    const id = (v: number) => v;
+    const d = seriesPath(pts(undefined, 2, undefined), id, id);
+    expect(d.split("M")).toHaveLength(2);
+    expect(d).not.toContain("L"); // uma linha de um ponto so nao tem comprimento
+  });
+
   it("seriesPath builds an SVG polyline with one coord per point", () => {
     const id = (v: number) => v;
     const d = seriesPath(pts(1, 2, 3), id, id);
