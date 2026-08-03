@@ -97,6 +97,35 @@ const PAD = { top: 8, right: 8, bottom: 4, left: 40 };
 // line reads as a cliff without them); a denser series draws the line only.
 const SPARSE_MARKER_MAX = 5;
 
+/**
+ * Quais pontos recebem marcador.
+ *
+ * Duas razões distintas para marcar, e a segunda só apareceu quando séries com lacuna passaram a
+ * existir (M144):
+ *
+ * 1. **Série esparsa** (< `SPARSE_MARKER_MAX` baldes) — 1-4 pontos leem como um penhasco dramático;
+ *    o marcador ancora o leitor no dado real. Regra do M76, preservada.
+ * 2. **Ponto isolado** — um ponto finito cercado de lacunas dos dois lados vira um `M` sozinho no
+ *    `path`, e um `M` sozinho **desenha nada**: bounding-box zero, invisível. O dado existe, está
+ *    correto, e o operador não vê. Medido no e2e do M144 (`d="M419.86,92.00 M448.00,36.00"`).
+ *
+ * A regra antiga só cobria (1), chaveando no TOTAL de pontos em vez de perguntar se o ponto de fato
+ * é desenhado — apesar de o comentário dela já declarar a intenção *"a dot keeps real data from
+ * rendering as an invisible line"*. Depois da densificação, uma série de 30 dias com dois dias
+ * finitos separados por lacuna cai fora de (1) e desaparece. Chart.js e Plotly marcam o ponto
+ * isolado exatamente por isto.
+ *
+ * Fora do JSX de propósito: é a aritmética da decisão, e aritmética isolada é aritmética que a
+ * mutação alcança.
+ */
+export function pontosComMarcador(points: TrendPoint[]): TrendPoint[] {
+  const finito = (p: TrendPoint | undefined): boolean => Number.isFinite(p?.y);
+  if (points.length < SPARSE_MARKER_MAX) return points.filter(finito);
+  // Vizinho ausente (as pontas) conta como lacuna — uma ponta finita seguida de buraco é tão
+  // invisível quanto um ponto no meio.
+  return points.filter((p, i) => finito(p) && !finito(points[i - 1]) && !finito(points[i + 1]));
+}
+
 export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
   title: string;
   series: TrendSeries[];
@@ -237,26 +266,20 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
               >
                 <title>{s.name}</title>
               </path>
-              {/* M76 (O-2): a sparse series (1-4 buckets) reads as a dramatic slope — anchor
-                  the reader to the actual few data points with a marker at each. A single-
-                  bucket range also collapses the polyline to a point, so a dot keeps real
-                  data from rendering as an invisible line. */}
-              {s.points.length < SPARSE_MARKER_MAX
-                ? s.points
-                    .filter((p) => Number.isFinite(p.y))
-                    .map((p, i) => (
-                      <circle
-                        key={`${s.name}-${p.x}-${i}`}
-                        data-slot="trend-chart-dot"
-                        cx={xScale(p.x)}
-                        cy={yScale(p.y)}
-                        r={2.5}
-                        fill={s.color}
-                      >
-                        <title>{s.name}</title>
-                      </circle>
-                    ))
-                : null}
+              {/* Série esparsa OU ponto isolado entre lacunas — a regra e o porquê de cada uma
+                  estão em `pontosComMarcador`. Sem o segundo caso, dado correto fica invisível. */}
+              {pontosComMarcador(s.points).map((p, i) => (
+                <circle
+                  key={`${s.name}-${p.x}-${i}`}
+                  data-slot="trend-chart-dot"
+                  cx={xScale(p.x)}
+                  cy={yScale(p.y)}
+                  r={2.5}
+                  fill={s.color}
+                >
+                  <title>{s.name}</title>
+                </circle>
+              ))}
             </g>
           ))}
         </svg>

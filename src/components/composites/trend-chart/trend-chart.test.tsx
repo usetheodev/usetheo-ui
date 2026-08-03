@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import { TrendChart as TrendChartFromBarrel } from "../../../index.js";
 import type { TrendSeries } from "./trend-chart.js";
-import { TrendChart, linScale, niceMax, seriesPath } from "./trend-chart.js";
+import { TrendChart, linScale, niceMax, pontosComMarcador, seriesPath } from "./trend-chart.js";
 import { RagLatency } from "./trend-chart.stories.js";
 
 const pts = (...ys: (number | undefined)[]): TrendSeries["points"] =>
@@ -79,7 +79,10 @@ describe("TrendChart — pure helpers (ported)", () => {
 
   it("seriesPath com lacuna na ponta nao cria subcaminho vazio", () => {
     const id = (v: number) => v;
-    for (const d of [seriesPath(pts(undefined, 1, 2), id, id), seriesPath(pts(1, 2, undefined), id, id)]) {
+    for (const d of [
+      seriesPath(pts(undefined, 1, 2), id, id),
+      seriesPath(pts(1, 2, undefined), id, id),
+    ]) {
       expect(d.split("M")).toHaveLength(2);
       expect(d.trimEnd().endsWith("M")).toBe(false);
     }
@@ -96,6 +99,39 @@ describe("TrendChart — pure helpers (ported)", () => {
     const d = seriesPath(pts(undefined, 2, undefined), id, id);
     expect(d.split("M")).toHaveLength(2);
     expect(d).not.toContain("L"); // uma linha de um ponto so nao tem comprimento
+  });
+
+  /**
+   * O teste acima prova que o ponto isolado vira `M` sozinho — e um `M` sozinho DESENHA NADA.
+   * Medido no e2e do M144: uma série densa de 30 dias com dois dias finitos separados por lacuna
+   * renderizou `d="M419.86,92.00 M448.00,36.00"`, um `path` de bounding-box zero que o navegador
+   * reporta como não-visível. O dado existe, está correto, e o operador não vê nada.
+   *
+   * A regra antiga chaveava no TOTAL de pontos (`< SPARSE_MARKER_MAX`), não em se o ponto de fato
+   * é desenhado — o próprio comentário dela dizia "a dot keeps real data from rendering as an
+   * invisible line", intenção que ela não cumpria depois da densificação. Chart.js e Plotly marcam
+   * o ponto isolado exatamente por isto.
+   */
+  it("ponto isolado entre lacunas GANHA marcador mesmo em serie densa", () => {
+    const densa = pts(1, undefined, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
+    const marcados = pontosComMarcador(densa);
+    expect(marcados.map((p) => p.y)).toEqual([1, 3]);
+  });
+
+  it("ponto com vizinho finito NAO ganha marcador — a linha ja o desenha", () => {
+    const densa = pts(1, 2, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
+    // 1 e 2 e 3 sao contiguos: a linha os liga. Marcar todos poluiria a serie densa.
+    expect(pontosComMarcador(densa)).toEqual([]);
+  });
+
+  it("ponta e isolada quando seu unico vizinho e lacuna", () => {
+    expect(pontosComMarcador(pts(1, undefined, undefined)).map((p) => p.y)).toEqual([1]);
+    expect(pontosComMarcador(pts(undefined, undefined, 9)).map((p) => p.y)).toEqual([9]);
+  });
+
+  it("serie esparsa segue marcando TODOS os pontos finitos (regra do M76 preservada)", () => {
+    // 1-4 baldes leem como um penhasco sem marcador — a regra antiga continua valendo aqui.
+    expect(pontosComMarcador(pts(1, 2, 3)).map((p) => p.y)).toEqual([1, 2, 3]);
   });
 
   it("seriesPath builds an SVG polyline with one coord per point", () => {

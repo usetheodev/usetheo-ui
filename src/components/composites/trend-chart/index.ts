@@ -1,6 +1,7 @@
 export {
   linScale,
   niceMax,
+  pontosComMarcador,
   seriesPath,
   TrendChart,
   type TrendChartProps,

@@ -1,12 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.33.0] - 2026-08-03
+
+### Fixed
+
+- **`TrendChart` não desenhava nada para um ponto cercado de lacunas.** A 0.32.0 fez a linha quebrar no buraco — correto —, mas um ponto finito com lacuna dos dois lados vira um `M` sozinho no `path`, e um `M` sozinho tem comprimento zero: o navegador o reporta como não-visível. O dado existia, estava certo, e o operador não via nada. A regra de marcador só cobria série **esparsa** (< 5 baldes), chaveando no total de pontos em vez de perguntar se o ponto de fato é desenhado — apesar de o comentário dela já declarar a intenção *"a dot keeps real data from rendering as an invisible line"*. Agora um ponto isolado ganha marcador em qualquer densidade, como fazem Chart.js e Plotly. Séries contíguas não mudam: marcar todo ponto de uma série densa poluiria o gráfico. Medido num gráfico de 30 dias com dois dias de consumo separados por um dia sem dado.
+
 ## [0.32.0] - 2026-08-03
 
 ### Fixed
 
 - **`TrendChart` desenhava uma linha contínua por cima do buraco.** Um ponto sem valor — um dia sem dado, um período sem medida — era **removido** da série antes do desenho, e a linha ligava os vizinhos como se nada faltasse. O gráfico afirmava continuidade que o dado não tem. Agora a linha **quebra** na lacuna e recomeça depois dela, que é o padrão de toda biblioteca séria (`spanGaps`, `connectNulls` e `connectgaps` são `false` por omissão em Chart.js, Highcharts, ECharts, Recharts e Plotly; o Grafana usa *Connect null values: Never*). O resto do componente já tratava valor ausente como ausente — o eixo Y o ignorava e a tabela acessível mostrava `—` —, então só o desenho da linha destoava. Gráficos com série completa não mudam em nada.
-
-## [Unreleased]
 
 ## [0.31.0] - 2026-07-21
 
