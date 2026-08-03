@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import { TrendChart as TrendChartFromBarrel } from "../../../index.js";
 import type { TrendSeries } from "./trend-chart.js";
-import { TrendChart, linScale, niceMax, pontosComMarcador, seriesPath } from "./trend-chart.js";
+import { TrendChart, linScale, markedPoints, niceMax, seriesPath } from "./trend-chart.js";
 import { RagLatency } from "./trend-chart.stories.js";
 
 const pts = (...ys: (number | undefined)[]): TrendSeries["points"] =>
@@ -114,24 +114,56 @@ describe("TrendChart — pure helpers (ported)", () => {
    */
   it("ponto isolado entre lacunas GANHA marcador mesmo em serie densa", () => {
     const densa = pts(1, undefined, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
-    const marcados = pontosComMarcador(densa);
+    const marcados = markedPoints(densa);
     expect(marcados.map((p) => p.y)).toEqual([1, 3]);
   });
 
   it("ponto com vizinho finito NAO ganha marcador — a linha ja o desenha", () => {
-    const densa = pts(1, 2, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
-    // 1 e 2 e 3 sao contiguos: a linha os liga. Marcar todos poluiria a serie densa.
-    expect(pontosComMarcador(densa)).toEqual([]);
+    // SEIS finitos contíguos: acima do piso de esparsidade, logo o ramo denso responde. Com três
+    // (a versão anterior deste caso) a série é esparsa em DADO e os três passam a ser marcados —
+    // que é a correção da regra do M76, não uma regressão.
+    const densa = pts(1, 2, 3, 4, 5, 6, ...Array.from({ length: 20 }, () => undefined));
+    expect(markedPoints(densa)).toEqual([]);
   });
 
+  // Series DENSAS de propósito: com 3 slots o ramo esparso responde e a lógica de vizinho — que é
+  // o que este caso diz exercitar — nunca roda. Restringir o ramo denso a `i > 0 && i < len-1`
+  // deixaria a versão anterior deste teste verde, que é a definição de teste que não mede.
   it("ponta e isolada quando seu unico vizinho e lacuna", () => {
-    expect(pontosComMarcador(pts(1, undefined, undefined)).map((p) => p.y)).toEqual([1]);
-    expect(pontosComMarcador(pts(undefined, undefined, 9)).map((p) => p.y)).toEqual([9]);
+    // CINCO finitos (acima do piso de esparsidade, para o ramo denso responder), todos isolados,
+    // e os das duas PONTAS entre eles. Com menos de cinco o ramo esparso devolve tudo e a lógica
+    // de vizinho nunca roda — foi assim que a mutação `i > 0 && i < len-1` sobreviveu à campanha.
+    const alternada = pts(1, undefined, 3, undefined, 5, undefined, 7, undefined, 9);
+    expect(markedPoints(alternada).map((p) => p.y)).toEqual([1, 3, 5, 7, 9]);
   });
 
-  it("serie esparsa segue marcando TODOS os pontos finitos (regra do M76 preservada)", () => {
-    // 1-4 baldes leem como um penhasco sem marcador — a regra antiga continua valendo aqui.
-    expect(pontosComMarcador(pts(1, 2, 3)).map((p) => p.y)).toEqual([1, 2, 3]);
+  /**
+   * A regra do M76 chaveava no total de SLOTS. Depois da densificação um slot deixou de ser um
+   * dado: uma série de 30 dias com 3 dias contíguos de consumo tem 30 slots e 3 pontos, caía no
+   * ramo denso, e como os três são vizinhos entre si NENHUM ganhava marcador — o penhasco de 1-4
+   * baldes que o M76 existe para ancorar, desligado em silêncio pela mudança do M144. Antes do
+   * M144 essa mesma série chegava com 3 pontos e ganhava 3 marcadores.
+   *
+   * A regra passa a chavear em pontos FINITOS, que é o que "série esparsa" sempre quis dizer.
+   */
+  it("serie esparsa segue marcando TODOS os pontos finitos — inclusive densificada", () => {
+    expect(markedPoints(pts(1, 2, 3)).map((p) => p.y)).toEqual([1, 2, 3]);
+    // 30 slots, 3 dias contíguos de consumo: esparsa em DADO, densa em slots.
+    const densa = pts(
+      ...Array.from({ length: 20 }, () => undefined),
+      1,
+      2,
+      3,
+      ...Array.from({ length: 7 }, () => undefined),
+    );
+    expect(markedPoints(densa).map((p) => p.y)).toEqual([1, 2, 3]);
+  });
+
+  // A fronteira da própria constante que a função inteira chaveia. Sem estes dois casos a mutação
+  // `<` → `<=` sobrevive à suíte toda — e ela passou pela campanha de 7 mutantes sem ser vista.
+  it("a fronteira de SPARSE_MARKER_MAX: 4 finitos marcam todos, 5 finitos marcam nenhum", () => {
+    expect(markedPoints(pts(1, 2, 3, 4)).map((p) => p.y)).toEqual([1, 2, 3, 4]);
+    expect(markedPoints(pts(1, 2, 3, 4, 5))).toEqual([]);
   });
 
   it("seriesPath builds an SVG polyline with one coord per point", () => {

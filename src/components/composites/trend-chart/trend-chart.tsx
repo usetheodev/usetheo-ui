@@ -103,8 +103,9 @@ const SPARSE_MARKER_MAX = 5;
  * Duas razões distintas para marcar, e a segunda só apareceu quando séries com lacuna passaram a
  * existir (M144):
  *
- * 1. **Série esparsa** (< `SPARSE_MARKER_MAX` baldes) — 1-4 pontos leem como um penhasco dramático;
- *    o marcador ancora o leitor no dado real. Regra do M76, preservada.
+ * 1. **Série esparsa** (< `SPARSE_MARKER_MAX` pontos FINITOS) — 1-4 pontos leem como um penhasco
+ *    dramático; o marcador ancora o leitor no dado real. Regra do M76 — que passou a contar dado,
+ *    não slot, porque a densificação do M144 desfez a equivalência entre os dois.
  * 2. **Ponto isolado** — um ponto finito cercado de lacunas dos dois lados vira um `M` sozinho no
  *    `path`, e um `M` sozinho **desenha nada**: bounding-box zero, invisível. O dado existe, está
  *    correto, e o operador não vê. Medido no e2e do M144 (`d="M419.86,92.00 M448.00,36.00"`).
@@ -118,9 +119,13 @@ const SPARSE_MARKER_MAX = 5;
  * Fora do JSX de propósito: é a aritmética da decisão, e aritmética isolada é aritmética que a
  * mutação alcança.
  */
-export function pontosComMarcador(points: TrendPoint[]): TrendPoint[] {
+export function markedPoints(points: TrendPoint[]): TrendPoint[] {
   const finito = (p: TrendPoint | undefined): boolean => Number.isFinite(p?.y);
-  if (points.length < SPARSE_MARKER_MAX) return points.filter(finito);
+  // Contamos pontos FINITOS, não slots. Uma série densificada de 30 dias com 3 dias de consumo é
+  // esparsa em DADO e densa em slots; chavear no comprimento do array desligava a regra (1) para
+  // exatamente as séries que o M144 criou, sem que nada acusasse.
+  const finitos = points.filter(finito);
+  if (finitos.length < SPARSE_MARKER_MAX) return finitos;
   // Vizinho ausente (as pontas) conta como lacuna — uma ponta finita seguida de buraco é tão
   // invisível quanto um ponto no meio.
   return points.filter((p, i) => finito(p) && !finito(points[i - 1]) && !finito(points[i + 1]));
@@ -267,14 +272,14 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
                 <title>{s.name}</title>
               </path>
               {/* Série esparsa OU ponto isolado entre lacunas — a regra e o porquê de cada uma
-                  estão em `pontosComMarcador`. Sem o segundo caso, dado correto fica invisível. */}
-              {pontosComMarcador(s.points).map((p, i) => (
+                  estão em `markedPoints`. Sem o segundo caso, dado correto fica invisível. */}
+              {markedPoints(s.points).map((p, i) => (
                 <circle
                   key={`${s.name}-${p.x}-${i}`}
                   data-slot="trend-chart-dot"
                   cx={xScale(p.x)}
                   cy={yScale(p.y)}
-                  r={2.5}
+                  r={4}
                   fill={s.color}
                 >
                   <title>{s.name}</title>

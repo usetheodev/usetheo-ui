@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.34.0] - 2026-08-03
+
+### Fixed
+
+- **A regra de marcador de série esparsa estava desligada para toda série com lacuna.** Ela contava *slots do array*, e a densificação — que transforma "dia sem consumo" em "slot com `NaN`" — desfez a equivalência entre slot e dado: uma série de 30 dias com **3 dias** de consumo passou a ser lida como densa, e os três dias deixaram de ganhar marcador. É exatamente o penhasco de 1-4 baldes que a regra existe para ancorar, e antes da densificação essa mesma série recebia os três. Agora a regra conta pontos **finitos**, que é o que "esparsa" sempre quis dizer. Séries sem lacuna não mudam em nada.
+
+- **O marcador subiu de 5 px para 8 px de diâmetro.** Abaixo de 8 px o alvo é pequeno demais para leitura confiável, e o caso em que isso mais dói é o do ponto isolado: ele é o **único** desenho de um dado que não tem linha alguma o apoiando.
+
+### Changed
+
+- **`pontosComMarcador` passou a se chamar `markedPoints`.** Era o único identificador não-inglês exportado por um pacote cuja API é toda em inglês. Renomeado agora, enquanto o custo é uma linha em dois arquivos — depois que um consumidor externo fixar o nome, vira quebra de contrato.
+
 ## [0.33.0] - 2026-08-03
 
 ### Fixed
