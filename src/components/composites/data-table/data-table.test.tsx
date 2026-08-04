@@ -39,6 +39,23 @@ describe("DataTable — rendering", () => {
     expect(thead?.className).toContain("sticky");
   });
 
+  /**
+   * Uma tabela mais larga que o contêiner precisa ROLAR, não transbordar.
+   *
+   * Medido no app-dev, tela de sessões: 11 colunas produziam uma tabela de 1838 px dentro de um
+   * contêiner de 1486 px, com `overflow-x: visible` — ela vazava por cima do resto da página e
+   * desconfigurava a tela. Não é defeito daquela tela: a raiz deste componente era `w-full` e nada
+   * mais, então QUALQUER consumidor com colunas demais tinha o mesmo problema.
+   *
+   * A variante virtualizada já fazia `overflow-auto`, o que mostra que a responsabilidade sempre foi
+   * do componente — a versão não-virtualizada é que tinha ficado para trás.
+   */
+  it("a tabela rola dentro do próprio contêiner em vez de transbordar", () => {
+    const { container } = render(<DataTable columns={columns} data={rows} rowKey={(r) => r.id} />);
+    const raiz = container.firstElementChild;
+    expect(raiz?.className).toContain("overflow-x-auto");
+  });
+
   it("stickyHeader=false omits sticky class", () => {
     const { container } = render(
       <DataTable columns={columns} data={rows} rowKey={(r) => r.id} stickyHeader={false} />,

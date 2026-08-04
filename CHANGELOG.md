@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.35.1] - 2026-08-04
+
+### Fixed
+
+- **Uma tabela mais larga que o contêiner vazava por cima da página em vez de rolar.** A raiz do `DataTable` era `w-full` e nada mais, com `overflow-x` em `visible` — então o excesso escapava e desconfigurava a tela inteira. Medido no consumidor: onze colunas produziam **1838 px dentro de um contêiner de 1486 px**. Não era defeito de uma tela: alcançava qualquer consumidor com colunas demais. A variante virtualizada já fazia `overflow-auto`; a não-virtualizada é que tinha ficado para trás. **Efeito colateral declarado:** com `overflow-x` diferente de `visible`, o CSS computa `overflow-y` como `auto`, então a raiz vira contexto de rolagem e um `stickyHeader` passa a grudar nela, não na viewport — para o cabeçalho grudar de fato, o consumidor precisa dar altura máxima ao contêiner.
+
 ## [0.35.0] - 2026-08-03
 
 ### Added

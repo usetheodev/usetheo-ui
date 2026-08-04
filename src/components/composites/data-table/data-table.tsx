@@ -212,7 +212,18 @@ function DataTableDefaultBody<T>(props: DataTableProps<T>): ReactNode {
   const totalPages = pagination ? Math.ceil(sortedData.length / effectivePageSize) : 1;
 
   return (
-    <div className={cn("w-full", className)}>
+    // `overflow-x-auto`: uma tabela mais larga que o contêiner ROLA dentro dele, em vez de vazar por
+    // cima do resto da página. Medido no consumidor: 11 colunas produziam 1838 px dentro de 1486 px,
+    // e a raiz era só `w-full` — então o excesso escapava e desconfigurava a tela inteira. Não era
+    // defeito de uma tela: era desta raiz, e alcançava qualquer consumidor com colunas demais.
+    //
+    // A variante virtualizada já fazia isto; a não-virtualizada é que tinha ficado para trás.
+    //
+    // Efeito colateral declarado: com `overflow-x` diferente de `visible`, o CSS computa `overflow-y`
+    // como `auto` — logo este `div` vira contexto de rolagem, e um `stickyHeader` passa a grudar nele
+    // e não na viewport. Para o cabeçalho grudar de fato, o consumidor precisa dar altura máxima ao
+    // contêiner (`className="max-h-[...]"`), que é o que torna a rolagem vertical real.
+    <div className={cn("w-full overflow-x-auto", className)}>
       <Table>
         <Table.Header className={stickyHeader ? "sticky top-0 z-10 bg-card" : undefined}>
           <DataTableHeaderRow
