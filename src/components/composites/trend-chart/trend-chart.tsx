@@ -93,6 +93,35 @@ export function seriesPath(
 
 const VIEW_W = 600;
 const PAD = { top: 8, right: 8, bottom: 4, left: 40 };
+/** Altura extra do rodape quando ha eixo X. Zero sem ele — ver `PAD.bottom` abaixo. */
+const X_AXIS_PX = 14;
+/** Espaco minimo entre rotulos do eixo X. Mesma regra de densidade de `lib/trace/bar-layout.ts`. */
+const MIN_TICK_PX = 70;
+
+/**
+ * Quais posicoes do eixo recebem rotulo.
+ *
+ * Rotular 31 pontos em ~450px e ilegivel; rotular so as pontas nao responde "quando foi o pico".
+ * A densidade sai da largura REAL (`viewW`, que o ResizeObserver ja rastreia), com o primeiro e o
+ * ultimo SEMPRE presentes: sao as bordas da janela, e sem eles o leitor nao sabe de quando ate
+ * quando o grafico fala.
+ *
+ * Fora do JSX porque e aritmetica, e aritmetica isolada e aritmetica que a mutacao alcanca.
+ */
+export function xTicks(axisXs: number[], viewW: number): number[] {
+  if (axisXs.length <= 2) return [...axisXs];
+  const maxTicks = Math.max(2, Math.floor((viewW - PAD.left - PAD.right) / MIN_TICK_PX));
+  if (axisXs.length <= maxTicks) return [...axisXs];
+  const passo = (axisXs.length - 1) / (maxTicks - 1);
+  // O laco JA garante as duas pontas: i=0 da indice 0, e i=maxTicks-1 da
+  // round((maxTicks-1) * (n-1)/(maxTicks-1)) = n-1 exato. Duas linhas de `add` explicito estavam
+  // aqui como cinto de seguranca e eram codigo morto — a campanha de mutacao as pegou, porque
+  // remove-las nao quebrava teste algum. O teste que afirma a propriedade continua valendo; o que
+  // some e a redundancia, nao a garantia.
+  const escolhidos = new Set<number>();
+  for (let i = 0; i < maxTicks; i++) escolhidos.add(Math.round(i * passo));
+  return [...escolhidos].sort((a, b) => a - b).map((i) => axisXs[i] as number);
+}
 // M76 (O-2): series with fewer points than this draw a marker at each point (a 2-4 point
 // line reads as a cliff without them); a denser series draws the line only.
 const SPARSE_MARKER_MAX = 5;
@@ -144,6 +173,20 @@ export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
    * Ignored when ≤ 0. Default: auto (`niceMax`).
    */
   yMax?: number;
+  /**
+   * Formata o `x` para o eixo e para a tabela acessivel. **Opcional de proposito.**
+   *
+   * O contrato do `x` e ambiguo — "bucket index or epoch-ms" — e na pratica quase unanime: das seis
+   * fabricas de serie do consumidor, cinco passam INDICE e uma passa epoch-ms. Inferir por magnitude
+   * funcionaria e seria a forma exata do defeito que este componente ja pagou (a regra de marcador
+   * do M76 chaveava em `points.length` em vez de perguntar o que queria saber, e a densificacao do
+   * M144 a desligou em silencio). Quem sabe o que o `x` significa e o chamador.
+   *
+   * Sem esta prop, nada muda: nenhum rotulo de eixo X e desenhado e a tabela segue numerando.
+   */
+  xFormatter?: (x: number) => string;
+  /** Cabecalho da primeira coluna da tabela acessivel. "Point" sobre datas seria desonesto. */
+  xLabel?: string;
 }
 
 const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
@@ -154,6 +197,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
       height = 180,
       valueFormatter = (v: number) => String(v),
       yMax: yMaxProp,
+      xFormatter,
+      xLabel,
       className,
       ...props
     },
@@ -166,6 +211,9 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     // jsdom/SSR has no ResizeObserver / zero clientWidth → we keep the VIEW_W fallback,
     // so existing snapshot-style tests (viewBox "0 0 600 …") stay green.
     const [viewW, setViewW] = useState<number>(VIEW_W);
+    // Só o índice, nunca o objeto: um `setState` por `mousemove` carregando estrutura recomputaria
+    // as séries dezenas de vezes por segundo para desenhar um retângulo.
+    const [hoverIdx, setHoverIdx] = useState<number | null>(null);
     const roRef = useRef<ResizeObserver | null>(null);
     const setSvgNode = useCallback((node: SVGSVGElement | null) => {
       roRef.current?.disconnect();
@@ -218,76 +266,165 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     // looks its cell up BY x; a period it has no point for renders "—".
     const axisXs = Array.from(new Set(allPoints.map((p) => p.x))).sort((a, b) => a - b);
     const yByX = series.map((s) => new Map(s.points.map((p) => [p.x, p.y] as const)));
+    // O rodape so cresce quando ha rotulo a desenhar. `PAD.bottom` e 4: crescer sempre moveria o
+    // `yScale` e, com ele, toda coordenada `y` de todo `path` ja testado nos consumidores de indice.
+    const padBottom = PAD.bottom + (xFormatter ? X_AXIS_PX : 0);
     const xScale = linScale([xMin, xMax], [PAD.left, viewW - PAD.right]);
-    const yScale = linScale([0, yMax], [height - PAD.bottom, PAD.top]); // inverted (SVG y grows down)
+    const yScale = linScale([0, yMax], [height - padBottom, PAD.top]); // inverted (SVG y grows down)
 
     return (
       <figure data-slot="trend-chart" ref={ref} className={cn("space-y-1", className)} {...props}>
         <figcaption className="font-semibold text-label-caps text-muted-foreground uppercase">
           {title}
         </figcaption>
-        <svg
-          ref={setSvgNode}
-          viewBox={`0 0 ${viewW} ${height}`}
-          preserveAspectRatio="none"
-          role="img"
-          aria-label={`${title} trend`}
-          className="w-full"
-          style={{ height }}
+        {/* Superfície de hover. O padrão vem do `span-waterfall` deste mesmo design system:
+            overlay HTML posicionado por %, sem dependência nova. Radix Tooltip foi recusado —
+            arrastaria `@radix-ui/react-tooltip` e exigiria um Provider na app, quebrando a
+            propriedade que define este componente ("no chart lib — keeps the registry
+            copy-pasteable") e falhando em runtime, não em build. */}
+        <div
+          data-slot="trend-chart-surface"
+          className="relative"
+          onMouseMove={(e) => {
+            const caixa = e.currentTarget.getBoundingClientRect();
+            if (caixa.width === 0 || axisXs.length === 0) return;
+            const frac = (e.clientX - caixa.left) / caixa.width;
+            const alvo = xMin + frac * (xMax - xMin);
+            let melhor = 0;
+            for (let i = 1; i < axisXs.length; i++) {
+              if (
+                Math.abs((axisXs[i] as number) - alvo) < Math.abs((axisXs[melhor] as number) - alvo)
+              )
+                melhor = i;
+            }
+            setHoverIdx(melhor);
+          }}
+          onMouseLeave={() => setHoverIdx(null)}
         >
-          {/* baseline + top gridline */}
-          <line
-            x1={PAD.left}
-            y1={height - PAD.bottom}
-            x2={viewW - PAD.right}
-            y2={height - PAD.bottom}
-            className="stroke-border"
-            strokeWidth={1}
-          />
-          <line
-            x1={PAD.left}
-            y1={PAD.top}
-            x2={viewW - PAD.right}
-            y2={PAD.top}
-            className="stroke-border/50"
-            strokeWidth={1}
-            strokeDasharray="2 3"
-          />
-          <text x={4} y={PAD.top + 8} className="fill-muted-foreground text-[10px]">
-            {valueFormatter(yMax)}
-          </text>
-          <text x={4} y={height - PAD.bottom} className="fill-muted-foreground text-[10px]">
-            0
-          </text>
-          {series.map((s) => (
-            <g key={s.name}>
-              <path
-                data-slot="trend-chart-line"
-                data-series={s.name}
-                d={seriesPath(s.points, xScale, yScale)}
-                fill="none"
-                stroke={s.color}
-                strokeWidth={1.5}
-              >
-                <title>{s.name}</title>
-              </path>
-              {/* Série esparsa OU ponto isolado entre lacunas — a regra e o porquê de cada uma
-                  estão em `markedPoints`. Sem o segundo caso, dado correto fica invisível. */}
-              {markedPoints(s.points).map((p, i) => (
-                <circle
-                  key={`${s.name}-${p.x}-${i}`}
-                  data-slot="trend-chart-dot"
-                  cx={xScale(p.x)}
-                  cy={yScale(p.y)}
-                  r={4}
-                  fill={s.color}
+          <svg
+            ref={setSvgNode}
+            viewBox={`0 0 ${viewW} ${height}`}
+            preserveAspectRatio="none"
+            role="img"
+            aria-label={`${title} trend`}
+            className="w-full"
+            style={{ height }}
+          >
+            {/* baseline + top gridline */}
+            <line
+              x1={PAD.left}
+              y1={height - padBottom}
+              x2={viewW - PAD.right}
+              y2={height - padBottom}
+              className="stroke-border"
+              strokeWidth={1}
+            />
+            <line
+              x1={PAD.left}
+              y1={PAD.top}
+              x2={viewW - PAD.right}
+              y2={PAD.top}
+              className="stroke-border/50"
+              strokeWidth={1}
+              strokeDasharray="2 3"
+            />
+            <text x={4} y={PAD.top + 8} className="fill-muted-foreground text-[10px]">
+              {valueFormatter(yMax)}
+            </text>
+            <text x={4} y={height - padBottom} className="fill-muted-foreground text-[10px]">
+              0
+            </text>
+            {/* Eixo X — só existe quando o chamador diz como ler o `x`. Sem `xFormatter` não há nada
+              honesto a escrever ali, e desenhar o ordinal seria repetir o problema com outra
+              tinta. `textAnchor` acompanha a posição para o primeiro e o último não vazarem da
+              caixa. */}
+            {xFormatter
+              ? xTicks(axisXs, viewW).map((x, i, todos) => (
+                  <text
+                    key={x}
+                    data-slot="trend-chart-xtick"
+                    x={xScale(x)}
+                    y={height - 2}
+                    textAnchor={i === 0 ? "start" : i === todos.length - 1 ? "end" : "middle"}
+                    className="fill-muted-foreground text-[10px]"
+                  >
+                    {xFormatter(x)}
+                  </text>
+                ))
+              : null}
+            {series.map((s) => (
+              <g key={s.name}>
+                <path
+                  data-slot="trend-chart-line"
+                  data-series={s.name}
+                  d={seriesPath(s.points, xScale, yScale)}
+                  fill="none"
+                  stroke={s.color}
+                  strokeWidth={1.5}
                 >
                   <title>{s.name}</title>
-                </circle>
-              ))}
-            </g>
-          ))}
-        </svg>
+                </path>
+                {/* Série esparsa OU ponto isolado entre lacunas — a regra e o porquê de cada uma
+                  estão em `markedPoints`. Sem o segundo caso, dado correto fica invisível. */}
+                {markedPoints(s.points).map((p, i) => (
+                  <circle
+                    key={`${s.name}-${p.x}-${i}`}
+                    data-slot="trend-chart-dot"
+                    cx={xScale(p.x)}
+                    cy={yScale(p.y)}
+                    r={4}
+                    fill={s.color}
+                  >
+                    <title>{s.name}</title>
+                  </circle>
+                ))}
+              </g>
+            ))}
+            {/* Crosshair: uma linha vertical no ponto mais proximo do cursor. Dentro do SVG porque
+              precisa da mesma escala das series. */}
+            {hoverIdx !== null && axisXs[hoverIdx] !== undefined ? (
+              <line
+                data-slot="trend-chart-crosshair"
+                x1={xScale(axisXs[hoverIdx] as number)}
+                y1={PAD.top}
+                x2={xScale(axisXs[hoverIdx] as number)}
+                y2={height - padBottom}
+                className="stroke-muted-foreground/40"
+                strokeWidth={1}
+              />
+            ) : null}
+          </svg>
+          {/* Tooltip DECORATIVO (`aria-hidden`) — o canal de leitor de tela e a tabela abaixo, que
+            agora carrega a data e o valor. Antes da correcao do eixo X ela numerava, e um tooltip
+            decorativo teria criado informacao exclusiva para quem usa mouse. */}
+          {hoverIdx !== null && axisXs[hoverIdx] !== undefined ? (
+            <div
+              data-slot="trend-chart-tooltip"
+              aria-hidden="true"
+              className="pointer-events-none absolute top-0 z-10 rounded border bg-popover px-2 py-1 text-[10px] text-popover-foreground shadow"
+              style={{
+                left: `${(xScale(axisXs[hoverIdx] as number) / viewW) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              <div className="font-medium">
+                {xFormatter ? xFormatter(axisXs[hoverIdx] as number) : `#${hoverIdx + 1}`}
+              </div>
+              {series.map((s, si) => {
+                const y = yByX[si]?.get(axisXs[hoverIdx] as number);
+                return (
+                  <div key={s.name} className="whitespace-nowrap">
+                    <span
+                      className="mr-1 inline-block size-2 rounded-full align-middle"
+                      style={{ background: s.color }}
+                    />
+                    {s.name}: {y !== undefined && Number.isFinite(y) ? valueFormatter(y) : "\u2014"}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
 
         {/* color legend */}
         <ul
@@ -311,7 +448,7 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
           <caption>{title} — data table</caption>
           <thead>
             <tr>
-              <th>Point</th>
+              <th>{xLabel ?? "Point"}</th>
               {series.map((s) => (
                 <th key={s.name}>{s.name}</th>
               ))}
@@ -320,7 +457,7 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
           <tbody>
             {axisXs.map((x, i) => (
               <tr key={x}>
-                <td>{i + 1}</td>
+                <td>{xFormatter ? xFormatter(x) : i + 1}</td>
                 {series.map((s, si) => {
                   const y = yByX[si]?.get(x);
                   return (

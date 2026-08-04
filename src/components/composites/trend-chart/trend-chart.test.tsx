@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import { TrendChart as TrendChartFromBarrel } from "../../../index.js";
 import type { TrendSeries } from "./trend-chart.js";
-import { TrendChart, linScale, markedPoints, niceMax, seriesPath } from "./trend-chart.js";
+import { TrendChart, linScale, markedPoints, niceMax, seriesPath, xTicks } from "./trend-chart.js";
 import { RagLatency } from "./trend-chart.stories.js";
 
 const pts = (...ys: (number | undefined)[]): TrendSeries["points"] =>
@@ -313,5 +313,161 @@ describe("TrendChart — story smoke", () => {
 describe("TrendChart — barrel", () => {
   it("barrel exports the same symbol", () => {
     expect(TrendChartFromBarrel).toBe(TrendChart);
+  });
+});
+
+/**
+ * M146 — o gráfico não deixava ler nem o QUANDO nem o QUANTO (`usetheodev/usetheo-ui#17`).
+ *
+ * O SVG tinha exatamente dois `<text>`, ambos no eixo Y, e a tabela acessível numerava as linhas
+ * (`Point 1, 2, 3…`). Num gráfico rotulado "Custo por dia", nenhuma data aparecia — o operador via
+ * que houve um pico e não tinha caminho algum para saber em que dia foi. Para quem usa leitor de
+ * tela, a tabela é o ÚNICO canal, e ela dizia ordinais.
+ *
+ * A decisão de projeto é `xFormatter` OPCIONAL, nunca inferência. Inferir por magnitude ("`x` grande
+ * ⇒ epoch-ms") funcionaria — e é a forma exata do defeito que este design system acabou de pagar: a
+ * regra de marcador do M76 chaveava em `points.length` em vez de perguntar o que queria saber, e a
+ * densificação do M144 a desligou em silêncio. Medido: 5 das 6 fábricas do consumidor passam ÍNDICE;
+ * só uma passa epoch-ms. Sem a prop, nada muda para as outras.
+ */
+describe("TrendChart — o eixo X e a leitura do valor (M146)", () => {
+  const comData = (i: number) => new Date(Date.UTC(2026, 6, 20 + i)).toISOString().slice(5, 10);
+
+  it("sem xFormatter, a tabela segue numerando — nenhum consumidor de índice muda", () => {
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    const primeira = container.querySelector('[data-slot="trend-chart-table"] tbody td');
+    expect(primeira?.textContent).toBe("1");
+  });
+
+  it("com xFormatter, a tabela mostra o RÓTULO no lugar do ordinal", () => {
+    const { container } = renderChart([series("custo", pts(1, 2, 3))], {
+      xFormatter: (x: number) => comData(x),
+    });
+    const celulas = [...container.querySelectorAll('[data-slot="trend-chart-table"] tbody tr')].map(
+      (tr) => tr.querySelector("td")?.textContent,
+    );
+    expect(celulas).toEqual(["07-20", "07-21", "07-22"]);
+  });
+
+  it("o cabeçalho da coluna acompanha — 'Point' sobre datas seria a mesma mentira em menor escala", () => {
+    const { container } = renderChart([series("custo", pts(1, 2))], {
+      xFormatter: (x: number) => comData(x),
+      xLabel: "Dia",
+    });
+    const th = container.querySelector('[data-slot="trend-chart-table"] thead th');
+    expect(th?.textContent).toBe("Dia");
+  });
+
+  it("com xFormatter, o eixo X ganha rótulos visíveis", () => {
+    const { container } = renderChart([series("custo", pts(1, 2, 3, 4, 5))], {
+      xFormatter: (x: number) => comData(x),
+    });
+    const ticks = container.querySelectorAll('[data-slot="trend-chart-xtick"]');
+    expect(ticks.length).toBeGreaterThan(0);
+    // O primeiro e o último SEMPRE presentes: são as bordas da janela, e é o que responde
+    // "de quando até quando" mesmo quando o meio é amostrado.
+    const textos = [...ticks].map((t) => t.textContent);
+    expect(textos[0]).toBe("07-20");
+    expect(textos[textos.length - 1]).toBe("07-24");
+  });
+
+  it("sem xFormatter, NENHUM rótulo de eixo X é desenhado", () => {
+    // Não é só cosmética: `PAD.bottom` é 4, e crescer o padding move o `yScale` e portanto TODA
+    // coordenada `y` de todo path já testado. Renderizar o eixo só quando há formatter mantém a
+    // geometria dos consumidores de índice byte a byte.
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    expect(container.querySelectorAll('[data-slot="trend-chart-xtick"]')).toHaveLength(0);
+  });
+});
+
+/**
+ * M146, segundo sub-bug — não havia como ler o VALOR de um ponto.
+ *
+ * Grep por `crosshair|tooltip|onMouseMove|hover` no componente retornava ZERO. Os únicos `<title>`
+ * carregavam o NOME da série, nunca o valor. Para "quanto o usuário X gastou na terça" não havia
+ * caminho visual algum — só a tabela `sr-only`, que por definição não está na tela.
+ *
+ * A forma segue o `span-waterfall` deste mesmo design system: overlay HTML posicionado por %,
+ * `aria-hidden`, `pointer-events-none`. Radix Tooltip foi recusado — arrastaria
+ * `@radix-ui/react-tooltip` e exigiria um `<Tooltip.Provider>` na app, quebrando a propriedade que
+ * define este componente (`registryDependencies` = [cn, tailwind-preset], "no chart lib — keeps the
+ * registry copy-pasteable"), e falharia em runtime, não em build.
+ *
+ * O tooltip é DECORATIVO (`aria-hidden`). Isso só é legítimo porque a tabela acessível agora carrega
+ * a mesma informação — antes da correção do eixo X ela numerava, e um tooltip decorativo teria
+ * criado informação exclusiva para quem usa mouse.
+ */
+describe("TrendChart — a leitura do valor sob o cursor (M146)", () => {
+  it("sem interação, nenhum tooltip é renderizado", () => {
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    expect(container.querySelector('[data-slot="trend-chart-tooltip"]')).toBeNull();
+  });
+
+  it("o tooltip é decorativo — a tabela acessível é o canal de leitor de tela", () => {
+    // Se um dia ele deixar de ser aria-hidden sem que a tabela cubra o mesmo dado, este caso avisa.
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    const tabela = container.querySelector('[data-slot="trend-chart-table"]');
+    expect(tabela).not.toBeNull();
+    expect(tabela?.className).toContain("sr-only");
+  });
+
+  it("o componente expõe o gancho de hover no wrapper do gráfico", () => {
+    // O contrato mínimo: existe uma superfície que recebe o movimento do cursor. Sem ela não há
+    // onde pendurar crosshair algum, e o defeito volta em silêncio.
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    expect(container.querySelector('[data-slot="trend-chart-surface"]')).not.toBeNull();
+  });
+});
+
+describe("xTicks — a densidade do eixo X (M146)", () => {
+  const eixo = (n: number) => Array.from({ length: n }, (_, i) => i);
+
+  it("com poucos pontos, todos recebem rótulo", () => {
+    expect(xTicks(eixo(3), 600)).toEqual([0, 1, 2]);
+  });
+
+  it("com muitos pontos, AMOSTRA — 31 dias em 600px não cabem", () => {
+    const t = xTicks(eixo(31), 600);
+    expect(t.length).toBeLessThan(31);
+    expect(t.length).toBeGreaterThan(2);
+  });
+
+  it("o PRIMEIRO e o ÚLTIMO estão sempre lá — são as bordas da janela", () => {
+    // Sem eles o leitor não sabe de quando até quando o gráfico fala, e o arredondamento da
+    // amostragem pode perder qualquer um dos dois: com 31 pontos e passo 5, o último índice
+    // escolhido seria 30 por acidente, não por garantia.
+    for (const n of [31, 37, 61, 100]) {
+      const t = xTicks(eixo(n), 600);
+      expect(t[0]).toBe(0);
+      expect(t[t.length - 1]).toBe(n - 1);
+    }
+  });
+
+  it("a densidade acompanha a largura — mais espaço, mais rótulos", () => {
+    expect(xTicks(eixo(61), 1200).length).toBeGreaterThan(xTicks(eixo(61), 400).length);
+  });
+
+  it("nunca repete posição", () => {
+    const t = xTicks(eixo(61), 600);
+    expect(new Set(t).size).toBe(t.length);
+  });
+});
+
+describe("o rodapé do gráfico só cresce quando há eixo X (M146)", () => {
+  const baseY = (c: HTMLElement) => c.querySelector("svg line")?.getAttribute("y1");
+
+  it("sem xFormatter, a geometria é EXATAMENTE a de antes", () => {
+    // `PAD.bottom` é 4. Crescer o rodapé move o `yScale` e, com ele, toda coordenada `y` de todo
+    // `path` já testado nos três consumidores que passam índice. Este caso é o que garante que
+    // eles não mudam um pixel.
+    const { container } = renderChart([series("p50", pts(1, 2, 3))]);
+    expect(baseY(container)).toBe(String(180 - 4));
+  });
+
+  it("com xFormatter, o rodapé abre espaço para o rótulo", () => {
+    const { container } = renderChart([series("custo", pts(1, 2, 3))], {
+      xFormatter: (x: number) => String(x),
+    });
+    expect(baseY(container)).toBe(String(180 - 4 - 14));
   });
 });

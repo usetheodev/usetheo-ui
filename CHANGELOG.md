@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.35.0] - 2026-08-03
+
+### Added
+
+- **`TrendChart` ganhou eixo X, e a tabela acessível passou a datar em vez de numerar** (`#17`). O gráfico desenhava a linha e não deixava ler **nem o quando nem o quanto**: o SVG tinha exatamente dois rótulos, ambos no eixo Y, e a tabela para leitor de tela dizia `Point 1, 2, 3…`. Num gráfico rotulado "Custo por dia", nenhuma data aparecia — dava para ver que houve um pico e não havia caminho algum para saber em que dia foi. A prop `xFormatter` é **opcional de propósito**: das seis fábricas de série do consumidor, cinco passam índice de balde e só uma passa epoch-ms, e inferir por magnitude seria repetir a forma do defeito que este componente acabou de pagar. Sem a prop, nada muda — nenhum rótulo é desenhado e a geometria dos consumidores existentes fica idêntica, byte a byte. A densidade de rótulos sai da largura real, com o primeiro e o último sempre presentes.
+
+- **Camada de hover: crosshair e tooltip.** Não havia como ler o valor de um ponto — os únicos `<title>` carregavam o nome da série, nunca o número. Agora o ponto mais próximo do cursor ganha uma linha vertical e uma caixa com a data e o valor de cada série. Sem dependência nova: o padrão é o do `SpanWaterfall` deste mesmo design system (overlay posicionado por porcentagem). Radix Tooltip foi recusado — arrastaria uma dependência e exigiria um Provider na aplicação, quebrando a propriedade que define este componente. O tooltip é decorativo (`aria-hidden`), e isso só é honesto porque a tabela acessível agora carrega a mesma informação: antes da correção do eixo, um tooltip teria criado dado exclusivo para quem usa mouse.
+
 ## [0.34.0] - 2026-08-03
 
 ### Fixed
