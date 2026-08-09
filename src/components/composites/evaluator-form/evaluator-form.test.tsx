@@ -6,14 +6,14 @@ import { EvaluatorForm } from "./evaluator-form.js";
 import type { EvaluatorConfig } from "./types.js";
 
 describe("EvaluatorForm — per-type fields", () => {
-  it("exact_match renderiza um campo target", () => {
+  it("exact_match renders a target field", () => {
     render(<EvaluatorForm value={{ type: "exact_match", target: "hi" }} onChange={() => {}} />);
     const input = screen.getByLabelText(/target/i) as HTMLInputElement;
     expect(input).toBeInTheDocument();
     expect(input.value).toBe("hi");
   });
 
-  it("regex renderiza pattern e flags", () => {
+  it("regex renders pattern and flags", () => {
     render(
       <EvaluatorForm value={{ type: "regex", pattern: "^ok$", flags: "i" }} onChange={() => {}} />,
     );
@@ -21,7 +21,7 @@ describe("EvaluatorForm — per-type fields", () => {
     expect((screen.getByLabelText(/flags/i) as HTMLInputElement).value).toBe("i");
   });
 
-  it("levenshtein renderiza um campo threshold numérico", () => {
+  it("levenshtein renders a numeric threshold field", () => {
     render(<EvaluatorForm value={{ type: "levenshtein", threshold: 3 }} onChange={() => {}} />);
     const input = screen.getByLabelText(/threshold/i) as HTMLInputElement;
     expect(input.type).toBe("number");
@@ -30,14 +30,14 @@ describe("EvaluatorForm — per-type fields", () => {
 });
 
 describe("EvaluatorForm — onChange emits typed config", () => {
-  it("editar o target emite exact_match config", () => {
+  it("editing the target emits an exact_match config", () => {
     const onChange = vi.fn();
     render(<EvaluatorForm value={{ type: "exact_match", target: "" }} onChange={onChange} />);
     fireEvent.change(screen.getByLabelText(/target/i), { target: { value: "done" } });
     expect(onChange).toHaveBeenCalledWith({ type: "exact_match", target: "done" });
   });
 
-  it("editar o pattern emite regex config preservando flags", () => {
+  it("editing the pattern emits a regex config preserving the flags", () => {
     const onChange = vi.fn();
     render(
       <EvaluatorForm value={{ type: "regex", pattern: "", flags: "g" }} onChange={onChange} />,
@@ -46,14 +46,14 @@ describe("EvaluatorForm — onChange emits typed config", () => {
     expect(onChange).toHaveBeenCalledWith({ type: "regex", pattern: "\\d+", flags: "g" });
   });
 
-  it("editar o threshold emite number (nunca NaN)", () => {
+  it("editing the threshold emits a number (never NaN)", () => {
     const onChange = vi.fn();
     render(<EvaluatorForm value={{ type: "json_distance", threshold: 0 }} onChange={onChange} />);
     fireEvent.change(screen.getByLabelText(/threshold/i), { target: { value: "5" } });
     expect(onChange).toHaveBeenCalledWith({ type: "json_distance", threshold: 5 });
   });
 
-  it("trocar o tipo emite um config fresco do novo tipo com defaults", () => {
+  it("switching the type emits a fresh config of the new type with defaults", () => {
     const onChange = vi.fn();
     render(<EvaluatorForm value={{ type: "exact_match", target: "keep?" }} onChange={onChange} />);
     fireEvent.change(screen.getByLabelText(/evaluator type/i), { target: { value: "regex" } });
@@ -64,7 +64,7 @@ describe("EvaluatorForm — onChange emits typed config", () => {
 });
 
 describe("EvaluatorForm — common", () => {
-  it("disabled desabilita o seletor de tipo e os campos", () => {
+  it("disabled disables the type selector and the fields", () => {
     render(
       <EvaluatorForm value={{ type: "exact_match", target: "x" }} onChange={() => {}} disabled />,
     );
@@ -81,7 +81,7 @@ describe("EvaluatorForm — common", () => {
     expect(root?.getAttribute("data-eval-type")).toBe("regex");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(EvaluatorFormFromBarrel).toBe(EvaluatorForm);
   });
 

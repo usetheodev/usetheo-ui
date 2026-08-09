@@ -15,7 +15,7 @@ const histogramStory = (props: HistogramProps): Story => {
   return Rendered;
 };
 
-/** Caso lens: distribuição de duração de traces (ms), binada client-side da traces-list. */
+/** The lens case: trace duration distribution (ms), binned client-side from the traces list. */
 export const TraceDurations = histogramStory({
   title: "Trace duration",
   valueFormatter: (v) => `${Math.round(v)}ms`,
@@ -25,7 +25,7 @@ export const TraceDurations = histogramStory({
   binCount: 8,
 });
 
-/** Caso pré-computado: o consumidor passa bins prontos (ex. do backend). */
+/** The precomputed case: the consumer passes ready-made bins (e.g. from the backend). */
 export const PrecomputedBins = histogramStory({
   title: "Score distribution",
   bins: [
@@ -38,7 +38,7 @@ export const PrecomputedBins = histogramStory({
   valueFormatter: (v) => v.toFixed(1),
 });
 
-/** Empty state honesto — sem dados para distribuir. */
+/** An honest empty state — no data to distribute. */
 export const Empty = histogramStory({
   title: "Trace duration",
   bins: [],

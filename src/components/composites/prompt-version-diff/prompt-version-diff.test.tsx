@@ -17,12 +17,12 @@ const NEW: PromptSnapshot = {
 const diffs = (c: HTMLElement) => c.querySelectorAll('[data-slot="diff-view"]');
 
 describe("PromptVersionDiff", () => {
-  it("renderiza dois DiffView (conteúdo + config)", () => {
+  it("renders two DiffViews (content + config)", () => {
     const { container } = render(<PromptVersionDiff oldPrompt={OLD} newPrompt={NEW} />);
     expect(diffs(container)).toHaveLength(2);
   });
 
-  it("normaliza chat template para texto (role: content)", () => {
+  it("normalises a chat template into text (role: content)", () => {
     const oldChat: PromptSnapshot = { template: [{ role: "system", content: "Be concise." }] };
     const newChat: PromptSnapshot = { template: [{ role: "system", content: "Be very concise." }] };
     render(<PromptVersionDiff oldPrompt={oldChat} newPrompt={newChat} />);
@@ -30,18 +30,18 @@ describe("PromptVersionDiff", () => {
     expect(screen.getAllByText(/system:/).length).toBeGreaterThanOrEqual(1);
   });
 
-  it("omite o DiffView de config quando ambos os configs estão ausentes", () => {
+  it("omits the config DiffView when both configs are absent", () => {
     const a: PromptSnapshot = { template: "a" };
     const b: PromptSnapshot = { template: "b" };
     const { container } = render(<PromptVersionDiff oldPrompt={a} newPrompt={b} />);
     expect(diffs(container)).toHaveLength(1);
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(FromBarrel).toBe(PromptVersionDiff);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(<PromptVersionDiff oldPrompt={OLD} newPrompt={NEW} />);
     expect(await axe(container)).toHaveNoViolations();
   });

@@ -10,7 +10,7 @@ const span = (over: Partial<TraceSpan>): TraceSpan => ({
 });
 
 describe("alignSpanTrees", () => {
-  it("test_pares_iguais_ficam_matched_com_delta", () => {
+  it("test_equal_pairs_end_up_matched_with_a_delta", () => {
     const a = span({ id: "a-root", name: "run", startTime: 0n, endTime: 2_000_000n });
     const b = span({ id: "b-root", name: "run", startTime: 0n, endTime: 4_000_000n });
     const rows = alignSpanTrees(a, b);
@@ -19,7 +19,7 @@ describe("alignSpanTrees", () => {
     expect(rows[0]?.delta?.durationMs?.to).toBe(4);
   });
 
-  it("test_span_so_em_a_marca_only_in_a_e_suprime_delta", () => {
+  it("test_a_span_only_in_a_is_marked_only_in_a_and_its_delta_suppressed", () => {
     const a = span({ id: "ar", name: "run", children: [span({ id: "a1", name: "extra" })] });
     const b = span({ id: "br", name: "run" });
     const rows = alignSpanTrees(a, b);
@@ -28,14 +28,14 @@ describe("alignSpanTrees", () => {
     expect(extra?.delta).toBeUndefined();
   });
 
-  it("test_span_so_em_b_marca_only_in_b", () => {
+  it("test_a_span_only_in_b_is_marked_only_in_b", () => {
     const a = span({ id: "ar", name: "run" });
     const b = span({ id: "br", name: "run", children: [span({ id: "b1", name: "added" })] });
     const rows = alignSpanTrees(a, b);
     expect(rows.find((r) => r.key === "added")?.status).toBe("only-in-b");
   });
 
-  it("test_ciclo_malformado_nao_trava", () => {
+  it("test_a_malformed_cycle_does_not_hang", () => {
     const cyc = span({ id: "x", name: "x" });
     cyc.children = [cyc]; // self-reference
     const rows = alignSpanTrees(cyc, span({ id: "y", name: "x" }));
@@ -43,7 +43,7 @@ describe("alignSpanTrees", () => {
     expect(rows[0]?.key).toBe("x");
   });
 
-  it("test_filhos_pareiam_por_nome", () => {
+  it("test_children_pair_by_name", () => {
     const a = span({
       id: "ar",
       name: "run",
@@ -62,7 +62,7 @@ describe("alignSpanTrees", () => {
 });
 
 describe("traceMetrics", () => {
-  it("test_agrega_duracao_tokens_custo_e_erro", () => {
+  it("test_aggregates_duration_tokens_cost_and_error", () => {
     const root = span({
       id: "r",
       name: "run",

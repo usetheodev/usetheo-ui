@@ -2,28 +2,28 @@ import { describe, expect, it } from "vitest";
 import { diffLines } from "./diff-lines.js";
 
 describe("diffLines", () => {
-  it("textos idênticos → todas as rows eq", () => {
+  it("identical texts → every row is eq", () => {
     const rows = diffLines("a\nb\nc", "a\nb\nc");
     expect(rows).toHaveLength(3);
     expect(rows.every((r) => r.kind === "eq")).toBe(true);
   });
 
-  it("old vazio → tudo add", () => {
+  it("an empty old → everything is add", () => {
     const rows = diffLines("", "a\nb");
     expect(rows.map((r) => r.kind)).toEqual(["add", "add"]);
     expect(rows.map((r) => r.text)).toEqual(["a", "b"]);
   });
 
-  it("new vazio → tudo del", () => {
+  it("an empty new → everything is del", () => {
     const rows = diffLines("a\nb", "");
     expect(rows.map((r) => r.kind)).toEqual(["del", "del"]);
   });
 
-  it("ambos vazios → []", () => {
+  it("both empty → []", () => {
     expect(diffLines("", "")).toEqual([]);
   });
 
-  it("linha alterada → del + add", () => {
+  it("a changed line → del + add", () => {
     const rows = diffLines("a\nx\nc", "a\ny\nc");
     // a eq, x del, y add, c eq (ordem: eq, del, add, eq)
     expect(rows.map((r) => r.kind)).toEqual(["eq", "del", "add", "eq"]);
@@ -31,18 +31,18 @@ describe("diffLines", () => {
     expect(rows.find((r) => r.kind === "add")?.text).toBe("y");
   });
 
-  it("inserção no meio preserva eq ao redor", () => {
+  it("an insertion in the middle preserves eq around it", () => {
     const rows = diffLines("a\nc", "a\nb\nc");
     expect(rows.map((r) => r.kind)).toEqual(["eq", "add", "eq"]);
     expect(rows.find((r) => r.kind === "add")?.text).toBe("b");
   });
 
-  it("remoção no meio preserva eq ao redor", () => {
+  it("a removal in the middle preserves eq around it", () => {
     const rows = diffLines("a\nb\nc", "a\nc");
     expect(rows.map((r) => r.kind)).toEqual(["eq", "del", "eq"]);
   });
 
-  it("numera linhas old (left) e new (right) honestamente", () => {
+  it("numbers the old (left) and new (right) lines honestly", () => {
     const rows = diffLines("a\nx", "a\ny");
     const eq = rows.find((r) => r.kind === "eq");
     expect(eq?.leftNo).toBe(1);

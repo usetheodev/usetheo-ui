@@ -15,7 +15,7 @@ const chartStory = (props: PercentileChartProps): Story => {
   return Rendered;
 };
 
-/** Caso lens: latência p50/p95/p99 por janela (o LatencyBucket que /observability já retorna). */
+/** The lens case: p50/p95/p99 latency per window (the LatencyBucket /observability already returns). */
 export const Latency = chartStory({
   title: "Request latency",
   valueFormatter: (v) => `${Math.round(v)}ms`,
@@ -29,7 +29,7 @@ export const Latency = chartStory({
   ],
 });
 
-/** Cauda larga — a banda p95–p99 abre bem: leitura instantânea de spread. */
+/** A wide tail — the p95–p99 band opens up: the spread reads instantly. */
 export const WideTail = chartStory({
   title: "Token latency",
   valueFormatter: (v) => `${Math.round(v)}ms`,
@@ -41,7 +41,7 @@ export const WideTail = chartStory({
   ],
 });
 
-/** Empty state honesto — sem dados na janela. */
+/** An honest empty state — no data in the window. */
 export const Empty = chartStory({
   title: "Request latency",
   buckets: [],

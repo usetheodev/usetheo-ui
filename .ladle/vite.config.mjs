@@ -4,10 +4,9 @@ export default {
   plugins: [
     tailwindcss(),
     {
-      // Ladle injeta vite-tsconfig-paths por default, que varre os repos de
-      // referência sob .claude/knowledge-base/references (dezenas de erros de
-      // tsconfig alheios no log). Declarar o mesmo nome impede a injeção —
-      // precedente: theokit-ui/.ladle/vite.config.mjs.
+      // Ladle injects vite-tsconfig-paths by default, which sweeps the reference repos under
+      // .claude/knowledge-base/references (dozens of foreign tsconfig errors in the log).
+      // Declaring the same name prevents the injection — precedent: theokit-ui/.ladle/vite.config.mjs.
       name: "vite:tsconfig-paths",
     },
   ],

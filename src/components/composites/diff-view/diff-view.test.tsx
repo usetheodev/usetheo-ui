@@ -12,7 +12,7 @@ const OLD = "line one\nline two\nline three";
 const NEW = "line one\nline TWO\nline three\nline four";
 
 describe("DiffView", () => {
-  it("renderiza uma célula de conteúdo por DiffRow (split)", () => {
+  it("renders one content cell per DiffRow (split)", () => {
     // old(3) vs new(4): eq(1) + del(1) + add(1) + eq(1) + add(1) = 5 diff rows
     const { container } = render(<DiffView oldText={OLD} newText={NEW} />);
     const total =
@@ -20,21 +20,21 @@ describe("DiffView", () => {
     expect(total).toBe(5);
   });
 
-  it("linha adicionada tem marker '+' textual e data-diff='add'", () => {
+  it("an added line has a textual '+' marker and data-diff='add'", () => {
     const { container } = render(<DiffView oldText="a" newText="a\nb" />);
     const add = rows(container, "add");
     expect(add.length).toBeGreaterThanOrEqual(1);
     expect(add[0]?.textContent).toContain("+");
   });
 
-  it("linha removida tem marker '-' textual e data-diff='del'", () => {
+  it("a removed line has a textual '-' marker and data-diff='del'", () => {
     const { container } = render(<DiffView oldText="a\nb" newText="a" />);
     const del = rows(container, "del");
     expect(del.length).toBeGreaterThanOrEqual(1);
     expect(del[0]?.textContent).toContain("-");
   });
 
-  it("split mode tem duas colunas (old | new)", () => {
+  it("split mode has two columns (old | new)", () => {
     const { container } = render(<DiffView oldText={OLD} newText={NEW} mode="split" />);
     const table = screen.getByRole("table");
     expect(table.getAttribute("data-mode")).toBe("split");
@@ -43,7 +43,7 @@ describe("DiffView", () => {
     expect(sides).toHaveLength(2);
   });
 
-  it("unified mode é inline (marca single-column via data-mode)", () => {
+  it("unified mode is inline (marks single-column through data-mode)", () => {
     const { container } = render(<DiffView oldText={OLD} newText={NEW} mode="unified" />);
     expect(screen.getByRole("table").getAttribute("data-mode")).toBe("unified");
     // unified has one content column, not two labeled sides
@@ -51,7 +51,7 @@ describe("DiffView", () => {
     expect(sides).toHaveLength(1);
   });
 
-  it("textos idênticos → empty state honesto 'No changes'", () => {
+  it("identical texts → the honest 'No changes' empty state", () => {
     const { container } = render(<DiffView oldText={OLD} newText={OLD} />);
     const empty = container.querySelectorAll('[data-slot="diff-view-empty"]');
     expect(empty).toHaveLength(1);
@@ -63,25 +63,25 @@ describe("DiffView", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
   });
 
-  it("encaminha ref para o elemento raiz", () => {
+  it("forwards ref to the root element", () => {
     const ref = createRef<HTMLTableElement>();
     render(<DiffView oldText={OLD} newText={NEW} ref={ref} />);
     expect(ref.current).not.toBeNull();
     expect(ref.current?.getAttribute("data-slot")).toBe("diff-view");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(DiffViewFromBarrel).toBe(DiffView);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(
       <DiffView oldText={OLD} newText={NEW} oldLabel="Old" newLabel="New" />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("não tem violações axe no empty state", async () => {
+  it("has no axe violations in the empty state", async () => {
     const { container } = render(<DiffView oldText={OLD} newText={OLD} />);
     expect(await axe(container)).toHaveNoViolations();
   });

@@ -129,9 +129,9 @@ export const FullyFeatured: Story = () => (
 );
 
 /**
- * Prova do M6 (DoD b3): 10.000 linhas determinísticas num scroll virtualizado.
- * Matriz manual (jsdom não rola): verificar em browser real — scroll fluido até
- * o fim, sticky header, sort reordenando, ~15-20 tr no DOM a qualquer momento.
+ * M6's proof (DoD b3): 10,000 deterministic rows in a virtualised scroll.
+ * Manual matrix (jsdom does not scroll): verify in a real browser — smooth scrolling to the
+ * end, a sticky header, sorting reorders, ~15-20 tr in the DOM at any moment.
  */
 interface AuditRow {
   id: string;

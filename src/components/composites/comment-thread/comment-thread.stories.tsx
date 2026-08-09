@@ -23,9 +23,9 @@ const SEED: Comment[] = [
 ];
 
 /**
- * Thread controlado (comments + onSubmit) com composer local: submeter um body
- * não-vazio adiciona um comentário e limpa o textarea. O caso sem comentários
- * mostra o empty honesto e mantém o composer.
+ * A controlled thread (comments + onSubmit) with a local composer: submitting a non-empty body
+ * adds a comment and clears the textarea. The no-comments case shows the honest empty state and
+ * keeps the composer.
  */
 export const Playground: Story = () => {
   const [comments, setComments] = useState<Comment[]>(SEED);

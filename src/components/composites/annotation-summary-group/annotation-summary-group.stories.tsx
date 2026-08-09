@@ -18,8 +18,8 @@ const rating: AnnotationContinuousConfig = { type: "continuous", min: 0, max: 1,
 const note: AnnotationFreeformConfig = { type: "freeform", maxLength: 500 };
 
 /**
- * Stats agregadas por config: média p/ continuous, contagem por opção p/
- * categorical, contagem de não-vazios p/ freeform. Grupos colapsáveis.
+ * Stats aggregated per config: the mean for continuous, the count per option for categorical,
+ * the count of non-empty values for freeform. Collapsible groups.
  */
 export const Playground: Story = () => (
   <div className="max-w-sm space-y-3">

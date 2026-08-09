@@ -14,7 +14,7 @@ const toolCalls: ToolCall[] = [
 ];
 
 describe("ChatMessageCard", () => {
-  it("renderiza um badge com o role", () => {
+  it("renders a badge with the role", () => {
     const { container } = render(<ChatMessageCard role="assistant" content="Hi" />);
     const badge = container.querySelector('[data-slot="badge"]');
     expect(badge?.textContent).toMatch(/assistant/i);
@@ -27,12 +27,12 @@ describe("ChatMessageCard", () => {
     ).toBe("user");
   });
 
-  it("renderiza o content como texto", () => {
+  it("renders the content as text", () => {
     render(<ChatMessageCard role="user" content="Find me flights" />);
     expect(screen.getByText("Find me flights")).toBeInTheDocument();
   });
 
-  it("renderiza toolCalls via code block", () => {
+  it("renders toolCalls through a code block", () => {
     const { container } = render(
       <ChatMessageCard role="assistant" content="Searching" toolCalls={toolCalls} />,
     );
@@ -41,7 +41,7 @@ describe("ChatMessageCard", () => {
     expect(container.textContent).toContain("search_flights");
   });
 
-  it("renderiza toolResults via code block", () => {
+  it("renders toolResults through a code block", () => {
     const { container } = render(
       <ChatMessageCard role="tool" toolResults={[{ ok: true, id: 42 }]} />,
     );
@@ -49,30 +49,30 @@ describe("ChatMessageCard", () => {
     expect(container.textContent).toContain("42");
   });
 
-  it("sem content e sem tools mostra empty state honesto", () => {
+  it("with no content and no tools it shows an honest empty state", () => {
     const { container } = render(<ChatMessageCard role="assistant" />);
     expect(slots(container, "chat-message-card-empty")).toHaveLength(1);
     expect(slots(container, "code-block")).toHaveLength(0);
   });
 
-  it("encaminha ref para o elemento raiz", () => {
+  it("forwards ref to the root element", () => {
     const ref = createRef<HTMLDivElement>();
     render(<ChatMessageCard role="user" content="Hi" ref={ref} />);
     expect(ref.current?.getAttribute("data-slot")).toBe("chat-message-card");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(ChatMessageCardFromBarrel).toBe(ChatMessageCard);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(
       <ChatMessageCard role="assistant" content="Hello" toolCalls={toolCalls} />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("não tem violações axe no empty state", async () => {
+  it("has no axe violations in the empty state", async () => {
     const { container } = render(<ChatMessageCard role="assistant" />);
     expect(await axe(container)).toHaveNoViolations();
   });

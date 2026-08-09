@@ -15,20 +15,20 @@ const props = (over: Partial<React.ComponentProps<typeof TraceTranscript>> = {})
 });
 
 describe("TraceTranscript", () => {
-  it("test_renderiza_uma_linha_por_span", () => {
+  it("test_renders_one_row_per_span", () => {
     const { container } = render(<TraceTranscript {...props()} />);
     const spanRows = container.querySelectorAll('[data-slot="transcript-span"]');
     const expected = toTranscriptRows(NESTED_TRACE).filter((r) => r.kind === "span").length;
     expect(spanRows).toHaveLength(expected);
   });
 
-  it("test_mostra_badge_de_role_por_linha", () => {
+  it("test_shows_a_role_badge_per_row", () => {
     render(<TraceTranscript {...props()} />);
     // NESTED_TRACE root has attributes.gen_ai.operation.name=chat, kind derived; names shown
     expect(screen.getByText("llm.plan")).toBeInTheDocument();
   });
 
-  it("test_span_sem_custo_proprio_mostra_em_dash_nao_zero", () => {
+  it("test_a_span_without_its_own_cost_shows_an_em_dash_not_zero", () => {
     // M52 / theo-lens#71 Finding 3: a span with no individually-computed cost renders `—`
     // (matching the Span I/O panel), never a misleading fabricated "$0.0000".
     const noCost: React.ComponentProps<typeof TraceTranscript>["root"] = {
@@ -41,7 +41,7 @@ describe("TraceTranscript", () => {
     expect(container.textContent).toContain("—");
   });
 
-  it("test_span_com_custo_proprio_mostra_valor_formatado", () => {
+  it("test_a_span_with_its_own_cost_shows_the_formatted_value", () => {
     const priced: React.ComponentProps<typeof TraceTranscript>["root"] = {
       id: "y",
       parentId: null,
@@ -52,7 +52,7 @@ describe("TraceTranscript", () => {
     expect(container.textContent).toContain("$0.0234");
   });
 
-  it("test_group_header_colapsa_subtree", async () => {
+  it("test_the_group_header_collapses_the_subtree", async () => {
     const user = userEvent.setup();
     function Controlled() {
       const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
@@ -79,7 +79,7 @@ describe("TraceTranscript", () => {
     expect(screen.queryByText("llm.plan")).toBeNull();
   });
 
-  it("test_clicar_na_linha_dispara_onSelect", async () => {
+  it("test_clicking_the_row_fires_onSelect", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(<TraceTranscript {...props({ onSelect })} />);
@@ -87,14 +87,14 @@ describe("TraceTranscript", () => {
     expect(onSelect).toHaveBeenCalledWith("plan");
   });
 
-  it("test_acima_do_threshold_virtualiza", () => {
+  it("test_above_the_threshold_it_virtualises", () => {
     const { container } = render(
       <TraceTranscript {...props({ root: makeTrace(250), virtualizeThreshold: 200 })} />,
     );
     expect(container.querySelector('[data-slot="trace-transcript-virtual"]')).toBeInTheDocument();
   });
 
-  it("test_rows_vazias_mostram_empty_state", () => {
+  it("test_empty_rows_show_the_empty_state", () => {
     render(
       <TraceTranscript
         root={{ id: "x", parentId: null, name: "x" }}

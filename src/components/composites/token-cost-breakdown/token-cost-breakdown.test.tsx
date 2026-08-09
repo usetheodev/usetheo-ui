@@ -9,7 +9,7 @@ const slots = (container: HTMLElement, slot: string) =>
   container.querySelectorAll(`[data-slot="${slot}"]`);
 
 describe("TokenCostBreakdown", () => {
-  it("test_renderiza_input_output_cache_e_custo", () => {
+  it("test_renders_input_output_cache_and_cost", () => {
     render(
       <TokenCostBreakdown
         inputTokens={1200}
@@ -26,14 +26,14 @@ describe("TokenCostBreakdown", () => {
     expect(screen.getByTestId("tcb-cost")).toHaveTextContent("$0.0234");
   });
 
-  it("test_zero_real_mostra_zero_nao_em_dash", () => {
+  it("test_a_real_zero_shows_zero_not_an_em_dash", () => {
     render(<TokenCostBreakdown inputTokens={0} costUsd={0} />);
     expect(screen.getByTestId("tcb-input")).toHaveTextContent("0");
     expect(screen.getByTestId("tcb-input")).not.toHaveTextContent("—");
     expect(screen.getByTestId("tcb-cost")).toHaveTextContent("$0.0000");
   });
 
-  it("test_ausente_mostra_em_dash", () => {
+  it("test_an_absent_value_shows_an_em_dash", () => {
     // input present so the list renders; cache absent → em-dash (honest, not 0)
     render(<TokenCostBreakdown inputTokens={5} />);
     expect(screen.getByTestId("tcb-cache")).toHaveTextContent("—");
@@ -41,36 +41,36 @@ describe("TokenCostBreakdown", () => {
     expect(screen.getByTestId("tcb-cost")).toHaveTextContent("—");
   });
 
-  it("test_custo_formatado_quatro_casas", () => {
+  it("test_the_cost_is_formatted_to_four_decimals", () => {
     render(<TokenCostBreakdown costUsd={1.5} />);
     expect(screen.getByTestId("tcb-cost")).toHaveTextContent("$1.5000");
   });
 
-  it("test_todos_ausentes_empty_honesto", () => {
+  it("test_all_absent_gives_an_honest_empty_state", () => {
     const { container } = render(<TokenCostBreakdown />);
     expect(slots(container, "token-cost-breakdown-empty")).toHaveLength(1);
     expect(slots(container, "token-cost-breakdown")).toHaveLength(0);
   });
 
-  it("test_encaminha_ref", () => {
+  it("test_forwards_ref", () => {
     const ref = createRef<HTMLDListElement>();
     render(<TokenCostBreakdown inputTokens={1} ref={ref} />);
     expect(ref.current).not.toBeNull();
     expect(ref.current?.getAttribute("data-slot")).toBe("token-cost-breakdown");
   });
 
-  it("test_exportado_pelo_barrel", () => {
+  it("test_exported_from_the_barrel", () => {
     expect(TokenCostBreakdownFromBarrel).toBe(TokenCostBreakdown);
   });
 
-  it("test_sem_violacoes_axe", async () => {
+  it("test_no_axe_violations", async () => {
     const { container } = render(
       <TokenCostBreakdown inputTokens={10} outputTokens={20} totalTokens={30} costUsd={0.01} />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("test_sem_violacoes_axe_no_empty", async () => {
+  it("test_no_axe_violations_in_the_empty_state", async () => {
     const { container } = render(<TokenCostBreakdown />);
     expect(await axe(container)).toHaveNoViolations();
   });

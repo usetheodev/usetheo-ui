@@ -53,7 +53,7 @@ function Harness({
 }
 
 describe("SpanTree", () => {
-  it("test_expoe_semantica_aria_treeitem_completa", () => {
+  it("test_exposes_the_complete_aria_treeitem_semantics", () => {
     render(<Harness />);
     const items = screen.getAllByRole("treeitem");
     expect(items.length).toBeGreaterThan(1);
@@ -69,7 +69,7 @@ describe("SpanTree", () => {
     expect(screen.getByRole("tree")).toBeInTheDocument();
   });
 
-  it("test_collapse_esconde_subtree_e_atualiza_aria_expanded", async () => {
+  it("test_collapse_hides_the_subtree_and_updates_aria_expanded", async () => {
     const user = userEvent.setup();
     render(<Harness />);
     // search-1 has a child (search-retry) → collapsing it hides the child row
@@ -79,13 +79,13 @@ describe("SpanTree", () => {
     expect(screen.queryByText("tool.search_flights#retry")).toBeNull();
   });
 
-  it("test_span_com_erro_mostra_badge_de_erro", () => {
+  it("test_a_span_with_an_error_shows_an_error_badge", () => {
     render(<Harness />);
     const errRow = screen.getByText("tool.search_flights").closest('[role="treeitem"]');
     expect(within(errRow as HTMLElement).getByText(/error/i)).toBeInTheDocument();
   });
 
-  it("test_clicar_no_span_dispara_onSelect", async () => {
+  it("test_clicking_the_span_fires_onSelect", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(<Harness onSelect={onSelect} />);
@@ -93,7 +93,7 @@ describe("SpanTree", () => {
     expect(onSelect).toHaveBeenCalledWith("plan");
   });
 
-  it("test_setas_navegam_e_enter_seleciona", async () => {
+  it("test_the_arrow_keys_navigate_and_enter_selects", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(<Harness onSelect={onSelect} />);
@@ -103,17 +103,17 @@ describe("SpanTree", () => {
     expect(onSelect).toHaveBeenCalledWith("plan"); // first child after root
   });
 
-  it("test_acima_do_threshold_usa_caminho_virtualizado", () => {
+  it("test_above_the_threshold_it_takes_the_virtualised_path", () => {
     const { container } = renderStatic({ root: makeTrace(250), virtualizeThreshold: 200 });
     expect(container.querySelector('[data-slot="span-tree-virtual"]')).toBeInTheDocument();
   });
 
-  it("test_root_sem_children_nao_renderiza_group", () => {
+  it("test_a_root_without_children_renders_no_group", () => {
     renderStatic({ root: { id: "solo", parentId: null, name: "only" }, selectedId: "solo" });
     expect(screen.queryByRole("group")).toBeNull();
   });
 
-  it("test_span_id_duplicado_renderiza_todas_as_linhas_sem_crash", () => {
+  it("test_a_duplicate_span_id_renders_every_row_without_crashing", () => {
     // MALFORMED_TRACE has an orphan + skew + inflight — 4 spans, all render
     renderStatic({ root: MALFORMED_TRACE });
     expect(screen.getAllByRole("treeitem")).toHaveLength(4);
@@ -131,7 +131,7 @@ describe("SpanTree", () => {
     );
   });
 
-  it("test_fireEvent_toggle_direto_expande_de_volta", () => {
+  it("test_a_direct_fireEvent_toggle_expands_it_back", () => {
     render(<Harness />);
     const toggle = screen.getByRole("button", { name: /collapse tool\.search_flights$/i });
     fireEvent.click(toggle);

@@ -41,13 +41,13 @@ const laneB: TraceSpan = {
 };
 
 describe("TraceCompare", () => {
-  it("test_renderiza_duas_lanes", () => {
+  it("test_renders_two_lanes", () => {
     render(<TraceCompare laneA={{ id: "A", root: laneA }} laneB={{ id: "B", root: laneB }} />);
     expect(screen.getByText("A")).toBeInTheDocument();
     expect(screen.getByText("B")).toBeInTheDocument();
   });
 
-  it("test_delta_de_metricas_mostra_direcao", () => {
+  it("test_the_metric_delta_shows_its_direction", () => {
     const { container } = render(
       <TraceCompare laneA={{ id: "A", root: laneA }} laneB={{ id: "B", root: laneB }} />,
     );
@@ -55,13 +55,13 @@ describe("TraceCompare", () => {
     expect(container.querySelector('[data-slot="delta-badge"]')).toBeInTheDocument();
   });
 
-  it("test_span_so_em_b_marca_only_in", () => {
+  it("test_a_span_only_in_b_is_marked_only_in", () => {
     render(<TraceCompare laneA={{ id: "A", root: laneA }} laneB={{ id: "B", root: laneB }} />);
     const row = screen.getByText("tool.extra").closest('[data-slot="diff-row"]');
     expect(within(row as HTMLElement).getByText(/only in b/i)).toBeInTheDocument();
   });
 
-  it("test_lane_pending_mostra_skeleton_sem_delta", () => {
+  it("test_a_pending_lane_shows_a_skeleton_without_a_delta", () => {
     const { container } = render(
       <TraceCompare
         laneA={{ id: "A", root: laneA }}
@@ -72,7 +72,7 @@ describe("TraceCompare", () => {
     expect(container.querySelector('[data-slot="delta-badge"]')).toBeNull();
   });
 
-  it("test_lanes_com_skew_e_ciclo_nao_lancam", () => {
+  it("test_lanes_with_skew_and_a_cycle_do_not_throw", () => {
     // A lane whose root has a clock-skewed child + a self-referential cycle must render honestly.
     const skewed: TraceSpan = {
       id: "s-root",

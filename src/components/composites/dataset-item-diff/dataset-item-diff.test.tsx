@@ -19,30 +19,30 @@ const NEW: DatasetItemSnapshot = {
 const diffs = (c: HTMLElement) => c.querySelectorAll('[data-slot="diff-view"]');
 
 describe("DatasetItemDiff", () => {
-  it("renderiza três seções (input / output / metadata)", () => {
+  it("renders three sections (input / output / metadata)", () => {
     const { container } = render(<DatasetItemDiff oldItem={OLD} newItem={NEW} />);
     expect(diffs(container)).toHaveLength(3);
   });
 
-  it("omite a seção de metadata quando ausente em ambos os itens", () => {
+  it("omits the metadata section when absent from both items", () => {
     const a: DatasetItemSnapshot = { input: "a", expectedOutput: "x" };
     const b: DatasetItemSnapshot = { input: "b", expectedOutput: "y" };
     const { container } = render(<DatasetItemDiff oldItem={a} newItem={b} />);
     expect(diffs(container)).toHaveLength(2);
   });
 
-  it("omite output E metadata quando só input está presente", () => {
+  it("omits output AND metadata when only input is present", () => {
     const a: DatasetItemSnapshot = { input: "a" };
     const b: DatasetItemSnapshot = { input: "b" };
     const { container } = render(<DatasetItemDiff oldItem={a} newItem={b} />);
     expect(diffs(container)).toHaveLength(1);
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(FromBarrel).toBe(DatasetItemDiff);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(<DatasetItemDiff oldItem={OLD} newItem={NEW} />);
     expect(await axe(container)).toHaveNoViolations();
   });

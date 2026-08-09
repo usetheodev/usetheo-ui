@@ -9,7 +9,7 @@ const slots = (container: HTMLElement, slot: string) =>
   container.querySelectorAll(`[data-slot="${slot}"]`);
 
 describe("PriceBreakdown", () => {
-  it("test_uma_linha_por_preco", () => {
+  it("test_one_row_per_price", () => {
     const { container } = render(<PriceBreakdown prices={{ input: 0.000003, output: 0.000015 }} />);
     const rows = container.querySelectorAll('[data-slot="price-breakdown"] tbody tr');
     expect(rows).toHaveLength(2);
@@ -17,7 +17,7 @@ describe("PriceBreakdown", () => {
     expect(screen.getByText("output")).toBeInTheDocument();
   });
 
-  it("test_escala_1k_1m_correta", () => {
+  it("test_the_1k_1m_scale_is_correct", () => {
     render(<PriceBreakdown prices={{ input: 0.000003 }} />);
     // per-unit = 0.000003 ; per-1K = 0.003 ; per-1M = 3
     expect(screen.getByTestId("price-input-unit")).toHaveTextContent("0.000003");
@@ -25,31 +25,31 @@ describe("PriceBreakdown", () => {
     expect(screen.getByTestId("price-input-1m")).toHaveTextContent("3");
   });
 
-  it("test_prices_vazio_empty", () => {
+  it("test_empty_prices_show_the_empty_state", () => {
     const { container } = render(<PriceBreakdown prices={{}} />);
     expect(slots(container, "price-breakdown-empty")).toHaveLength(1);
     expect(slots(container, "price-breakdown")).toHaveLength(0);
   });
 
-  it("test_encaminha_ref", () => {
+  it("test_forwards_ref", () => {
     const ref = createRef<HTMLTableElement>();
     render(<PriceBreakdown prices={{ input: 0.000003 }} ref={ref} />);
     expect(ref.current).not.toBeNull();
     expect(ref.current?.getAttribute("data-slot")).toBe("price-breakdown");
   });
 
-  it("test_exportado_pelo_barrel", () => {
+  it("test_exported_from_the_barrel", () => {
     expect(PriceBreakdownFromBarrel).toBe(PriceBreakdown);
   });
 
-  it("test_sem_violacoes_axe", async () => {
+  it("test_no_axe_violations", async () => {
     const { container } = render(
       <PriceBreakdown prices={{ input: 0.000003, output: 0.000015 }} unit="token" />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("test_sem_violacoes_axe_no_empty", async () => {
+  it("test_no_axe_violations_in_the_empty_state", async () => {
     const { container } = render(<PriceBreakdown prices={{}} />);
     expect(await axe(container)).toHaveNoViolations();
   });

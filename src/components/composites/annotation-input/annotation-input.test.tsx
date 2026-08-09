@@ -21,14 +21,14 @@ const continuous: AnnotationContinuousConfig = { type: "continuous", min: 0, max
 const freeform: AnnotationFreeformConfig = { type: "freeform", maxLength: 500 };
 
 describe("AnnotationInput — categorical", () => {
-  it("renderiza um radio por opção do config", () => {
+  it("renders one radio per config option", () => {
     render(
       <AnnotationInput name="Quality" config={categorical} value={null} onValueChange={() => {}} />,
     );
     expect(screen.getAllByRole("radio")).toHaveLength(3);
   });
 
-  it("onValueChange emite a label selecionada", () => {
+  it("onValueChange emits the selected label", () => {
     const onChange = vi.fn();
     render(
       <AnnotationInput name="Quality" config={categorical} value={null} onValueChange={onChange} />,
@@ -37,7 +37,7 @@ describe("AnnotationInput — categorical", () => {
     expect(onChange).toHaveBeenCalledWith("good");
   });
 
-  it("reflete o value controlado (radio marcado)", () => {
+  it("reflects the controlled value (radio checked)", () => {
     render(
       <AnnotationInput name="Quality" config={categorical} value="ok" onValueChange={() => {}} />,
     );
@@ -53,7 +53,7 @@ describe("AnnotationInput — categorical", () => {
 });
 
 describe("AnnotationInput — continuous", () => {
-  it("renderiza number input com bounds do config", () => {
+  it("renders a number input with the config's bounds", () => {
     render(
       <AnnotationInput name="Rating" config={continuous} value={null} onValueChange={() => {}} />,
     );
@@ -64,7 +64,7 @@ describe("AnnotationInput — continuous", () => {
     expect(input.step).toBe("0.1");
   });
 
-  it("emite number ao digitar e null ao esvaziar (nunca NaN)", () => {
+  it("emits a number while typing and null when cleared (never NaN)", () => {
     const onChange = vi.fn();
     render(
       <AnnotationInput name="Rating" config={continuous} value={0.5} onValueChange={onChange} />,
@@ -78,7 +78,7 @@ describe("AnnotationInput — continuous", () => {
 });
 
 describe("AnnotationInput — freeform", () => {
-  it("renderiza textarea e emite string", () => {
+  it("renders a textarea and emits a string", () => {
     const onChange = vi.fn();
     render(<AnnotationInput name="Note" config={freeform} value={null} onValueChange={onChange} />);
     const ta = screen.getByLabelText(/note/i);
@@ -87,7 +87,7 @@ describe("AnnotationInput — freeform", () => {
     expect(onChange).toHaveBeenCalledWith("looks off");
   });
 
-  it("emite null ao esvaziar", () => {
+  it("emits null when cleared", () => {
     const onChange = vi.fn();
     render(<AnnotationInput name="Note" config={freeform} value="x" onValueChange={onChange} />);
     fireEvent.change(screen.getByLabelText(/note/i), { target: { value: "" } });
@@ -95,8 +95,8 @@ describe("AnnotationInput — freeform", () => {
   });
 });
 
-describe("AnnotationInput — comum", () => {
-  it("required marca aria-required no controle (continuous)", () => {
+describe("AnnotationInput — shared", () => {
+  it("required sets aria-required on the control (continuous)", () => {
     render(
       <AnnotationInput
         name="Rating"
@@ -109,7 +109,7 @@ describe("AnnotationInput — comum", () => {
     expect(screen.getByLabelText(/rating/i)).toHaveAttribute("aria-required", "true");
   });
 
-  it("disabled desabilita o controle (freeform)", () => {
+  it("disabled disables the control (freeform)", () => {
     render(
       <AnnotationInput
         name="Note"
@@ -131,7 +131,7 @@ describe("AnnotationInput — comum", () => {
     expect(root?.getAttribute("data-type")).toBe("freeform");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(AnnotationInputFromBarrel).toBe(AnnotationInput);
   });
 

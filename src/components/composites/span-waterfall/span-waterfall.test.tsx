@@ -15,26 +15,26 @@ const props = (over: Partial<React.ComponentProps<typeof SpanWaterfall>> = {}) =
 });
 
 describe("SpanWaterfall", () => {
-  it("test_renderiza_uma_barra_para_cada_span_visivel", () => {
+  it("test_renders_one_bar_for_each_visible_span", () => {
     const { container } = render(<SpanWaterfall {...props()} />);
     const bars = container.querySelectorAll('[data-slot="span-waterfall-row"]');
     expect(bars).toHaveLength(flattenVisible(NESTED_TRACE, new Set()).length);
   });
 
-  it("test_barra_posicionada_por_compute_bar_layout", () => {
+  it("test_the_bar_is_positioned_by_compute_bar_layout", () => {
     const { container } = render(<SpanWaterfall {...props()} />);
     const bar = container.querySelector('[data-slot="span-waterfall-bar"]') as HTMLElement;
     expect(bar.style.left).toMatch(/%$/);
     expect(bar.style.width).toContain("%");
   });
 
-  it("test_span_com_erro_usa_cor_destructive", () => {
+  it("test_a_span_with_an_error_uses_the_destructive_colour", () => {
     const { container } = render(<SpanWaterfall {...props()} />);
     const errBar = container.querySelector('[data-slot="span-waterfall-bar"][data-error="true"]');
     expect(errBar).toBeInTheDocument();
   });
 
-  it("test_clicar_na_barra_seleciona_o_span", async () => {
+  it("test_clicking_the_bar_selects_the_span", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(<SpanWaterfall {...props({ onSelect })} />);
@@ -42,14 +42,14 @@ describe("SpanWaterfall", () => {
     expect(onSelect).toHaveBeenCalledWith("plan");
   });
 
-  it("test_renderiza_o_eixo_de_tempo_com_ticks", () => {
+  it("test_renders_the_time_axis_with_ticks", () => {
     const { container } = render(<SpanWaterfall {...props()} />);
     expect(container.querySelectorAll('[data-slot="span-waterfall-tick"]').length).toBeGreaterThan(
       0,
     );
   });
 
-  it("test_span_in_flight_marca_barra_unbounded", () => {
+  it("test_an_in_flight_span_marks_the_bar_unbounded", () => {
     const inflight = {
       id: "root",
       parentId: null,
@@ -65,7 +65,7 @@ describe("SpanWaterfall", () => {
     ).toBeInTheDocument();
   });
 
-  it("test_janela_zero_duration_nao_lanca", () => {
+  it("test_a_zero_duration_window_does_not_throw", () => {
     const zero = { id: "root", parentId: null, name: "z", startTime: 5n, endTime: 5n };
     expect(() =>
       render(<SpanWaterfall {...props({ root: zero, selectedId: "root" })} />),

@@ -5,7 +5,7 @@ import { TagInput as TagInputFromBarrel } from "../../../index.js";
 import { TagInput } from "./tag-input.js";
 
 describe("TagInput", () => {
-  it("renderiza um chip por valor", () => {
+  it("renders one chip per value", () => {
     render(<TagInput value={["alpha", "beta", "gamma"]} onChange={() => {}} />);
     const chips = screen.getAllByTestId("tag-input-chip");
     expect(chips).toHaveLength(3);
@@ -14,7 +14,7 @@ describe("TagInput", () => {
     expect(screen.getByText("gamma")).toBeInTheDocument();
   });
 
-  it("adicionar tag emite onChange com a nova tag", () => {
+  it("adding a tag emits onChange with the new tag", () => {
     const onChange = vi.fn();
     render(<TagInput value={["alpha"]} onChange={onChange} placeholder="Add a tag" />);
     const input = screen.getByPlaceholderText("Add a tag");
@@ -23,7 +23,7 @@ describe("TagInput", () => {
     expect(onChange).toHaveBeenCalledWith(["alpha", "beta"]);
   });
 
-  it("adicionar tag limpa o input", () => {
+  it("adding a tag clears the input", () => {
     render(<TagInput value={[]} onChange={() => {}} placeholder="Add a tag" />);
     const input = screen.getByPlaceholderText("Add a tag") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "beta" } });
@@ -31,14 +31,14 @@ describe("TagInput", () => {
     expect(input.value).toBe("");
   });
 
-  it("remover chip emite onChange sem ela", () => {
+  it("removing a chip emits onChange without it", () => {
     const onChange = vi.fn();
     render(<TagInput value={["alpha", "beta"]} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: /remove alpha/i }));
     expect(onChange).toHaveBeenCalledWith(["beta"]);
   });
 
-  it("tag duplicada é no-op (não emite onChange)", () => {
+  it("a duplicate tag is a no-op (it does not emit onChange)", () => {
     const onChange = vi.fn();
     render(<TagInput value={["alpha"]} onChange={onChange} placeholder="Add a tag" />);
     const input = screen.getByPlaceholderText("Add a tag");
@@ -47,7 +47,7 @@ describe("TagInput", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("tag vazia/whitespace é no-op", () => {
+  it("an empty or whitespace tag is a no-op", () => {
     const onChange = vi.fn();
     render(<TagInput value={["alpha"]} onChange={onChange} placeholder="Add a tag" />);
     const input = screen.getByPlaceholderText("Add a tag");
@@ -56,7 +56,7 @@ describe("TagInput", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("nova tag é trimada antes de emitir", () => {
+  it("a new tag is trimmed before being emitted", () => {
     const onChange = vi.fn();
     render(<TagInput value={[]} onChange={onChange} placeholder="Add a tag" />);
     const input = screen.getByPlaceholderText("Add a tag");
@@ -65,7 +65,7 @@ describe("TagInput", () => {
     expect(onChange).toHaveBeenCalledWith(["beta"]);
   });
 
-  it("disabled desabilita add e remove", () => {
+  it("disabled disables both add and remove", () => {
     const onChange = vi.fn();
     render(<TagInput value={["alpha"]} onChange={onChange} placeholder="Add a tag" disabled />);
     const input = screen.getByPlaceholderText("Add a tag") as HTMLInputElement;
@@ -84,13 +84,13 @@ describe("TagInput", () => {
     expect(ref.current).toBe(root);
   });
 
-  it("cada chip tem um botão remover com label acessível", () => {
+  it("each chip has a remove button with an accessible label", () => {
     render(<TagInput value={["alpha"]} onChange={() => {}} />);
     const chip = screen.getByTestId("tag-input-chip");
     expect(within(chip).getByRole("button", { name: /remove alpha/i })).toBeInTheDocument();
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(TagInputFromBarrel).toBe(TagInput);
   });
 

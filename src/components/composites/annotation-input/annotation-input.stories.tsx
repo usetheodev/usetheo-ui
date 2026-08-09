@@ -24,8 +24,8 @@ const ratingConfig: AnnotationContinuousConfig = { type: "continuous", min: 0, m
 const noteConfig: AnnotationFreeformConfig = { type: "freeform", maxLength: 500 };
 
 /**
- * Os 3 tipos (categorical / continuous / freeform) controlados, como o
- * labeling-queue do lens vai compor sobre uma lista de score-configs.
+ * The 3 types (categorical / continuous / freeform), controlled, the way lens's labeling
+ * queue will compose them over a list of score configs.
  */
 export const Playground: Story = () => {
   const [quality, setQuality] = useState<string | null>("good");
@@ -35,7 +35,7 @@ export const Playground: Story = () => {
     <div className="max-w-sm space-y-5">
       <AnnotationInput
         name="Quality"
-        description="Como você avalia esta resposta?"
+        description="How do you rate this answer?"
         config={qualityConfig}
         value={quality}
         onValueChange={setQuality}
@@ -43,7 +43,7 @@ export const Playground: Story = () => {
       />
       <AnnotationInput
         name="Rating"
-        description="0 = ruim, 1 = perfeito"
+        description="0 = bad, 1 = perfect"
         config={ratingConfig}
         value={rating}
         onValueChange={setRating}

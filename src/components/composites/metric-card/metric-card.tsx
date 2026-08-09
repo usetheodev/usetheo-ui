@@ -7,7 +7,7 @@ import { Card } from "../../primitives/card/index.js";
 /**
  * MetricCard — dashboard metric tile (composite).
  *
- * Pattern recurrente "Card + CardHeader + value + delta + trend icon" promoted
+ * Recurring pattern "Card + CardHeader + value + delta + trend icon" promoted
  * to a first-class composite per ADR-0007 community-best-practices plan.
  *
  * Trend → token mapping (default `invertTrend=false`):

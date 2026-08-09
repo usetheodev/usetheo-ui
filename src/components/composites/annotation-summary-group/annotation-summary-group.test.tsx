@@ -22,7 +22,7 @@ const renderQuality = (values: string[]) =>
   );
 
 describe("AnnotationSummaryGroup — aggregation", () => {
-  it("continuous mostra a média dos valores finitos", () => {
+  it("continuous shows the mean of the finite values", () => {
     const { container } = render(
       <AnnotationSummaryGroup config={continuous} values={[0, 1, 0.5]} defaultOpen />,
     );
@@ -32,7 +32,7 @@ describe("AnnotationSummaryGroup — aggregation", () => {
     expect(root).toHaveTextContent(/3/); // count
   });
 
-  it("continuous ignora não-finitos ao calcular a média", () => {
+  it("continuous ignores non-finite values when averaging", () => {
     const { container } = render(
       <AnnotationSummaryGroup
         config={continuous}
@@ -45,7 +45,7 @@ describe("AnnotationSummaryGroup — aggregation", () => {
     expect(root).toHaveTextContent(/3/);
   });
 
-  it("categorical mostra a contagem por opção", () => {
+  it("categorical shows the count per option", () => {
     renderQuality(["good", "good", "bad"]);
     const goodRow = screen.getByText("good").closest("li") as HTMLElement;
     expect(within(goodRow).getByText("2")).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("AnnotationSummaryGroup — aggregation", () => {
     expect(within(badRow).getByText("1")).toBeInTheDocument();
   });
 
-  it("freeform mostra a contagem de valores não-vazios", () => {
+  it("freeform shows the count of non-empty values", () => {
     const { container } = render(
       <AnnotationSummaryGroup config={freeform} values={["hi", "", "yo"]} defaultOpen />,
     );
@@ -63,12 +63,12 @@ describe("AnnotationSummaryGroup — aggregation", () => {
 });
 
 describe("AnnotationSummaryGroup — states", () => {
-  it("values vazio → empty state honesto", () => {
+  it("an empty values array → an honest empty state", () => {
     const { container } = render(<AnnotationSummaryGroup config={continuous} values={[]} />);
     expect(container.querySelector('[data-slot="annotation-summary-group-empty"]')).not.toBeNull();
   });
 
-  it("colapsável: abre e fecha via summary", () => {
+  it("collapsible: opens and closes through the summary", () => {
     render(
       <AnnotationSummaryGroup
         config={continuous}
@@ -83,7 +83,7 @@ describe("AnnotationSummaryGroup — states", () => {
     expect(details.open).toBe(true);
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(FromBarrel).toBe(AnnotationSummaryGroup);
   });
 

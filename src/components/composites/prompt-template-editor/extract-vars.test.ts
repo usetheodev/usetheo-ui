@@ -2,31 +2,31 @@ import { describe, expect, it } from "vitest";
 import { extractVars } from "./extract-vars.js";
 
 describe("extractVars", () => {
-  it("extrai variáveis mustache {{name}}", () => {
+  it("extracts mustache variables {{name}}", () => {
     expect(extractVars("Hello {{name}}, welcome to {{place}}")).toEqual(["name", "place"]);
   });
 
-  it("extrai variáveis f-string {name}", () => {
+  it("extracts f-string variables {name}", () => {
     expect(extractVars("Hello {name} from {city}")).toEqual(["name", "city"]);
   });
 
-  it("extrai mustache e f-string misturados", () => {
+  it("extracts mustache and f-string mixed together", () => {
     expect(extractVars("{{greeting}} {name}!")).toEqual(["greeting", "name"]);
   });
 
-  it("deduplica preservando a primeira ocorrência", () => {
+  it("deduplicates keeping the first occurrence", () => {
     expect(extractVars("{{a}} {{b}} {{a}} {b}")).toEqual(["a", "b"]);
   });
 
-  it("retorna vazio quando não há variáveis", () => {
+  it("returns empty when there are no variables", () => {
     expect(extractVars("just plain text")).toEqual([]);
   });
 
-  it("ignora chaves vazias {{}} e {}", () => {
+  it("ignores empty braces {{}} and {}", () => {
     expect(extractVars("{{}} {} {{ok}}")).toEqual(["ok"]);
   });
 
-  it("faz trim do nome dentro das chaves", () => {
+  it("trims the name inside the braces", () => {
     expect(extractVars("{{ name }} { city }")).toEqual(["name", "city"]);
   });
 });

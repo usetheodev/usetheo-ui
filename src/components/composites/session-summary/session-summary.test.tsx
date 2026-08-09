@@ -30,31 +30,31 @@ const ITEMS: SessionTraceItem[] = [
 ];
 
 describe("SessionSummary", () => {
-  it("test_mostra_contagem_de_traces_e_janela", () => {
+  it("test_shows_the_trace_count_and_the_window", () => {
     render(<SessionSummary items={ITEMS} />);
     expect(screen.getByText("3")).toBeInTheDocument(); // traceCount
     expect(screen.getByTestId("session-duration")).toHaveTextContent("5s"); // window = 5000ms
   });
 
-  it("test_erro_maior_que_zero_em_destructive", () => {
+  it("test_an_error_count_above_zero_renders_destructive", () => {
     const { container } = render(<SessionSummary items={ITEMS} />);
     expect(
       container.querySelector('[data-slot="session-error"][data-error="true"]'),
     ).toBeInTheDocument();
   });
 
-  it("test_custo_zero_e_honesto_nao_em_dash", () => {
+  it("test_a_zero_cost_is_honest_not_an_em_dash", () => {
     render(<SessionSummary items={[{ id: "a" }]} />);
     expect(screen.getByTestId("session-cost")).toHaveTextContent("$0.0000");
   });
 
-  it("test_models_distintos_listados", () => {
+  it("test_distinct_models_are_listed", () => {
     render(<SessionSummary items={ITEMS} />);
     expect(screen.getByTestId("session-models")).toHaveTextContent("gpt");
     expect(screen.getByTestId("session-models")).toHaveTextContent("haiku");
   });
 
-  it("test_lista_vazia_mostra_zeros_nao_crash", () => {
+  it("test_an_empty_list_shows_zeros_not_a_crash", () => {
     expect(() => render(<SessionSummary items={[]} />)).not.toThrow();
     expect(screen.getByTestId("session-cost")).toHaveTextContent("$0.0000");
   });

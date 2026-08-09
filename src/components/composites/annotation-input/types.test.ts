@@ -17,7 +17,7 @@ const continuous: AnnotationConfig = { type: "continuous", min: 0, max: 1, step:
 const freeform: AnnotationConfig = { type: "freeform", maxLength: 500 };
 
 describe("annotation config type guards", () => {
-  it("isCategoricalConfig discrimina por type", () => {
+  it("isCategoricalConfig discriminates by type", () => {
     expect(isCategoricalConfig(categorical)).toBe(true);
     expect(isCategoricalConfig(continuous)).toBe(false);
     expect(isCategoricalConfig(freeform)).toBe(false);
@@ -35,7 +35,7 @@ describe("annotation config type guards", () => {
     expect(isFreeformConfig(continuous)).toBe(false);
   });
 
-  it("guards retornam false para type desconhecido (negativo)", () => {
+  it("the guards return false for an unknown type (negative case)", () => {
     const bogus = { type: "x" } as unknown as AnnotationConfig;
     expect(isCategoricalConfig(bogus)).toBe(false);
     expect(isContinuousConfig(bogus)).toBe(false);

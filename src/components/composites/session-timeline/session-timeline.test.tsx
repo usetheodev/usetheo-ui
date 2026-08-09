@@ -51,12 +51,12 @@ const makeItems = (n: number): SessionTraceItem[] =>
   }));
 
 describe("SessionTimeline", () => {
-  it("test_renderiza_uma_linha_por_trace", () => {
+  it("test_renders_one_row_per_trace", () => {
     render(<SessionTimeline {...props()} />);
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
   });
 
-  it("test_ordena_por_start_time", () => {
+  it("test_sorts_by_start_time", () => {
     render(<SessionTimeline {...props()} />);
     const rows = screen.getAllByRole("listitem");
     expect(rows.map((r) => within(r).getByTestId("session-trace-name").textContent)).toEqual([
@@ -66,14 +66,14 @@ describe("SessionTimeline", () => {
     ]);
   });
 
-  it("test_barra_posicionada_por_compute_bar_layout", () => {
+  it("test_the_bar_is_positioned_by_compute_bar_layout", () => {
     const { container } = render(<SessionTimeline {...props()} />);
     const bar = container.querySelector('[data-slot="session-timeline-bar"]') as HTMLElement;
     expect(bar.style.left).toMatch(/%$/);
     expect(bar.style.width).toContain("%");
   });
 
-  it("test_click_na_linha_dispara_onSelect", async () => {
+  it("test_clicking_the_row_fires_onSelect", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(<SessionTimeline {...props({ onSelect })} />);
@@ -81,21 +81,21 @@ describe("SessionTimeline", () => {
     expect(onSelect).toHaveBeenCalledWith("trace-2");
   });
 
-  it("test_trace_com_erro_marca_data_error", () => {
+  it("test_a_trace_with_an_error_sets_data_error", () => {
     const { container } = render(<SessionTimeline {...props()} />);
     expect(
       container.querySelector('[data-slot="session-timeline-bar"][data-error="true"]'),
     ).toBeInTheDocument();
   });
 
-  it("test_acima_do_threshold_virtualiza", () => {
+  it("test_above_the_threshold_it_virtualises", () => {
     const { container } = render(
       <SessionTimeline {...props({ items: makeItems(250), virtualizeThreshold: 200 })} />,
     );
     expect(container.querySelector('[data-slot="session-timeline-virtual"]')).toBeInTheDocument();
   });
 
-  it("test_lista_vazia_mostra_empty_state", () => {
+  it("test_an_empty_list_shows_the_empty_state", () => {
     render(<SessionTimeline {...props({ items: [] })} />);
     expect(screen.getByRole("heading", { name: /no traces/i })).toBeInTheDocument();
   });

@@ -13,7 +13,7 @@ const props = (over: Partial<React.ComponentProps<typeof SpanGraph>> = {}) => ({
 });
 
 describe("SpanGraph", () => {
-  it("test_renderiza_node_por_span_e_edge_por_parentesco", () => {
+  it("test_renders_a_node_per_span_and_an_edge_per_parent_link", () => {
     const { container } = render(<SpanGraph {...props()} />);
     const nodes = container.querySelectorAll('[data-slot="span-graph-node"]');
     const edges = container.querySelectorAll('[data-slot="span-graph-edge"]');
@@ -21,18 +21,18 @@ describe("SpanGraph", () => {
     expect(edges).toHaveLength(4); // 4 non-root spans → 4 edges
   });
 
-  it("test_oversize_mostra_estado_honesto_sem_render", () => {
+  it("test_oversize_shows_an_honest_state_without_rendering", () => {
     render(<SpanGraph {...props({ root: makeTrace(250) })} />);
     expect(screen.getByText(/too large/i)).toBeInTheDocument();
   });
 
-  it("test_parent_malformado_ainda_renderiza", () => {
+  it("test_a_malformed_parent_still_renders", () => {
     const { container } = render(<SpanGraph {...props({ root: MALFORMED_TRACE })} />);
     const orphan = container.querySelector('[data-slot="span-graph-node"][data-span-id="orphan"]');
     expect(orphan).toBeInTheDocument();
   });
 
-  it("test_skew_e_in_flight_renderizam_sem_throw_no_componente", () => {
+  it("test_skew_and_in_flight_render_without_throwing_in_the_component", () => {
     // MALFORMED_TRACE carries a clock-skewed span + an in-flight (endTime null) span.
     const { container } = render(<SpanGraph {...props({ root: MALFORMED_TRACE })} />);
     expect(
@@ -43,7 +43,7 @@ describe("SpanGraph", () => {
     ).toBeInTheDocument();
   });
 
-  it("test_node_click_seleciona", async () => {
+  it("test_clicking_a_node_selects_it", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     const { container } = render(<SpanGraph {...props({ onSelect })} />);
@@ -54,14 +54,14 @@ describe("SpanGraph", () => {
     expect(onSelect).toHaveBeenCalledWith("plan");
   });
 
-  it("test_span_com_erro_marca_data_error", () => {
+  it("test_a_span_with_an_error_sets_data_error", () => {
     const { container } = render(<SpanGraph {...props()} />);
     expect(
       container.querySelector('[data-slot="span-graph-node"][data-error="true"]'),
     ).toBeInTheDocument();
   });
 
-  it("test_svg_tem_role_e_label", () => {
+  it("test_the_svg_has_a_role_and_a_label", () => {
     render(<SpanGraph {...props()} />);
     expect(screen.getByRole("group", { name: /agent graph/i })).toBeInTheDocument();
   });

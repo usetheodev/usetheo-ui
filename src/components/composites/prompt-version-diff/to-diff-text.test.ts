@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { configToText, templateToText } from "./to-diff-text.js";
 
 describe("templateToText", () => {
-  it("string template passa direto sem alteração", () => {
+  it("a string template passes through unchanged", () => {
     expect(templateToText("You are helpful.")).toBe("You are helpful.");
   });
 
-  it("chat array normaliza para 'role: content' por mensagem", () => {
+  it("a chat array normalises to 'role: content' per message", () => {
     const text = templateToText([
       { role: "system", content: "Be concise." },
       { role: "user", content: "Hi" },
@@ -14,21 +14,21 @@ describe("templateToText", () => {
     expect(text).toBe("system: Be concise.\n\nuser: Hi");
   });
 
-  it("chat array vazio vira string vazia", () => {
+  it("an empty chat array becomes an empty string", () => {
     expect(templateToText([])).toBe("");
   });
 });
 
 describe("configToText", () => {
-  it("config presente vira JSON pretty (2 espaços)", () => {
+  it("a present config becomes pretty JSON (2 spaces)", () => {
     expect(configToText({ temperature: 0.7 })).toBe('{\n  "temperature": 0.7\n}');
   });
 
-  it("config ausente vira string vazia (seção omitida honestamente)", () => {
+  it("an absent config becomes an empty string (the section is honestly omitted)", () => {
     expect(configToText(undefined)).toBe("");
   });
 
-  it("config objeto vazio também vira string vazia", () => {
+  it("an empty config object also becomes an empty string", () => {
     expect(configToText({})).toBe("");
   });
 });

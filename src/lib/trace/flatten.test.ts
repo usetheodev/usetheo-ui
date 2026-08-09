@@ -18,12 +18,12 @@ const TREE = span({
 });
 
 describe("flattenVisible", () => {
-  it("test_flattenVisible_respeita_collapsed_set_e_ordem_dfs", () => {
+  it("test_flattenVisible_respects_the_collapsed_set_and_dfs_order", () => {
     const rows = flattenVisible(TREE, new Set(["a"]));
     expect(rows.map((r) => r.span.id)).toEqual(["root", "a", "c"]);
   });
 
-  it("test_flattenVisible_sem_collapse_entrega_dfs_completo_com_depth", () => {
+  it("test_flattenVisible_without_collapse_yields_the_full_dfs_with_depth", () => {
     const rows = flattenVisible(TREE, new Set());
     expect(rows.map((r) => r.span.id)).toEqual(["root", "a", "b", "c"]);
     expect(rows.map((r) => r.depth)).toEqual([0, 1, 2, 1]);
@@ -31,7 +31,7 @@ describe("flattenVisible", () => {
 });
 
 describe("flattenAll", () => {
-  it("test_flattenAll_ignora_collapse", () => {
+  it("test_flattenAll_ignores_collapse", () => {
     expect(flattenAll(TREE)).toHaveLength(4);
   });
 
@@ -43,18 +43,18 @@ describe("flattenAll", () => {
 });
 
 describe("toTranscriptRows", () => {
-  it("test_fan_out_ganha_group_header_antes_dos_filhos", () => {
+  it("test_a_fan_out_gets_a_group_header_before_its_children", () => {
     const rows = toTranscriptRows(TREE); // root tem 2 filhos → group-header
     expect(rows[0]).toMatchObject({ kind: "span", spanId: "root" });
     expect(rows[1]).toMatchObject({ kind: "group-header", groupId: "root" });
   });
 
-  it("test_span_unico_gera_uma_row_sem_header", () => {
+  it("test_a_single_span_yields_one_row_without_a_header", () => {
     const rows = toTranscriptRows(span({ id: "solo" }));
     expect(rows).toEqual([expect.objectContaining({ kind: "span", spanId: "solo" })]);
   });
 
-  it("test_stats_ausentes_colapsam_para_zero_nunca_nan", () => {
+  it("test_absent_stats_collapse_to_zero_never_nan", () => {
     const rows = toTranscriptRows(span({ id: "solo" }));
     expect(rows[0]?.stats).toMatchObject({
       inputTokens: 0,
@@ -66,12 +66,12 @@ describe("toTranscriptRows", () => {
     expect(rows[0]?.stats?.costUsd).toBeUndefined();
   });
 
-  it("test_stats_com_custo_proprio_preserva_o_valor", () => {
+  it("test_stats_with_their_own_cost_preserve_the_value", () => {
     const rows = toTranscriptRows(span({ id: "solo", costUsd: 0.0234 }));
     expect(rows[0]?.stats?.costUsd).toBe(0.0234);
   });
 
-  it("test_preview_trunca_em_uma_linha", () => {
+  it("test_the_preview_truncates_to_one_line", () => {
     const rows = toTranscriptRows(span({ id: "solo", outputValue: `${"x".repeat(200)}\nsegunda` }));
     expect(rows[0]?.preview?.length).toBeLessThanOrEqual(141);
     expect(rows[0]?.preview).not.toContain("\n");

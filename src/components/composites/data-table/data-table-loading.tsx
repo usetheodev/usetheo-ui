@@ -19,7 +19,7 @@ export function DataTableLoading<T>(props: {
     <div data-slot="data-table" className={cn("w-full", className)}>
       <Table>
         <Table.Header className={stickyHeader ? "sticky top-0 bg-card" : undefined}>
-          {/* header reutilizado sem affordance de sort (skeleton é inerte) — F-arch-1 */}
+          {/* the header reused without a sort affordance (the skeleton is inert) — F-arch-1 */}
           <DataTableHeaderRow
             columns={columns.map((col) => ({ ...col, sortable: false }))}
             sort={null}

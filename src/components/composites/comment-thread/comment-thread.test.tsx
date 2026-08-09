@@ -11,7 +11,7 @@ const COMMENTS: Comment[] = [
 ];
 
 describe("CommentThread", () => {
-  it("renderiza um item por comentário", () => {
+  it("renders one item per comment", () => {
     render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
     expect(screen.getByText("First look at the trace.")).toBeInTheDocument();
@@ -19,7 +19,7 @@ describe("CommentThread", () => {
     expect(screen.getByText("Ada")).toBeInTheDocument();
   });
 
-  it("submit emite o body trimado", () => {
+  it("submit emits the trimmed body", () => {
     const onSubmit = vi.fn();
     render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
     fireEvent.change(screen.getByLabelText(/add a comment/i), {
@@ -29,14 +29,14 @@ describe("CommentThread", () => {
     expect(onSubmit).toHaveBeenCalledWith("looks good");
   });
 
-  it("body vazio não submete", () => {
+  it("an empty body does not submit", () => {
     const onSubmit = vi.fn();
     render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
     fireEvent.click(screen.getByRole("button", { name: /comment|submit/i }));
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it("body só com whitespace não submete", () => {
+  it("a whitespace-only body does not submit", () => {
     const onSubmit = vi.fn();
     render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} />);
     fireEvent.change(screen.getByLabelText(/add a comment/i), { target: { value: "   " } });
@@ -44,7 +44,7 @@ describe("CommentThread", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it("composer limpa após submit", () => {
+  it("the composer clears after submit", () => {
     render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
     const ta = screen.getByLabelText(/add a comment/i) as HTMLTextAreaElement;
     fireEvent.change(ta, { target: { value: "nice" } });
@@ -52,14 +52,14 @@ describe("CommentThread", () => {
     expect(ta.value).toBe("");
   });
 
-  it("sem comentários mostra empty state honesto + composer", () => {
+  it("with no comments it shows an honest empty state plus the composer", () => {
     const { container } = render(<CommentThread comments={[]} onSubmit={() => {}} />);
     expect(container.querySelector('[data-slot="comment-thread-empty"]')).not.toBeNull();
     // composer still present
     expect(screen.getByLabelText(/add a comment/i)).toBeInTheDocument();
   });
 
-  it("disabled desabilita o composer", () => {
+  it("disabled disables the composer", () => {
     const onSubmit = vi.fn();
     render(<CommentThread comments={COMMENTS} onSubmit={onSubmit} disabled />);
     expect(screen.getByLabelText(/add a comment/i)).toBeDisabled();
@@ -76,7 +76,7 @@ describe("CommentThread", () => {
     expect(ref.current).toBe(root);
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(CommentThreadFromBarrel).toBe(CommentThread);
   });
 

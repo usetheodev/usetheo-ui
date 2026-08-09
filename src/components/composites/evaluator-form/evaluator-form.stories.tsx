@@ -8,9 +8,9 @@ export default {
 };
 
 /**
- * O builder controlado: o `<select>` troca o tipo do evaluator (emitindo um
- * config fresco com defaults) e os campos abaixo editam o config do tipo atual.
- * O form só EDITA — execução do evaluator é plataforma.
+ * The controlled builder: the `<select>` swaps the evaluator's type (emitting a fresh config
+ * with defaults) and the fields below edit the current type's config.
+ * The form only EDITS — running the evaluator is the platform's job.
  */
 export const Playground: Story = () => {
   const [config, setConfig] = useState<EvaluatorConfig>({ type: "exact_match", target: "42" });

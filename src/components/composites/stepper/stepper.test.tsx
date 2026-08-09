@@ -42,7 +42,7 @@ describe("deriveSteps — pure helper", () => {
   });
 });
 
-describe("Stepper — estados e anatomia", () => {
+describe("Stepper — states and anatomy", () => {
   it("test_renders_one_li_per_step_with_data_state", () => {
     const { container } = renderStepper(withStates("done", "active", "failed", "pending"));
     const items = slots(container, "stepper-step");

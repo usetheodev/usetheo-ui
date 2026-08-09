@@ -50,7 +50,7 @@ describe("DataTable — rendering", () => {
    * A variante virtualizada já fazia `overflow-auto`, o que mostra que a responsabilidade sempre foi
    * do componente — a versão não-virtualizada é que tinha ficado para trás.
    */
-  it("a tabela rola dentro do próprio contêiner em vez de transbordar", () => {
+  it("the table scrolls inside its own container instead of overflowing", () => {
     const { container } = render(<DataTable columns={columns} data={rows} rowKey={(r) => r.id} />);
     const raiz = container.firstElementChild;
     expect(raiz?.className).toContain("overflow-x-auto");

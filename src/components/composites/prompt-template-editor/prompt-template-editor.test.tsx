@@ -6,19 +6,19 @@ import { PromptTemplateEditor as PromptTemplateEditorFromBarrel } from "../../..
 import { PromptTemplateEditor } from "./prompt-template-editor.js";
 
 describe("PromptTemplateEditor", () => {
-  it("renderiza um textarea com o value", () => {
+  it("renders a textarea carrying the value", () => {
     render(<PromptTemplateEditor value="Hello {{name}}" onChange={() => {}} />);
     expect(screen.getByRole("textbox")).toHaveValue("Hello {{name}}");
   });
 
-  it("digitar emite onChange com o novo texto", () => {
+  it("typing emits onChange with the new text", () => {
     const onChange = vi.fn();
     render(<PromptTemplateEditor value="" onChange={onChange} />);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "Hi {{x}}" } });
     expect(onChange).toHaveBeenCalledWith("Hi {{x}}");
   });
 
-  it("mostra as variáveis disponíveis", () => {
+  it("shows the available variables", () => {
     const { container } = render(
       <PromptTemplateEditor value="" onChange={() => {}} variables={["name", "city"]} />,
     );
@@ -28,7 +28,7 @@ describe("PromptTemplateEditor", () => {
     expect(labels).toContain("city");
   });
 
-  it("dedup: variables duplicadas não geram chips repetidos (review V3 LOW-1)", () => {
+  it("dedup: duplicate variables do not produce repeated chips (review V3 LOW-1)", () => {
     const { container } = render(
       <PromptTemplateEditor value="" onChange={() => {}} variables={["name", "name", "city"]} />,
     );
@@ -39,7 +39,7 @@ describe("PromptTemplateEditor", () => {
     expect(labels).toContain("city");
   });
 
-  it("marca variável como usada quando aparece no value (data-used)", () => {
+  it("marks a variable as used when it appears in the value (data-used)", () => {
     const { container } = render(
       <PromptTemplateEditor value="Hi {{name}}" onChange={() => {}} variables={["name", "city"]} />,
     );
@@ -53,7 +53,7 @@ describe("PromptTemplateEditor", () => {
     expect(city?.getAttribute("data-used")).toBe("false");
   });
 
-  it("sinaliza variável usada mas ausente da lista disponível (missing)", () => {
+  it("flags a variable that is used but absent from the available list (missing)", () => {
     const { container } = render(
       <PromptTemplateEditor value="Hi {{ghost}}" onChange={() => {}} variables={["name"]} />,
     );
@@ -63,27 +63,27 @@ describe("PromptTemplateEditor", () => {
     expect(missing?.getAttribute("data-missing")).toBe("true");
   });
 
-  it("disabled desabilita o textarea", () => {
+  it("disabled disables the textarea", () => {
     render(<PromptTemplateEditor value="x" onChange={() => {}} disabled />);
     expect(screen.getByRole("textbox")).toBeDisabled();
   });
 
-  it("o textarea é rotulado (a11y)", () => {
+  it("the textarea is labelled (a11y)", () => {
     render(<PromptTemplateEditor value="" onChange={() => {}} />);
     expect(screen.getByRole("textbox", { name: /template/i })).toBeInTheDocument();
   });
 
-  it("encaminha ref para o textarea", () => {
+  it("forwards ref to the textarea", () => {
     const ref = createRef<HTMLTextAreaElement>();
     render(<PromptTemplateEditor value="x" onChange={() => {}} ref={ref} />);
     expect(ref.current?.tagName).toBe("TEXTAREA");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(PromptTemplateEditorFromBarrel).toBe(PromptTemplateEditor);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(
       <PromptTemplateEditor value="Hi {{name}}" onChange={() => {}} variables={["name", "city"]} />,
     );

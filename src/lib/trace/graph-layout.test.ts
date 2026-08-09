@@ -10,7 +10,7 @@ const span = (over: Partial<TraceSpan>): TraceSpan => ({
 });
 
 describe("deriveSpanKind", () => {
-  it("test_precedencia_tool_sobre_llm", () => {
+  it("test_tool_takes_precedence_over_llm", () => {
     expect(
       deriveSpanKind(span({ attributes: { "gen_ai.tool.name": "search" }, model: "gpt" })),
     ).toBe("tool");
@@ -24,7 +24,7 @@ describe("deriveSpanKind", () => {
 });
 
 describe("buildLayeredGraph", () => {
-  it("test_bfs_deterministico_x_por_order_y_por_depth", () => {
+  it("test_a_deterministic_bfs_x_by_order_y_by_depth", () => {
     const root = span({
       id: "root",
       children: [span({ id: "a", parentId: "root" }), span({ id: "b", parentId: "root" })],
@@ -37,7 +37,7 @@ describe("buildLayeredGraph", () => {
     expect(g.edges).toHaveLength(2);
   });
 
-  it("test_parent_malformado_vira_raiz_nunca_dropado", () => {
+  it("test_a_malformed_parent_becomes_a_root_never_dropped", () => {
     const root = span({
       id: "root",
       children: [span({ id: "orphan", parentId: "ghost-does-not-exist" })],
@@ -48,7 +48,7 @@ describe("buildLayeredGraph", () => {
     expect(g.edges).toContainEqual(expect.objectContaining({ from: "root", to: "orphan" }));
   });
 
-  it("test_oversize_retorna_truncated_honesto", () => {
+  it("test_oversize_returns_an_honest_truncated_result", () => {
     const children = Array.from({ length: GRAPH_NODE_CAP + 1 }, (_, i) =>
       span({ id: `s${i}`, parentId: "root" }),
     );
@@ -57,14 +57,14 @@ describe("buildLayeredGraph", () => {
     expect(g.nodes).toHaveLength(0);
   });
 
-  it("test_self_loop_nao_trava_o_layout", () => {
+  it("test_a_self_loop_does_not_hang_the_layout", () => {
     const root = span({ id: "root", children: [span({ id: "self", parentId: "self" })] });
     const g = buildLayeredGraph(root);
     expect(g.nodes.find((n) => n.spanId === "self")).toBeDefined(); // nó preservado, não dropado
     expect(g.nodes).toHaveLength(2);
   });
 
-  it("test_on_path_marca_cadeia_root_ate_selected", () => {
+  it("test_on_path_marks_the_chain_from_root_to_selected", () => {
     const root = span({
       id: "root",
       children: [span({ id: "a", parentId: "root", children: [span({ id: "b", parentId: "a" })] })],

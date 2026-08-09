@@ -25,7 +25,7 @@ const longHistory = JSON.stringify(
 );
 
 describe("IOCards", () => {
-  it("test_renderiza_card_por_mensagem_com_badge_de_role", () => {
+  it("test_renders_a_card_per_message_with_a_role_badge", () => {
     render(<IOCards value={CHAT} />);
     const cards = screen.getAllByTestId("io-card");
     // system + user + assistant(tool_call has no body → no MessageCard) = system + user
@@ -34,7 +34,7 @@ describe("IOCards", () => {
     expect(screen.getByText("assistant")).toBeInTheDocument();
   });
 
-  it("test_tool_call_e_result_pareiam_por_id", () => {
+  it("test_a_tool_call_and_its_result_pair_by_id", () => {
     const { container } = render(<IOCards value={CHAT} />);
     expect(container.querySelector('[data-slot="io-tool-call"]')).toBeInTheDocument();
     const result = container.querySelector('[data-slot="io-tool-result"]') as HTMLElement;
@@ -46,17 +46,17 @@ describe("IOCards", () => {
     expect(container.querySelector('[data-slot="json-viewer"]')).toBeInTheDocument();
   });
 
-  it("test_valor_vazio_mostra_travessao", () => {
+  it("test_an_empty_value_shows_an_em_dash", () => {
     render(<IOCards value="" />);
     expect(screen.getByText("—")).toBeInTheDocument();
   });
 
-  it("test_historico_longo_colapsa_com_show_more", () => {
+  it("test_a_long_history_collapses_behind_show_more", () => {
     render(<IOCards value={longHistory} />);
     expect(screen.getByRole("button", { name: /show 4 more/i })).toBeInTheDocument();
   });
 
-  it("test_default_render_nao_interpreta_html", () => {
+  it("test_the_default_render_does_not_interpret_html", () => {
     const evil = JSON.stringify([{ role: "user", content: "<img src=x onerror=alert(1)>" }]);
     const { container } = render(<IOCards value={evil} />);
     expect(container.querySelector("img")).toBeNull();
@@ -64,7 +64,7 @@ describe("IOCards", () => {
     expect(screen.getByText(/<img src=x/)).toBeInTheDocument();
   });
 
-  it("test_render_markdown_slot_e_usado_quando_fornecido", () => {
+  it("test_the_render_markdown_slot_is_used_when_provided", () => {
     const single = JSON.stringify([{ role: "user", content: "hello" }]);
     render(
       <IOCards value={single} renderMarkdown={(t) => <strong data-testid="md">{t}</strong>} />,
@@ -72,13 +72,13 @@ describe("IOCards", () => {
     expect(screen.getByTestId("md")).toHaveTextContent("hello");
   });
 
-  it("test_redacted_thinking_mostra_placeholder", () => {
+  it("test_redacted_thinking_shows_a_placeholder", () => {
     const redacted = JSON.stringify([{ role: "assistant", content: "<REDACTED>" }]);
     render(<IOCards value={redacted} />);
     expect(screen.getByText(/redacted thinking/i)).toBeInTheDocument();
   });
 
-  it("test_raw_json_toggle_por_mensagem", async () => {
+  it("test_raw_json_toggles_per_message", async () => {
     const user = userEvent.setup();
     const single = JSON.stringify([{ role: "user", content: "hi" }]);
     const { container } = render(<IOCards value={single} />);
