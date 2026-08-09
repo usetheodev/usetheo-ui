@@ -147,7 +147,7 @@ const SPARSE_MARKER_MAX = 5;
  * mark the isolated point for exactly this reason.
  *
  * Outside the JSX on purpose: it is the decision's arithmetic, and isolated arithmetic is the kind
- * mutação alcança.
+ * a mutation reaches.
  */
 export function markedPoints(points: TrendPoint[]): TrendPoint[] {
   const isFinitePoint = (p: TrendPoint | undefined): boolean => Number.isFinite(p?.y);

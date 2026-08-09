@@ -135,21 +135,21 @@ describe("AnnotationInput — shared", () => {
     expect(AnnotationInputFromBarrel).toBe(AnnotationInput);
   });
 
-  it("sem violações axe — categorical", async () => {
+  it("no axe violations — categorical", async () => {
     const { container } = render(
       <AnnotationInput name="Quality" config={categorical} value="good" onValueChange={() => {}} />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("sem violações axe — continuous", async () => {
+  it("no axe violations — continuous", async () => {
     const { container } = render(
       <AnnotationInput name="Rating" config={continuous} value={0.5} onValueChange={() => {}} />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("sem violações axe — freeform", async () => {
+  it("no axe violations — freeform", async () => {
     const { container } = render(
       <AnnotationInput name="Note" config={freeform} value="hi" onValueChange={() => {}} />,
     );

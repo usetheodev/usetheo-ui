@@ -72,7 +72,7 @@ const buttonVariants = cva(
       },
       size: {
         sm: "h-8 px-3 text-body-sm",
-        // md: tier ajustável via density (CSS var on :root). See D3 ADR of
+        // md: tier adjustable via density (CSS var on :root). See D3 ADR of
         // faang-density-tightening plan. Default `comfortable` density makes
         // this 36px (--theo-control-h: 2.25rem). sm and lg stay hardcoded.
         md: "h-[var(--theo-control-h,2rem)] px-[var(--theo-control-px,0.75rem)] text-body-sm",

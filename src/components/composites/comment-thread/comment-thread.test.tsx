@@ -80,12 +80,12 @@ describe("CommentThread", () => {
     expect(CommentThreadFromBarrel).toBe(CommentThread);
   });
 
-  it("sem violações axe — com comentários", async () => {
+  it("no axe violations — with comments", async () => {
     const { container } = render(<CommentThread comments={COMMENTS} onSubmit={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("sem violações axe — empty state", async () => {
+  it("no axe violations — empty state", async () => {
     const { container } = render(<CommentThread comments={[]} onSubmit={() => {}} />);
     expect(await axe(container)).toHaveNoViolations();
   });

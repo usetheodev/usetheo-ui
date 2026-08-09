@@ -94,7 +94,7 @@ describe("TagInput", () => {
     expect(TagInputFromBarrel).toBe(TagInput);
   });
 
-  it("sem violações axe", async () => {
+  it("no axe violations", async () => {
     const { container } = render(
       <TagInput value={["alpha", "beta"]} onChange={() => {}} placeholder="Add a tag" />,
     );

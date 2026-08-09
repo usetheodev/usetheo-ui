@@ -87,12 +87,12 @@ describe("AnnotationSummaryGroup — states", () => {
     expect(FromBarrel).toBe(AnnotationSummaryGroup);
   });
 
-  it("sem violações axe — categorical", async () => {
+  it("no axe violations — categorical", async () => {
     const { container } = renderQuality(["good", "bad"]);
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("sem violações axe — empty", async () => {
+  it("no axe violations — empty", async () => {
     const { container } = render(<AnnotationSummaryGroup config={freeform} values={[]} />);
     expect(await axe(container)).toHaveNoViolations();
   });

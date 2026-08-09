@@ -85,14 +85,14 @@ describe("EvaluatorForm — common", () => {
     expect(EvaluatorFormFromBarrel).toBe(EvaluatorForm);
   });
 
-  it("sem violações axe — regex", async () => {
+  it("no axe violations — regex", async () => {
     const { container } = render(
       <EvaluatorForm value={{ type: "regex", pattern: "^x$", flags: "i" }} onChange={() => {}} />,
     );
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("sem violações axe — levenshtein", async () => {
+  it("no axe violations — levenshtein", async () => {
     const { container } = render(
       <EvaluatorForm value={{ type: "levenshtein", threshold: 2 }} onChange={() => {}} />,
     );
