@@ -72,7 +72,7 @@ describe("toTranscriptRows", () => {
   });
 
   it("test_the_preview_truncates_to_one_line", () => {
-    const rows = toTranscriptRows(span({ id: "solo", outputValue: `${"x".repeat(200)}\nsegunda` }));
+    const rows = toTranscriptRows(span({ id: "solo", outputValue: `${"x".repeat(200)}\nsecond` }));
     expect(rows[0]?.preview?.length).toBeLessThanOrEqual(141);
     expect(rows[0]?.preview).not.toContain("\n");
   });
