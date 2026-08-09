@@ -28,7 +28,7 @@ describe("matchesAccept — pure helper", () => {
   });
 
   it("test_matchesaccept_empty_type_accepted_during_drag", () => {
-    // quirk Chrome: type "" durante o drag (ex.: .md) — aceita; valida no drop
+    // Chrome quirk: type "" during the drag (e.g. .md) — accept it; validate on drop
     expect(matchesAccept(file("notes.md", ""), { "text/markdown": [".md"] })).toBe(true);
   });
 
@@ -97,7 +97,7 @@ describe("validateFiles — pure helper", () => {
   });
 
   it("test_validatefiles_multiple_false_rejects_all", () => {
-    // F-tests-2: metade !multiple da regra coletiva
+    // F-tests-2: the !multiple half of the collective rule
     const files = [file("a.pdf", "application/pdf"), file("b.pdf", "application/pdf")];
     const { accepted, rejections } = validateFiles(files, { multiple: false });
     expect(accepted).toHaveLength(0);
@@ -107,8 +107,8 @@ describe("validateFiles — pure helper", () => {
   });
 
   it("test_validatefiles_collective_rule_posthoc_preserves_perfile_errors", () => {
-    // F-dom-2: fidelidade à referência — coletiva conta os ACEITOS pós-validação;
-    // 4 files (2 inválidos) com maxFiles 3 → 2 aceitos + 2 rejeições de TIPO
+    // F-dom-2: fidelity to the reference — the collective rule counts the ACCEPTED ones after
+    // validation; 4 files (2 invalid) with maxFiles 3 → 2 accepted + 2 TYPE rejections
     const files = [
       file("a.pdf", "application/pdf"),
       file("b.pdf", "application/pdf"),
@@ -124,7 +124,7 @@ describe("validateFiles — pure helper", () => {
   });
 
   it("test_validatefiles_size_equal_to_min_accepts", () => {
-    // F-tests-7: boundary exato do minSize (< estrito)
+    // F-tests-7: the exact minSize boundary (strict <)
     const { accepted } = validateFiles([file("edge.pdf", "application/pdf", 10)], { minSize: 10 });
     expect(accepted).toHaveLength(1);
   });
@@ -140,7 +140,7 @@ describe("validateFiles — pure helper", () => {
   });
 });
 
-// ---- componente (T1.2) — fixture DnD portada da referência (spec:3553) ----
+// ---- component (T1.2) — DnD fixture ported from the reference (spec:3553) ----
 
 import { fireEvent, render } from "@testing-library/react";
 import { createRef } from "react";
@@ -172,7 +172,7 @@ function renderZone(props: Record<string, unknown> = {}) {
   return { ...result, root, input };
 }
 
-describe("FileDropzone — picker e teclado", () => {
+describe("FileDropzone — picker and keyboard", () => {
   it("test_renders_label_and_default_instructions", () => {
     const { root, container } = renderZone();
     expect(root.getAttribute("aria-label")).toBe("Upload documents");
@@ -309,14 +309,14 @@ describe("FileDropzone — drag & drop", () => {
   });
 
   it("test_dragenter_with_empty_item_type_stays_drag_over", () => {
-    // F-dom-1 HIGH: drag real no Chrome — item type "" + getAsFile null NÃO pode virar drag-reject
+    // F-dom-1 HIGH: a real Chrome drag — item type "" + getAsFile null must NOT become a drag-reject
     const { root } = renderZone({ accept: { "text/markdown": [".md"] } });
     fireEvent.dragEnter(root, dtWithFiles([file("notes.md", "text/markdown")], ["Files"], true));
     expect(root.getAttribute("data-state")).toBe("drag-over");
   });
 
   it("test_double_dragenter_same_target_balanced_by_double_dragleave", () => {
-    // F-tests-3: double-fire do Firefox no MESMO elemento
+    // F-tests-3: Firefox's double-fire on the SAME element
     const { root } = renderZone();
     const data = dtWithFiles([file("r.pdf", "application/pdf")]);
     fireEvent.dragEnter(root, data);
@@ -328,7 +328,7 @@ describe("FileDropzone — drag & drop", () => {
   });
 
   it("test_change_with_invalid_file_rejects_with_typed_code", () => {
-    // F-tests-1: o caminho do picker passa pela MESMA validação do drop
+    // F-tests-1: the picker path goes through the SAME validation as the drop
     const onFilesAccepted = vi.fn();
     const onFilesRejected = vi.fn();
     const { input, container } = renderZone({
@@ -343,7 +343,7 @@ describe("FileDropzone — drag & drop", () => {
   });
 
   it("test_disabled_ignores_drag_and_drop", () => {
-    // F-tests-5: handlers inertes quando disabled
+    // F-tests-5: handlers are inert when disabled
     const onFilesAccepted = vi.fn();
     const { root } = renderZone({ disabled: true, onFilesAccepted });
     const data = dtWithFiles([file("r.pdf", "application/pdf")]);

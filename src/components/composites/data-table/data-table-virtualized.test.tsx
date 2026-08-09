@@ -10,7 +10,7 @@ interface Row {
   count: number;
 }
 
-/** Fixture determinística por índice (EC-2 do discovery — sem faker/random). */
+/** A fixture deterministic by index (discovery's EC-2 — no faker, no random). */
 const makeRows = (n: number): Row[] =>
   Array.from({ length: n }, (_, i) => ({ id: `row-${i}`, name: `Item ${i}`, count: i }));
 
@@ -19,7 +19,7 @@ const COLUMNS = [
   { key: "count", label: "Count" },
 ];
 
-/** Rect sintético — padrão dos testes oficiais do react-virtual (injeção via option). */
+/** A synthetic rect — the pattern from react-virtual's own tests (injected via an option). */
 const syntheticRect = (height: number, width = 800): DataTableVirtualizedOptions =>
   ({
     height,
@@ -36,7 +36,7 @@ const syntheticRect = (height: number, width = 800): DataTableVirtualizedOptions
     },
   }) as DataTableVirtualizedOptions;
 
-/** Base compartilhada dos testes type-level/runtime-conflict (lição do quality hook). */
+/** Shared base for the type-level/runtime-conflict tests (a lesson from the quality hook). */
 const virtualBase = () => ({
   columns: COLUMNS,
   data: makeRows(5),
@@ -61,11 +61,11 @@ const bodyRows = (container: HTMLElement) =>
     '[data-slot="data-table-virtual-body"] tbody tr:not([data-slot^="data-table-virtual-spacer"])',
   );
 
-describe("DataTable virtualized — janela e anatomia", () => {
+describe("DataTable virtualized — window and anatomy", () => {
   it("test_virtualized_renders_exact_window_of_10k", () => {
     const { container } = renderVirtualized(makeRows(10_000));
     const rows = bodyRows(container);
-    // viewport 400 / rowHeight 40 = 10 visíveis + até 2×overscan(5); nunca as 10.000
+    // viewport 400 / rowHeight 40 = 10 visible + up to 2×overscan(5); never all 10,000
     expect(rows.length).toBeGreaterThanOrEqual(10);
     expect(rows.length).toBeLessThanOrEqual(25);
     expect(container.textContent).toContain("Item 0");
@@ -73,8 +73,8 @@ describe("DataTable virtualized — janela e anatomia", () => {
   });
 
   it("test_virtualized_spacers_sum_to_total_size", () => {
-    // F-dom-1/2: spacer rows crescem o layout box da <table> até o dataset inteiro
-    // (sticky thead funciona; última linha alcançável) — top + janela + bottom == total
+    // F-dom-1/2: spacer rows grow the <table>'s layout box to the whole dataset (a sticky
+    // thead works; the last row is reachable) — top + window + bottom == total
     const { container } = renderVirtualized(makeRows(10_000));
     const top = container.querySelector('[data-slot="data-table-virtual-spacer-top"]');
     const bottom = container.querySelector(
@@ -89,10 +89,10 @@ describe("DataTable virtualized — janela e anatomia", () => {
     const { container } = renderVirtualized(makeRows(10_000));
     const rows = bodyRows(container);
     const first = rows[0] as HTMLElement;
-    // spacer technique: linhas EM FLUXO, sem transform; altura fixa
+    // spacer technique: rows IN FLOW, no transform; fixed height
     expect(first.style.transform).toBe("");
     expect(first.style.height).toBe("40px");
-    // overscan honrado (F-tests-2): Item 14 (dentro do overscan trailing) presente
+    // overscan honoured (F-tests-2): Item 14 (inside the trailing overscan) is present
     expect(container.textContent).toContain("Item 14");
     expect(rows.length).toBeGreaterThanOrEqual(15);
   });
@@ -123,7 +123,7 @@ describe("DataTable virtualized — janela e anatomia", () => {
     fireEvent.click(nameHeader.querySelector("button") ?? nameHeader);
     fireEvent.click(nameHeader.querySelector("button") ?? nameHeader); // asc → desc
     const rows = bodyRows(container);
-    // oráculo POSITIVO (F-tests-3): desc por string em makeRows(100) → "Item 99" primeiro
+    // POSITIVE oracle (F-tests-3): desc by string over makeRows(100) → "Item 99" first
     expect(rows[0]?.textContent).toContain("Item 99");
     expect(rows.length).toBeLessThanOrEqual(25);
   });
@@ -142,10 +142,10 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_virtualized_dataset_smaller_than_viewport_renders_all", () => {
-    // EC-1 edge: 3 rows num viewport de 400px → todas, sem NaN
+    // EC-1 edge: 3 rows in a 400px viewport → all of them, with no NaN
     const { container } = renderVirtualized(makeRows(3));
     expect(bodyRows(container)).toHaveLength(3);
-    // dataset < viewport: nenhum offscreen → sem spacers (ou spacers 0)
+    // dataset < viewport: nothing offscreen → no spacers (or zero-height spacers)
     const bottom = container.querySelector('[data-slot="data-table-virtual-spacer-bottom"]');
     expect(bottom).toBeNull();
   });
@@ -161,7 +161,7 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_virtualized_invalid_row_height_still_renders_rows", () => {
-    // F-tests-5: a metade "fallback funciona" — clamp para 1px ainda renderiza janela
+    // F-tests-5: the "the fallback works" half — clamping to 1px still renders a window
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const { container } = render(
       <DataTable<Row> {...virtualBase()} virtualized={{ ...syntheticRect(400), rowHeight: 0 }} />,
@@ -173,13 +173,13 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_virtualized_rejects_pagination_at_type_level", () => {
-    // @ts-expect-error — virtualized + pagination é inexpressável (união discriminada)
+    // @ts-expect-error — virtualized + pagination is inexpressible (discriminated union)
     const props: DataTableProps<Row> = { ...virtualBase(), pagination: { pageSize: 10 } };
     expect(props).toBeDefined();
   });
 
   it("test_virtualized_rejects_expandable_at_type_level", () => {
-    // @ts-expect-error — virtualized + expandable é inexpressável (união discriminada)
+    // @ts-expect-error — virtualized + expandable is inexpressible (discriminated union)
     const props: DataTableProps<Row> = { ...virtualBase(), expandable: () => null };
     expect(props).toBeDefined();
   });
@@ -196,7 +196,7 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_virtualized_aria_rowcount_and_rowindex", () => {
-    // F-dom-4: só ~20 de 10.000 tr existem no DOM — SR precisa do total real
+    // F-dom-4: only ~20 of 10,000 tr exist in the DOM — a screen reader needs the real total
     const { container } = renderVirtualized(makeRows(10_000));
     const table = container.querySelector('[data-slot="data-table-virtual-body"] table');
     expect(table?.getAttribute("aria-rowcount")).toBe(String(10_000 + 1));
@@ -205,16 +205,16 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_virtualized_scroll_region_is_keyboard_focusable", () => {
-    // F-dom-5: WCAG 2.1.1 — região rolável operável por teclado
+    // F-dom-5: WCAG 2.1.1 — a scrollable region operable by keyboard
     const { container } = renderVirtualized(makeRows(100));
     const scroll = container.querySelector('[data-slot="data-table-virtual-scroll"]');
     expect(scroll?.getAttribute("tabindex")).toBe("0");
-    expect(scroll?.tagName).toBe("SECTION"); // role region implícito
+    expect(scroll?.tagName).toBe("SECTION"); // an implicit region role
     expect(scroll?.getAttribute("aria-label")).toBeTruthy();
   });
 
   it("test_virtualized_row_actions_render_in_window", () => {
-    // F-wire-2: rowActions exercitado no corpo VIRTUAL
+    // F-wire-2: rowActions exercised in the VIRTUAL body
     const { container } = renderVirtualized(makeRows(50), {
       rowActions: () => <span>act</span>,
     } as Partial<DataTableProps<Row>>);
@@ -225,7 +225,7 @@ describe("DataTable virtualized — edges e negatives", () => {
   });
 
   it("test_default_mode_untouched_snapshot", () => {
-    // sem `virtualized`, NENHUM container virtual aparece — modo padrão intacto
+    // without `virtualized`, NO virtual container appears — the default mode is intact
     const { container } = render(
       <DataTable<Row> columns={COLUMNS} data={makeRows(5)} rowKey={(r) => r.id} />,
     );
@@ -236,16 +236,16 @@ describe("DataTable virtualized — edges e negatives", () => {
 
 describe("DataTable virtualized — story smoke", () => {
   it("test_virtualized_10k_story_renders_window", async () => {
-    // A story NÃO injeta rect (browser real mede sozinho); em jsdom o viewport
-    // é 0 → 0 linhas é o honesto aqui. O smoke prova: 10K montam sem crash,
-    // sizer dimensionado para o dataset inteiro e NUNCA 10.000 tr no DOM. A
-    // janela exata com rect injetado é pinada em test_virtualized_renders_exact_window_of_10k.
+    // The story does NOT inject a rect (a real browser measures on its own); in jsdom the
+    // viewport is 0 → 0 rows is the honest answer here. The smoke proves: 10K mount without
+    // crashing, the sizer is dimensioned for the whole dataset, and NEVER 10,000 tr in the DOM.
+    // The exact window with an injected rect is pinned in test_virtualized_renders_exact_window_of_10k.
     const { Virtualized10K } = await import("./data-table.stories.js");
     const { container } = render(<Virtualized10K />);
     const bottom = container.querySelector(
       '[data-slot="data-table-virtual-spacer-bottom"]',
     ) as HTMLElement;
-    // jsdom sem rect: 0 itens na janela → bottom spacer cobre o dataset INTEIRO
+    // jsdom with no rect: 0 items in the window → the bottom spacer covers the WHOLE dataset
     expect(Number.parseFloat(bottom.style.height)).toBeGreaterThanOrEqual(10_000 * 40 - 40 * 30);
     const rows = container.querySelectorAll('[data-slot="data-table-virtual-body"] tbody tr');
     expect(rows.length).toBeLessThan(100);
@@ -255,7 +255,7 @@ describe("DataTable virtualized — story smoke", () => {
 describe("DataTable virtualized — barrel", () => {
   it("test_barrel_exports_virtualized_type", async () => {
     const barrel = await import("../../../index.js");
-    // o tipo compila via barrel (uso em literal) e o DataTable é o mesmo símbolo
+    // the type compiles through the barrel (used in a literal) and DataTable is the same symbol
     const opts: import("../../../index.js").DataTableVirtualizedOptions = {
       height: 400,
       rowHeight: 40,

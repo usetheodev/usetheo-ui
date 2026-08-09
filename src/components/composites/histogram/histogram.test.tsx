@@ -16,65 +16,65 @@ const bins: HistogramBin[] = [
 ];
 
 describe("Histogram", () => {
-  it("renderiza uma barra por bin", () => {
+  it("renders one bar per bin", () => {
     const { container } = render(<Histogram title="Durations" bins={bins} />);
     expect(slots(container, "histogram-bar")).toHaveLength(3);
   });
 
-  it("a barra do bin mais populoso é a mais alta", () => {
+  it("the busiest bin's bar is the tallest", () => {
     const { container } = render(<Histogram title="Durations" bins={bins} />);
     const rects = Array.from(slots(container, "histogram-bar")) as SVGRectElement[];
     const heights = rects.map((r) => Number(r.getAttribute("height")));
-    // bin[1] (count 5) é o pico
+    // bin[1] (count 5) is the peak
     expect(heights[1]).toBe(Math.max(...heights));
   });
 
-  it("aceita values+binCount e produz o mesmo nº de barras que bins pré-computados", () => {
+  it("accepts values+binCount and produces the same number of bars as precomputed bins", () => {
     const { container } = render(
       <Histogram title="Durations" values={[0, 1, 2, 11, 12, 13, 14, 21]} binCount={3} />,
     );
     expect(slots(container, "histogram-bar")).toHaveLength(3);
   });
 
-  it("expõe role=img com o título no aria-label", () => {
+  it("exposes role=img with the title in aria-label", () => {
     render(<Histogram title="Latency distribution" bins={bins} />);
     expect(screen.getByRole("img", { name: /latency distribution/i })).toBeInTheDocument();
   });
 
-  it("distribuição vazia mostra empty state honesto", () => {
+  it("an empty distribution shows an honest empty state", () => {
     const { container } = render(<Histogram title="Durations" bins={[]} />);
     expect(slots(container, "histogram-empty")).toHaveLength(1);
     expect(slots(container, "histogram-bar")).toHaveLength(0);
   });
 
-  it("values vazio também mostra empty state", () => {
+  it("an empty values array also shows the empty state", () => {
     const { container } = render(<Histogram title="Durations" values={[]} binCount={5} />);
     expect(slots(container, "histogram-empty")).toHaveLength(1);
   });
 
-  it("tem tabela sr-only com uma linha por bin (paridade a11y do SVG)", () => {
+  it("has an sr-only table with one row per bin (a11y parity with the SVG)", () => {
     const { container } = render(<Histogram title="Durations" bins={bins} />);
     const rows = container.querySelectorAll('[data-slot="histogram-table"] tbody tr');
     expect(rows).toHaveLength(3);
   });
 
-  it("encaminha ref para o elemento raiz", () => {
+  it("forwards ref to the root element", () => {
     const ref = createRef<HTMLElement>();
     render(<Histogram title="Durations" bins={bins} ref={ref} />);
     expect(ref.current).not.toBeNull();
     expect(ref.current?.getAttribute("data-slot")).toBe("histogram");
   });
 
-  it("é exportado pelo barrel raiz", () => {
+  it("is exported from the root barrel", () => {
     expect(HistogramFromBarrel).toBe(Histogram);
   });
 
-  it("não tem violações axe", async () => {
+  it("has no axe violations", async () => {
     const { container } = render(<Histogram title="Durations" bins={bins} />);
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("não tem violações axe no empty state", async () => {
+  it("has no axe violations in the empty state", async () => {
     const { container } = render(<Histogram title="Durations" bins={[]} />);
     expect(await axe(container)).toHaveNoViolations();
   });
