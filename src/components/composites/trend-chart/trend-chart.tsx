@@ -77,14 +77,14 @@ export function seriesPath(
   yScale: (y: number) => number,
 ): string {
   const out: string[] = [];
-  let emTrecho = false;
+  let inStretch = false;
   for (const p of points) {
     if (!Number.isFinite(p.y)) {
-      emTrecho = false; // a lacuna fecha o trecho; o proximo ponto finito abre outro
+      inStretch = false; // a lacuna fecha o trecho; o proximo ponto isFinitePoint abre outro
       continue;
     }
-    out.push(`${emTrecho ? "L" : "M"}${xScale(p.x).toFixed(2)},${yScale(p.y).toFixed(2)}`);
-    emTrecho = true;
+    out.push(`${inStretch ? "L" : "M"}${xScale(p.x).toFixed(2)},${yScale(p.y).toFixed(2)}`);
+    inStretch = true;
   }
   return out.join(" ");
 }
@@ -93,71 +93,72 @@ export function seriesPath(
 
 const VIEW_W = 600;
 const PAD = { top: 8, right: 8, bottom: 4, left: 40 };
-/** Altura extra do rodape quando ha eixo X. Zero sem ele — ver `PAD.bottom` abaixo. */
+/** Extra footer height when there is an X axis. Zero without one — see `PAD.bottom` below. */
 const X_AXIS_PX = 14;
-/** Espaco minimo entre rotulos do eixo X. Mesma regra de densidade de `lib/trace/bar-layout.ts`. */
+/** Minimum space between X-axis labels. Same density rule as `lib/trace/bar-layout.ts`. */
 const MIN_TICK_PX = 70;
 
 /**
- * Quais posicoes do eixo recebem rotulo.
+ * Which axis positions receive a label.
  *
- * Rotular 31 pontos em ~450px e ilegivel; rotular so as pontas nao responde "quando foi o pico".
- * A densidade sai da largura REAL (`viewW`, que o ResizeObserver ja rastreia), com o primeiro e o
- * ultimo SEMPRE presentes: sao as bordas da janela, e sem eles o leitor nao sabe de quando ate
- * quando o grafico fala.
+ * Labelling 31 points in ~450px is illegible; labelling only the edges does not answer "when was
+ * the spike". The density comes from the REAL width (`viewW`, which the ResizeObserver already
+ * tracks), with the first and the last ALWAYS present: they are the window's edges, and without
+ * them the reader does not know from when to when the chart speaks.
  *
- * Fora do JSX porque e aritmetica, e aritmetica isolada e aritmetica que a mutacao alcanca.
+ * Outside the JSX because it is arithmetic, and isolated arithmetic is arithmetic mutation reaches.
  */
 export function xTicks(axisXs: number[], viewW: number): number[] {
   if (axisXs.length <= 2) return [...axisXs];
   const maxTicks = Math.max(2, Math.floor((viewW - PAD.left - PAD.right) / MIN_TICK_PX));
   if (axisXs.length <= maxTicks) return [...axisXs];
-  const passo = (axisXs.length - 1) / (maxTicks - 1);
-  // O laco JA garante as duas pontas: i=0 da indice 0, e i=maxTicks-1 da
-  // round((maxTicks-1) * (n-1)/(maxTicks-1)) = n-1 exato. Duas linhas de `add` explicito estavam
-  // aqui como cinto de seguranca e eram codigo morto — a campanha de mutacao as pegou, porque
-  // remove-las nao quebrava teste algum. O teste que afirma a propriedade continua valendo; o que
-  // some e a redundancia, nao a garantia.
-  const escolhidos = new Set<number>();
-  for (let i = 0; i < maxTicks; i++) escolhidos.add(Math.round(i * passo));
-  return [...escolhidos].sort((a, b) => a - b).map((i) => axisXs[i] as number);
+  const step = (axisXs.length - 1) / (maxTicks - 1);
+  // The loop ALREADY guarantees both edges: i=0 gives index 0, and i=maxTicks-1 gives
+  // round((maxTicks-1) * (n-1)/(maxTicks-1)) = exactly n-1. Two lines of explicit `add` sat here
+  // as a seatbelt and were dead code — the mutation campaign caught them, because removing them
+  // broke no test. The test asserting the property still holds; what goes is the redundancy, not
+  // the guarantee.
+  const chosen = new Set<number>();
+  for (let i = 0; i < maxTicks; i++) chosen.add(Math.round(i * step));
+  return [...chosen].sort((a, b) => a - b).map((i) => axisXs[i] as number);
 }
 // M76 (O-2): series with fewer points than this draw a marker at each point (a 2-4 point
 // line reads as a cliff without them); a denser series draws the line only.
 const SPARSE_MARKER_MAX = 5;
 
 /**
- * Quais pontos recebem marcador.
+ * Which points receive a marker.
  *
- * Duas razões distintas para marcar, e a segunda só apareceu quando séries com lacuna passaram a
- * existir (M144):
+ * Two distinct reasons to mark, and the second only appeared once series with gaps came to exist
+ * (M144):
  *
- * 1. **Série esparsa** (< `SPARSE_MARKER_MAX` pontos FINITOS) — 1-4 pontos leem como um penhasco
- *    dramático; o marcador ancora o leitor no dado real. Regra do M76 — que passou a contar dado,
- *    não slot, porque a densificação do M144 desfez a equivalência entre os dois.
- * 2. **Ponto isolado** — um ponto finito cercado de lacunas dos dois lados vira um `M` sozinho no
- *    `path`, e um `M` sozinho **desenha nada**: bounding-box zero, invisível. O dado existe, está
- *    correto, e o operador não vê. Medido no e2e do M144 (`d="M419.86,92.00 M448.00,36.00"`).
+ * 1. **Sparse series** (< `SPARSE_MARKER_MAX` FINITE points) — 1-4 points read as a dramatic
+ *    cliff; the marker anchors the reader on the real data. M76's rule — which now counts data,
+ *    not slots, because M144's densification broke the equivalence between the two.
+ * 2. **Isolated point** — a finite point surrounded by gaps on both sides becomes a lone `M` in
+ *    the `path`, and a lone `M` **draws nothing**: zero bounding box, invisible. The data exists,
+ *    it is correct, and the operator does not see it. Measured in M144's e2e
+ *    (`d="M419.86,92.00 M448.00,36.00"`).
  *
- * A regra antiga só cobria (1), chaveando no TOTAL de pontos em vez de perguntar se o ponto de fato
- * é desenhado — apesar de o comentário dela já declarar a intenção *"a dot keeps real data from
- * rendering as an invisible line"*. Depois da densificação, uma série de 30 dias com dois dias
- * finitos separados por lacuna cai fora de (1) e desaparece. Chart.js e Plotly marcam o ponto
- * isolado exatamente por isto.
+ * The old rule covered only (1), keying on the TOTAL number of points instead of asking whether
+ * the point is actually drawn — even though its own comment already stated the intent *"a dot
+ * keeps real data from rendering as an invisible line"*. After the densification, a 30-day series
+ * with two finite days separated by a gap falls outside (1) and disappears. Chart.js and Plotly
+ * mark the isolated point for exactly this reason.
  *
- * Fora do JSX de propósito: é a aritmética da decisão, e aritmética isolada é aritmética que a
+ * Outside the JSX on purpose: it is the decision's arithmetic, and isolated arithmetic is the kind
  * mutação alcança.
  */
 export function markedPoints(points: TrendPoint[]): TrendPoint[] {
-  const finito = (p: TrendPoint | undefined): boolean => Number.isFinite(p?.y);
-  // Contamos pontos FINITOS, não slots. Uma série densificada de 30 dias com 3 dias de consumo é
-  // esparsa em DADO e densa em slots; chavear no comprimento do array desligava a regra (1) para
-  // exatamente as séries que o M144 criou, sem que nada acusasse.
-  const finitos = points.filter(finito);
-  if (finitos.length < SPARSE_MARKER_MAX) return finitos;
-  // Vizinho ausente (as pontas) conta como lacuna — uma ponta finita seguida de buraco é tão
-  // invisível quanto um ponto no meio.
-  return points.filter((p, i) => finito(p) && !finito(points[i - 1]) && !finito(points[i + 1]));
+  const isFinitePoint = (p: TrendPoint | undefined): boolean => Number.isFinite(p?.y);
+  // We count FINITE points, not slots. A densified 30-day series with 3 days of usage is sparse in
+  // DATA and dense in slots; keying on the array's length switched rule (1) off for exactly the
+  // series M144 created, with nothing flagging it.
+  const finitePoints = points.filter(isFinitePoint);
+  if (finitePoints.length < SPARSE_MARKER_MAX) return finitePoints;
+  // A missing neighbour (the edges) counts as a gap — a finite edge followed by a hole is as
+  // invisible as a point in the middle.
+  return points.filter((p, i) => isFinitePoint(p) && !isFinitePoint(points[i - 1]) && !isFinitePoint(points[i + 1]));
 }
 
 export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
@@ -174,18 +175,18 @@ export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
    */
   yMax?: number;
   /**
-   * Formata o `x` para o eixo e para a tabela acessivel. **Opcional de proposito.**
+   * Formats the `x` for the axis and for the accessible table. **Optional on purpose.**
    *
-   * O contrato do `x` e ambiguo — "bucket index or epoch-ms" — e na pratica quase unanime: das seis
-   * fabricas de serie do consumidor, cinco passam INDICE e uma passa epoch-ms. Inferir por magnitude
-   * funcionaria e seria a forma exata do defeito que este componente ja pagou (a regra de marcador
-   * do M76 chaveava em `points.length` em vez de perguntar o que queria saber, e a densificacao do
-   * M144 a desligou em silencio). Quem sabe o que o `x` significa e o chamador.
+   * The `x` contract is ambiguous — "bucket index or epoch-ms" — and in practice nearly unanimous:
+   * of the consumer's six series factories, five pass an INDEX and one passes epoch-ms. Inferring by
+   * magnitude would work, and would be the exact shape of the defect this component has already paid
+   * for (M76's marker rule keyed on `points.length` instead of asking what it wanted to know, and
+   * M144's densification switched it off silently). The one who knows what `x` means is the caller.
    *
-   * Sem esta prop, nada muda: nenhum rotulo de eixo X e desenhado e a tabela segue numerando.
+   * Without this prop nothing changes: no X-axis label is drawn and the table keeps numbering.
    */
   xFormatter?: (x: number) => string;
-  /** Cabecalho da primeira coluna da tabela acessivel. "Point" sobre datas seria desonesto. */
+  /** Header of the accessible table's first column. "Point" over dates would be dishonest. */
   xLabel?: string;
 }
 
@@ -211,8 +212,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     // jsdom/SSR has no ResizeObserver / zero clientWidth → we keep the VIEW_W fallback,
     // so existing snapshot-style tests (viewBox "0 0 600 …") stay green.
     const [viewW, setViewW] = useState<number>(VIEW_W);
-    // Só o índice, nunca o objeto: um `setState` por `mousemove` carregando estrutura recomputaria
-    // as séries dezenas de vezes por segundo para desenhar um retângulo.
+    // The index only, never the object: a `setState` per `mousemove` carrying structure would
+    // recompute the series dozens of times a second just to draw a rectangle.
     const [hoverIdx, setHoverIdx] = useState<number | null>(null);
     const roRef = useRef<ResizeObserver | null>(null);
     const setSvgNode = useCallback((node: SVGSVGElement | null) => {
@@ -266,8 +267,9 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
     // looks its cell up BY x; a period it has no point for renders "—".
     const axisXs = Array.from(new Set(allPoints.map((p) => p.x))).sort((a, b) => a - b);
     const yByX = series.map((s) => new Map(s.points.map((p) => [p.x, p.y] as const)));
-    // O rodape so cresce quando ha rotulo a desenhar. `PAD.bottom` e 4: crescer sempre moveria o
-    // `yScale` e, com ele, toda coordenada `y` de todo `path` ja testado nos consumidores de indice.
+    // The footer only grows when there is a label to draw. `PAD.bottom` is 4: always growing would
+    // move the `yScale` and with it every `y` coordinate of every `path` already tested in the index
+    // consumers.
     const padBottom = PAD.bottom + (xFormatter ? X_AXIS_PX : 0);
     const xScale = linScale([xMin, xMax], [PAD.left, viewW - PAD.right]);
     const yScale = linScale([0, yMax], [height - padBottom, PAD.top]); // inverted (SVG y grows down)
@@ -277,27 +279,27 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
         <figcaption className="font-semibold text-label-caps text-muted-foreground uppercase">
           {title}
         </figcaption>
-        {/* Superfície de hover. O padrão vem do `span-waterfall` deste mesmo design system:
-            overlay HTML posicionado por %, sem dependência nova. Radix Tooltip foi recusado —
-            arrastaria `@radix-ui/react-tooltip` e exigiria um Provider na app, quebrando a
-            propriedade que define este componente ("no chart lib — keeps the registry
-            copy-pasteable") e falhando em runtime, não em build. */}
+        {/* Hover surface. The pattern comes from this same design system's `span-waterfall`:
+        an HTML overlay positioned by %, with no new dependency. Radix Tooltip was refused —
+        it would drag in `@radix-ui/react-tooltip` and require a Provider in the app, breaking
+        the property that defines this component ("no chart lib — keeps the registry
+        copy-pasteable") and failing at runtime, not at build. */}
         <div
           data-slot="trend-chart-surface"
           className="relative"
           onMouseMove={(e) => {
-            const caixa = e.currentTarget.getBoundingClientRect();
-            if (caixa.width === 0 || axisXs.length === 0) return;
-            const frac = (e.clientX - caixa.left) / caixa.width;
-            const alvo = xMin + frac * (xMax - xMin);
-            let melhor = 0;
+            const box = e.currentTarget.getBoundingClientRect();
+            if (box.width === 0 || axisXs.length === 0) return;
+            const frac = (e.clientX - box.left) / box.width;
+            const target = xMin + frac * (xMax - xMin);
+            let best = 0;
             for (let i = 1; i < axisXs.length; i++) {
               if (
-                Math.abs((axisXs[i] as number) - alvo) < Math.abs((axisXs[melhor] as number) - alvo)
+                Math.abs((axisXs[i] as number) - target) < Math.abs((axisXs[best] as number) - target)
               )
-                melhor = i;
+                best = i;
             }
-            setHoverIdx(melhor);
+            setHoverIdx(best);
           }}
           onMouseLeave={() => setHoverIdx(null)}
         >
@@ -334,10 +336,10 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
             <text x={4} y={height - padBottom} className="fill-muted-foreground text-[10px]">
               0
             </text>
-            {/* Eixo X — só existe quando o chamador diz como ler o `x`. Sem `xFormatter` não há nada
-              honesto a escrever ali, e desenhar o ordinal seria repetir o problema com outra
-              tinta. `textAnchor` acompanha a posição para o primeiro e o último não vazarem da
-              caixa. */}
+            {/* X axis — it exists only when the caller says how to read the `x`. Without `xFormatter`
+            there is nothing honest to write there, and drawing the ordinal would repeat the problem
+            in different ink. `textAnchor` follows the position so the first and last do not spill
+            out of the box. */}
             {xFormatter
               ? xTicks(axisXs, viewW).map((x, i, todos) => (
                   <text
@@ -364,8 +366,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
                 >
                   <title>{s.name}</title>
                 </path>
-                {/* Série esparsa OU ponto isolado entre lacunas — a regra e o porquê de cada uma
-                  estão em `markedPoints`. Sem o segundo caso, dado correto fica invisível. */}
+                {/* Sparse series OR an isolated point between gaps — the rule and the why of each live
+                in `markedPoints`. Without the second case, correct data stays invisible. */}
                 {markedPoints(s.points).map((p, i) => (
                   <circle
                     key={`${s.name}-${p.x}-${i}`}
@@ -380,8 +382,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
                 ))}
               </g>
             ))}
-            {/* Crosshair: uma linha vertical no ponto mais proximo do cursor. Dentro do SVG porque
-              precisa da mesma escala das series. */}
+            {/* Crosshair: a vertical line at the point nearest the cursor. Inside the SVG because it
+            needs the same scale as the series. */}
             {hoverIdx !== null && axisXs[hoverIdx] !== undefined ? (
               <line
                 data-slot="trend-chart-crosshair"
@@ -394,9 +396,9 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
               />
             ) : null}
           </svg>
-          {/* Tooltip DECORATIVO (`aria-hidden`) — o canal de leitor de tela e a tabela abaixo, que
-            agora carrega a data e o valor. Antes da correcao do eixo X ela numerava, e um tooltip
-            decorativo teria criado informacao exclusiva para quem usa mouse. */}
+          {/* DECORATIVE tooltip (`aria-hidden`) — the screen-reader channel is the table below, which
+          now carries the date and the value. Before the X-axis fix it numbered, and a decorative
+          tooltip would have created information exclusive to mouse users. */}
           {hoverIdx !== null && axisXs[hoverIdx] !== undefined ? (
             <div
               data-slot="trend-chart-tooltip"
