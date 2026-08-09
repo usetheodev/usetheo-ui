@@ -9,9 +9,8 @@ export default {
 const SUGGESTIONS = ["bug", "feature", "docs", "chore", "regression", "p0"];
 
 /**
- * Controlado (value + onChange), com chips removíveis, dedup, sugestões via
- * datalist e um estado disabled — como um editor de tags de trace/dataset vai
- * compor sobre uma lista de strings livre.
+ * Controlled (value + onChange), with removable chips, dedup, datalist suggestions and a
+ * disabled state — the way a trace/dataset tag editor will compose over a free list of strings.
  */
 export const Playground: Story = () => {
   const [tags, setTags] = useState<string[]>(["bug", "regression"]);
@@ -20,7 +19,7 @@ export const Playground: Story = () => {
     <div className="max-w-md space-y-6">
       <div className="space-y-2">
         <p className="text-body-sm text-muted-foreground">
-          Enter para adicionar; × para remover. Duplicadas são ignoradas.
+          Enter to add; × to remove. Duplicates are ignored.
         </p>
         <TagInput
           value={tags}

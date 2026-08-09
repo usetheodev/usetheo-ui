@@ -9,13 +9,13 @@ export default {
 };
 
 /**
- * Accept do caso real (theo-rag ingest — mapa canônico do mime-from-name):
- * pdf, docx/pptx/xlsx, csv, txt/md/html e imagens png/jpg.
+ * Accept from the real case (theo-rag ingest — the canonical mime-from-name map):
+ * pdf, docx/pptx/xlsx, csv, txt/md/html and png/jpg images.
  *
- * Matriz de verificação manual cross-browser (risco #2 do ROADMAP § M5):
- * - Chrome: drag de .md reporta type "" durante o drag (aceito; valida no drop)
- * - Firefox: dragenter/dragleave double-fire no mesmo elemento (target counting cobre)
- * - Safari: dropEffect pode lançar em dataTransfer protegido (try/catch cobre)
+ * Cross-browser manual verification matrix (ROADMAP § M5, risk #2):
+ * - Chrome: dragging a .md reports type "" during the drag (accepted; validated on drop)
+ * - Firefox: dragenter/dragleave double-fire on the same element (target counting covers it)
+ * - Safari: dropEffect can throw on a protected dataTransfer (the try/catch covers it)
  */
 const INGEST_ACCEPT: Record<string, string[]> = {
   "application/pdf": [".pdf"],
@@ -30,7 +30,7 @@ const INGEST_ACCEPT: Record<string, string[]> = {
   "image/jpeg": [".jpg", ".jpeg"],
 };
 
-/** Caso theo-rag: ingest de documentos + composição com Progress (DoD b2). */
+/** The theo-rag case: document ingest + composition with Progress (DoD b2). */
 export const IngestUpload: Story = () => {
   const [selected, setSelected] = useState<string[]>([]);
   return (
@@ -41,7 +41,7 @@ export const IngestUpload: Story = () => {
         maxSize={25 * 1024 * 1024}
         onFilesAccepted={(files) => setSelected(files.map((f) => f.name))}
       />
-      {/* upload em andamento é responsabilidade do consumidor — demo estática */}
+      {/* an upload in progress is the consumer's responsibility — this demo is static */}
       <div className="space-y-1">
         <p className="text-label text-muted-foreground">
           {selected.length > 0 ? `Ingesting ${selected.join(", ")}` : "Ingesting report.pdf"}
@@ -52,7 +52,7 @@ export const IngestUpload: Story = () => {
   );
 };
 
-/** Drop inválido → região de rejeições tipadas visível. */
+/** An invalid drop → the typed-rejection region becomes visible. */
 export const Rejected: Story = () => {
   const [rejections, setRejections] = useState<FileRejection[]>([]);
   return (
@@ -64,22 +64,22 @@ export const Rejected: Story = () => {
       />
       <p className="text-label text-muted-foreground">
         {rejections.length > 0
-          ? `${rejections.length} arquivo(s) rejeitado(s) — códigos: ${rejections
+          ? `${rejections.length} file(s) rejected — codes: ${rejections
               .flatMap((r) => r.errors.map((e) => e.code))
               .join(", ")}`
-          : "Arraste um .txt para ver a rejeição tipada."}
+          : "Drag a .txt in to see the typed rejection."}
       </p>
     </div>
   );
 };
 
-/** Vários arquivos com limite — regra coletiva tudo-ou-nada. */
+/** Several files against a limit — the all-or-nothing collective rule. */
 export const MultiFile: Story = () => (
   <div className="max-w-md">
     <FileDropzone
       label="Up to 3 files"
       maxFiles={3}
-      instructions="Solte até 3 arquivos (4+ rejeita todos — too-many-files)."
+      instructions="Drop up to 3 files (4+ rejects them all — too-many-files)."
     />
   </div>
 );

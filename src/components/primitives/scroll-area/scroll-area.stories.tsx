@@ -5,7 +5,7 @@ export default { title: "Primitives / Foundations / ScrollArea" };
 
 const longText = Array.from({ length: 50 }, (_, i) => ({
   id: `line-${i + 1}`,
-  text: `Linha ${i + 1} · Lorem ipsum dolor sit amet.`,
+  text: `Line ${i + 1} · Lorem ipsum dolor sit amet.`,
 }));
 
 const cards = Array.from({ length: 20 }, (_, i) => ({
@@ -28,8 +28,8 @@ const thread = Array.from({ length: 12 }, (_, i) => ({
   role: i % 2 === 0 ? ("user" as const) : ("assistant" as const),
   text:
     i % 2 === 0
-      ? `Pergunta ${i + 1} — Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
-      : `Resposta ${i + 1} — Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+      ? `Question ${i + 1} — Lorem ipsum dolor sit amet, consectetur adipiscing elit.`
+      : `Answer ${i + 1} — Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
 }));
 
 export const Vertical: Story = () => (

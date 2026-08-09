@@ -40,7 +40,7 @@ function Trigger() {
           toast({
             variant: "warning",
             title: "Permission required",
-            description: "Theo wants to write to ~/Downloads/capturas.",
+            description: "Theo wants to write to ~/Downloads/screenshots.",
             action: { label: "Allow", onClick: () => undefined },
           })
         }

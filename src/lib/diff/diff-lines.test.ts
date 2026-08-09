@@ -25,7 +25,7 @@ describe("diffLines", () => {
 
   it("a changed line → del + add", () => {
     const rows = diffLines("a\nx\nc", "a\ny\nc");
-    // a eq, x del, y add, c eq (ordem: eq, del, add, eq)
+    // a eq, x del, y add, c eq (order: eq, del, add, eq)
     expect(rows.map((r) => r.kind)).toEqual(["eq", "del", "add", "eq"]);
     expect(rows.find((r) => r.kind === "del")?.text).toBe("x");
     expect(rows.find((r) => r.kind === "add")?.text).toBe("y");

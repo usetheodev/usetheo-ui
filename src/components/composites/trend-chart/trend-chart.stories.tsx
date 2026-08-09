@@ -17,7 +17,7 @@ const chartStory = (props: TrendChartProps): Story => {
   return Rendered;
 };
 
-/** Caso theo-rag analytics: latência de retrieval p50/p95 por janela (DoD b3). */
+/** The theo-rag analytics case: p50/p95 retrieval latency per window (DoD b3). */
 export const RagLatency = chartStory({
   title: "Retrieval latency",
   valueFormatter: (v) => `${v}ms`,
@@ -27,7 +27,7 @@ export const RagLatency = chartStory({
   ],
 });
 
-/** Caso dashboard (lens): série esparsa + densa juntas — markers M76 visíveis. */
+/** The dashboard case (lens): a sparse and a dense series together — M76 markers visible. */
 export const MultiSeries = chartStory({
   title: "Requests by surface",
   series: [

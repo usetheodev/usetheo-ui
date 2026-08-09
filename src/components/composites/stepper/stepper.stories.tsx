@@ -18,7 +18,7 @@ const stepperStory = (label: string, steps: StepperStepData[], horizontal = fals
   return Rendered;
 };
 
-/** Caso dashboard: build pipeline com falha no push + retry slot (DoD b2). */
+/** The dashboard case: a build pipeline failing at push + a retry slot (DoD b2). */
 export const BuildPipelineFailed = stepperStory("Build pipeline", [
   {
     id: "queued",
@@ -51,7 +51,7 @@ export const BuildPipelineFailed = stepperStory("Build pipeline", [
   { id: "succeeded", label: "Live", status: "pending" },
 ]);
 
-/** Caso theo-rag: ingest pipeline com timestamps por etapa (DoD b2). */
+/** The theo-rag case: an ingest pipeline with per-step timestamps (DoD b2). */
 export const IngestPipeline = stepperStory("Document ingest", [
   {
     id: "partition",
@@ -70,11 +70,11 @@ export const IngestPipeline = stepperStory("Document ingest", [
   { id: "ready", label: "Ready", status: "pending" },
 ]);
 
-/** Composição com StatusDot/Badge existentes — mesma semântica de status, sem duplicação (DoD b3). */
-export const ComposicaoStatus: Story = () => (
+/** Composition with the existing StatusDot/Badge — the same status semantics, no duplication (DoD b3). */
+export const StatusComposition: Story = () => (
   <div className="max-w-md space-y-3">
     <div className="flex items-center gap-2">
-      <StatusDot status="building" label="Deploy em andamento" />
+      <StatusDot status="building" label="Deploy in progress" />
       <Badge>staging</Badge>
     </div>
     <Stepper
@@ -91,7 +91,7 @@ export const ComposicaoStatus: Story = () => (
   </div>
 );
 
-/** Orientação horizontal (fluxo curto de onboarding). */
+/** Horizontal orientation (a short onboarding flow). */
 export const Horizontal = stepperStory(
   "Onboarding",
   deriveSteps(

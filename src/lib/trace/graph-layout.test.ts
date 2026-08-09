@@ -60,7 +60,7 @@ describe("buildLayeredGraph", () => {
   it("test_a_self_loop_does_not_hang_the_layout", () => {
     const root = span({ id: "root", children: [span({ id: "self", parentId: "self" })] });
     const g = buildLayeredGraph(root);
-    expect(g.nodes.find((n) => n.spanId === "self")).toBeDefined(); // nó preservado, não dropado
+    expect(g.nodes.find((n) => n.spanId === "self")).toBeDefined(); // the node is preserved, not dropped
     expect(g.nodes).toHaveLength(2);
   });
 

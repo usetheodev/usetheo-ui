@@ -80,7 +80,7 @@ export function seriesPath(
   let inStretch = false;
   for (const p of points) {
     if (!Number.isFinite(p.y)) {
-      inStretch = false; // a lacuna fecha o trecho; o proximo ponto isFinitePoint abre outro
+      inStretch = false; // the gap closes the stretch; the next finite point opens another
       continue;
     }
     out.push(`${inStretch ? "L" : "M"}${xScale(p.x).toFixed(2)},${yScale(p.y).toFixed(2)}`);

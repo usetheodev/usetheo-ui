@@ -106,7 +106,7 @@ describe("validateFiles — pure helper", () => {
     expect(rejections[0]?.errors[0]?.message).toContain("1");
   });
 
-  it("test_validatefiles_collective_rule_posthoc_preserves_perfile_errors", () => {
+  it("test_validate_files_collective_rule_post_hoc_preserves_per_file_errors", () => {
     // F-dom-2: fidelity to the reference — the collective rule counts the ACCEPTED ones after
     // validation; 4 files (2 invalid) with maxFiles 3 → 2 accepted + 2 TYPE rejections
     const files = [

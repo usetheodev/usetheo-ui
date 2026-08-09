@@ -3,7 +3,7 @@ import { computeHistogram } from "./histogram.js";
 
 describe("computeHistogram", () => {
   it("distributes values into equal-width bins", () => {
-    // 0..9 em 5 bins → 2 por bin
+    // 0..9 into 5 bins → 2 per bin
     const bins = computeHistogram([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 5);
     expect(bins).toHaveLength(5);
     expect(bins.map((b) => b.count)).toEqual([2, 2, 2, 2, 2]);
@@ -43,7 +43,7 @@ describe("computeHistogram", () => {
 
   it("the maximum value falls in the last bin (inclusive upper edge)", () => {
     const bins = computeHistogram([0, 1, 2, 3, 4], 2);
-    // 4 é o max — deve contar no bin final, não escapar
+    // 4 is the max — it must count in the final bin, not escape
     expect(bins.reduce((a, b) => a + b.count, 0)).toBe(5);
     expect(bins[bins.length - 1]?.count).toBeGreaterThan(0);
   });

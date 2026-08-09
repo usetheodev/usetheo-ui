@@ -212,17 +212,19 @@ function DataTableDefaultBody<T>(props: DataTableProps<T>): ReactNode {
   const totalPages = pagination ? Math.ceil(sortedData.length / effectivePageSize) : 1;
 
   return (
-    // `overflow-x-auto`: uma tabela mais larga que o contêiner ROLA dentro dele, em vez de vazar por
-    // cima do resto da página. Medido no consumidor: 11 colunas produziam 1838 px dentro de 1486 px,
-    // e a raiz era só `w-full` — então o excesso escapava e desconfigurava a tela inteira. Não era
-    // defeito de uma tela: era desta raiz, e alcançava qualquer consumidor com colunas demais.
+    // `overflow-x-auto`: a table wider than its container SCROLLS inside it, instead of spilling
+    // over the rest of the page. Measured in the consumer: 11 columns produced 1838 px inside
+    // 1486 px, and the root was only `w-full` — so the excess escaped and broke the whole screen.
+    // It was not one screen's defect: it was this root's, and it reached any consumer with too
+    // many columns.
     //
-    // A variante virtualizada já fazia isto; a não-virtualizada é que tinha ficado para trás.
+    // The virtualised variant already did this; the non-virtualised one had fallen behind.
     //
-    // Efeito colateral declarado: com `overflow-x` diferente de `visible`, o CSS computa `overflow-y`
-    // como `auto` — logo este `div` vira contexto de rolagem, e um `stickyHeader` passa a grudar nele
-    // e não na viewport. Para o cabeçalho grudar de fato, o consumidor precisa dar altura máxima ao
-    // contêiner (`className="max-h-[...]"`), que é o que torna a rolagem vertical real.
+    // Declared side effect: with `overflow-x` set to anything other than `visible`, CSS computes
+    // `overflow-y` as `auto` — so this `div` becomes a scroll container, and a `stickyHeader` now
+    // sticks to it rather than to the viewport. For the header to actually stick, the consumer has
+    // to give the container a max height (`className="max-h-[...]"`), which is what makes the
+    // vertical scrolling real.
     <div className={cn("w-full overflow-x-auto", className)}>
       <Table>
         <Table.Header className={stickyHeader ? "sticky top-0 z-10 bg-card" : undefined}>

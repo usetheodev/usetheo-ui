@@ -61,7 +61,7 @@ describe("ActionBar — search a11y (issue #8 regression)", () => {
     const { getByLabelText } = render(
       <ActionBar search={{ placeholder: "Search projects...", value: "", onChange: () => {} }} />,
     );
-    // deriva do placeholder com reticências (ASCII e Unicode) removidas
+    // derived from the placeholder with the ellipsis (ASCII and Unicode) stripped
     expect(getByLabelText("Search projects")).toBeTruthy();
   });
 

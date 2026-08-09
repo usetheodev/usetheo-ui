@@ -20,7 +20,7 @@ const ITEMS: SessionTraceItem[] = [
   },
   {
     id: "trace-1",
-    name: "primeiro",
+    name: "first",
     startTime: T0,
     endTime: T0 + 2n * NS,
     costUsd: 0.01,
@@ -28,7 +28,7 @@ const ITEMS: SessionTraceItem[] = [
   },
   {
     id: "trace-3",
-    name: "terceiro",
+    name: "third",
     startTime: T0 + 6n * NS,
     endTime: T0 + 7n * NS,
     status: "ERROR",
@@ -60,9 +60,9 @@ describe("SessionTimeline", () => {
     render(<SessionTimeline {...props()} />);
     const rows = screen.getAllByRole("listitem");
     expect(rows.map((r) => within(r).getByTestId("session-trace-name").textContent)).toEqual([
-      "primeiro",
+      "first",
       "segundo",
-      "terceiro",
+      "third",
     ]);
   });
 

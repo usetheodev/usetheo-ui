@@ -82,9 +82,9 @@ export const EmptyState: Story = () => (
 );
 
 /**
- * Query playground — a composição que os produtos theo-memory (recall) e
- * theo-rag (retrieval) montam: topK + threshold + collection picker.
- * Evidência executável do DoD bullet 3 do M1 (axe-validada em teste).
+ * Query playground — the composition the theo-memory (recall) and theo-rag (retrieval)
+ * products assemble: topK + threshold + collection picker.
+ * Executable evidence for M1's DoD bullet 3 (axe-validated in a test).
  */
 export const QueryPlayground: Story = () => {
   const [collection, setCollection] = useState<string>();

@@ -39,7 +39,7 @@ describe("alignSpanTrees", () => {
     const cyc = span({ id: "x", name: "x" });
     cyc.children = [cyc]; // self-reference
     const rows = alignSpanTrees(cyc, span({ id: "y", name: "x" }));
-    expect(rows.length).toBeGreaterThanOrEqual(1); // terminou + emitiu ao menos a raiz
+    expect(rows.length).toBeGreaterThanOrEqual(1); // it terminated and emitted at least the root
     expect(rows[0]?.key).toBe("x");
   });
 

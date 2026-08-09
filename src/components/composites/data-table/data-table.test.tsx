@@ -40,20 +40,20 @@ describe("DataTable — rendering", () => {
   });
 
   /**
-   * Uma tabela mais larga que o contêiner precisa ROLAR, não transbordar.
+   * A table wider than its container has to SCROLL, not overflow.
    *
-   * Medido no app-dev, tela de sessões: 11 colunas produziam uma tabela de 1838 px dentro de um
-   * contêiner de 1486 px, com `overflow-x: visible` — ela vazava por cima do resto da página e
-   * desconfigurava a tela. Não é defeito daquela tela: a raiz deste componente era `w-full` e nada
-   * mais, então QUALQUER consumidor com colunas demais tinha o mesmo problema.
+   * Measured in app-dev, on the sessions screen: 11 columns produced an 1838 px table inside a
+   * 1486 px container, with `overflow-x: visible` — it spilled over the rest of the page and broke
+   * the layout. This was not that screen's defect: this component's root was `w-full` and nothing
+   * more, so ANY consumer with too many columns had the same problem.
    *
-   * A variante virtualizada já fazia `overflow-auto`, o que mostra que a responsabilidade sempre foi
-   * do componente — a versão não-virtualizada é que tinha ficado para trás.
+   * The virtualised variant already did `overflow-auto`, which shows the responsibility was always
+   * the component's — it was the non-virtualised version that had fallen behind.
    */
   it("the table scrolls inside its own container instead of overflowing", () => {
     const { container } = render(<DataTable columns={columns} data={rows} rowKey={(r) => r.id} />);
-    const raiz = container.firstElementChild;
-    expect(raiz?.className).toContain("overflow-x-auto");
+    const root = container.firstElementChild;
+    expect(root?.className).toContain("overflow-x-auto");
   });
 
   it("stickyHeader=false omits sticky class", () => {

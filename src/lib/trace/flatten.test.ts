@@ -44,7 +44,7 @@ describe("flattenAll", () => {
 
 describe("toTranscriptRows", () => {
   it("test_a_fan_out_gets_a_group_header_before_its_children", () => {
-    const rows = toTranscriptRows(TREE); // root tem 2 filhos → group-header
+    const rows = toTranscriptRows(TREE); // the root has 2 children → a group header
     expect(rows[0]).toMatchObject({ kind: "span", spanId: "root" });
     expect(rows[1]).toMatchObject({ kind: "group-header", groupId: "root" });
   });

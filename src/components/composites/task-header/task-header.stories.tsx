@@ -7,11 +7,11 @@ export default { title: "Composites / Agent / TaskHeader" };
 
 export const Statuses: Story = () => (
   <div className="grid max-w-2xl gap-3">
-    <TaskHeader title="Organize as capturas de tela" status="idle" />
-    <TaskHeader title="Pedindo permissão de acesso" status="permission_required" />
+    <TaskHeader title="Organise the screenshots" status="idle" />
+    <TaskHeader title="Requesting access permission" status="permission_required" />
     <TaskHeader title="Bootstrapping environment" status="starting" />
     <TaskHeader
-      title="Organize as capturas de tela"
+      title="Organise the screenshots"
       status="running"
       onToggle={() => undefined}
       actions={

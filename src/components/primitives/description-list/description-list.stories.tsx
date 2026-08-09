@@ -15,7 +15,7 @@ const pair = (term: string, detail: ReactNode) => (
   </DescriptionList.Item>
 );
 
-/** Metadados de uma memória (theo-memory) — o caso de painel de detalhe do M2. */
+/** A memory's metadata (theo-memory) — M2's detail-panel case. */
 const memoryMeta = [
   pair("ID", <code className="font-mono text-code-sm">mem_8f3a…c21</code>),
   pair("Status", <Badge variant="success">active</Badge>),

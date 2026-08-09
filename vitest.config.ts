@@ -35,7 +35,7 @@ export default defineConfig({
         "**/index.ts",
         "src/test/**",
         "src/types/**",
-        "referencia/**",
+        "reference/**",
         "playground/**",
         ".ladle/**",
       ],

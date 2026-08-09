@@ -59,7 +59,7 @@ describe("Stepper — states and anatomy", () => {
     const { container } = renderStepper(withStates("done", "active", "failed", "pending"));
     const icons = slots(container, "stepper-icon");
     expect(icons).toHaveLength(4);
-    // F-tests-1: pina o MAPA estado→glifo, não só "tem svg"
+    // F-tests-1: pins the state→glyph MAP, not merely "there is an svg"
     const glyphs = ["lucide-check", "lucide-loader-circle", "lucide-x", "lucide-circle-dashed"];
     [...icons].forEach((icon, i) => {
       expect(icon.getAttribute("aria-hidden")).toBe("true");
@@ -93,13 +93,13 @@ describe("Stepper — states and anatomy", () => {
 
   it("test_failed_state_communicated_in_text", () => {
     const { container } = renderStepper([step("deploy", "failed")]);
-    // F-tests-3: o texto de estado fica DENTRO do label (uma frase acessível única)
+    // F-tests-3: the state text lives INSIDE the label (one accessible sentence)
     const label = slots(container, "stepper-label")[0];
     expect(label?.textContent?.toLowerCase()).toContain("failed");
   });
 
   it("test_done_and_pending_states_communicated_in_text", () => {
-    // F-dom-1: leitor de tela distingue done/pending sem depender de cor/ícone
+    // F-dom-1: a screen reader distinguishes done from pending without relying on colour or icon
     const { container } = renderStepper(withStates("done", "pending"));
     const labels = slots(container, "stepper-label");
     expect(labels[0]?.textContent?.toLowerCase()).toContain("completed");
@@ -174,8 +174,8 @@ describe("Stepper — edges e negatives", () => {
     expect(container.querySelectorAll('[role="button"]')).toHaveLength(0);
   });
 
-  // F-tests-2 + F-arch-2: fallback é ESPECIFICAMENTE o visual pending e o
-  // data-state normalizado acompanha o que foi renderizado
+  // F-tests-2 + F-arch-2: the fallback is SPECIFICALLY the pending visual, and the normalised
+  // data-state follows what was rendered
   const expectPendingDegradation = (bogusStatus: string) => {
     const { container } = renderStepper([
       { id: "x", label: "X", status: bogusStatus as StepperStepData["status"] },
@@ -190,7 +190,7 @@ describe("Stepper — edges e negatives", () => {
   });
 
   it("test_prototype_key_status_degrades_safely", () => {
-    // F-arch-1/F-dom-2: "toString" passa no guard `in` (prototype chain); Object.hasOwn não
+    // F-arch-1/F-dom-2: "toString" passes an `in` guard (prototype chain); Object.hasOwn does not
     expectPendingDegradation("toString");
   });
 
