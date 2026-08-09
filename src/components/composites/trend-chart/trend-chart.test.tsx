@@ -51,33 +51,34 @@ describe("TrendChart — pure helpers (ported)", () => {
   /*
    * M144 — A LACUNA.
    *
-   * O docblock deste arquivo já declara que "non-finite points are skipped in the line and read as
-   * `—` in the table", e `niceMax`, `hasData` e a tabela acessível honram isso. `seriesPath` era o
-   * único que desmentia: ele FILTRAVA o ponto não-finito — apagando a informação de ONDE estava o
-   * buraco — e então ligava os sobreviventes com `L`, desenhando linha contínua por cima da lacuna.
+   * This file's docblock already states that "non-finite points are skipped in the line and read as
+   * `—` in the table", and `niceMax`, `hasData` and the accessible table honour it. `seriesPath` was
+   * the one that contradicted it: it FILTERED the non-finite point out — erasing the information of
+   * WHERE the hole was — and then joined the survivors with `L`, drawing a continuous line straight
+   * over the gap.
    *
-   * Quebrar é a convenção de toda biblioteca séria: `spanGaps` (Chart.js), `connectNulls`
-   * (Highcharts, ECharts, Recharts) e `connectgaps` (Plotly) são `false` por padrão, e o Grafana usa
-   * "Connect null values: Never". E é a única leitura honesta — ligar afirma continuidade que o dado
-   * não tem.
+   * Breaking the line is every serious library's convention: `spanGaps` (Chart.js), `connectNulls`
+   * (Highcharts, ECharts, Recharts) and `connectgaps` (Plotly) default to `false`, and Grafana ships
+   * "Connect null values: Never". It is also the only honest reading — joining asserts a continuity
+   * the data does not have.
    */
-  it("seriesPath quebra a linha na lacuna", () => {
+  it("seriesPath breaks the line at the gap", () => {
     const id = (v: number) => v;
     const d = seriesPath(pts(1, undefined, 3), id, id);
-    // DOIS subcaminhos: um antes da lacuna, outro depois
-    expect(d.split("M")).toHaveLength(3); // "" + dois trechos
-    expect(d).not.toMatch(/M[^M]*L[^M]*L/); // nenhum trecho com 3 pontos ligados
+    // TWO subpaths: one before the gap, one after
+    expect(d.split("M")).toHaveLength(3); // "" + two stretches
+    expect(d).not.toMatch(/M[^M]*L[^M]*L/); // no stretch joining 3 points
   });
 
   it("seriesPath sem lacuna segue UM subcaminho", () => {
     const id = (v: number) => v;
     const d = seriesPath(pts(1, 2, 3), id, id);
-    // trava a nao-regressao: todo grafico existente tem serie densa
+    // pins the non-regression: every existing chart has a dense series
     expect(d.split("M")).toHaveLength(2);
     expect(d.split("L")).toHaveLength(3);
   });
 
-  it("seriesPath com lacuna na ponta nao cria subcaminho vazio", () => {
+  it("seriesPath with a gap at the edge creates no empty subpath", () => {
     const id = (v: number) => v;
     for (const d of [
       seriesPath(pts(undefined, 1, 2), id, id),
@@ -88,80 +89,81 @@ describe("TrendChart — pure helpers (ported)", () => {
     }
   });
 
-  it("seriesPath com lacunas consecutivas produz DOIS subcaminhos, nao tres", () => {
+  it("seriesPath with consecutive gaps produces TWO subpaths, not three", () => {
     const id = (v: number) => v;
-    // um trecho vazio nao e um trecho
+    // an empty stretch is not a stretch
     expect(seriesPath(pts(1, undefined, undefined, 4), id, id).split("M")).toHaveLength(3);
   });
 
-  it("seriesPath com ponto isolado entre lacunas produz um M sozinho", () => {
+  it("seriesPath with an isolated point between gaps produces a lone M", () => {
     const id = (v: number) => v;
     const d = seriesPath(pts(undefined, 2, undefined), id, id);
     expect(d.split("M")).toHaveLength(2);
-    expect(d).not.toContain("L"); // uma linha de um ponto so nao tem comprimento
+    expect(d).not.toContain("L"); // a one-point line has no length
   });
 
   /**
-   * O teste acima prova que o ponto isolado vira `M` sozinho — e um `M` sozinho DESENHA NADA.
-   * Medido no e2e do M144: uma série densa de 30 dias com dois dias finitos separados por lacuna
-   * renderizou `d="M419.86,92.00 M448.00,36.00"`, um `path` de bounding-box zero que o navegador
-   * reporta como não-visível. O dado existe, está correto, e o operador não vê nada.
+   * The test above proves an isolated point becomes a lone `M` — and a lone `M` DRAWS NOTHING.
+   * Measured in M144's e2e: a dense 30-day series with two finite days separated by a gap rendered
+   * `d="M419.86,92.00 M448.00,36.00"`, a zero-bounding-box `path` the browser reports as not
+   * visible. The data exists, it is correct, and the operator sees nothing.
    *
-   * A regra antiga chaveava no TOTAL de pontos (`< SPARSE_MARKER_MAX`), não em se o ponto de fato
-   * é desenhado — o próprio comentário dela dizia "a dot keeps real data from rendering as an
-   * invisible line", intenção que ela não cumpria depois da densificação. Chart.js e Plotly marcam
-   * o ponto isolado exatamente por isto.
+   * The old rule keyed on the TOTAL number of points (`< SPARSE_MARKER_MAX`), not on whether the
+   * point is actually drawn — its own comment said "a dot keeps real data from rendering as an
+   * invisible line", an intent it stopped fulfilling after the densification. Chart.js and Plotly
+   * mark the isolated point for exactly this reason.
    */
-  it("ponto isolado entre lacunas GANHA marcador mesmo em serie densa", () => {
-    const densa = pts(1, undefined, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
-    const marcados = markedPoints(densa);
-    expect(marcados.map((p) => p.y)).toEqual([1, 3]);
+  it("an isolated point between gaps GETS a marker even in a dense series", () => {
+    const dense = pts(1, undefined, 3, undefined, ...Array.from({ length: 20 }, () => undefined));
+    const marked = markedPoints(dense);
+    expect(marked.map((p) => p.y)).toEqual([1, 3]);
   });
 
-  it("ponto com vizinho finito NAO ganha marcador — a linha ja o desenha", () => {
-    // SEIS finitos contíguos: acima do piso de esparsidade, logo o ramo denso responde. Com três
-    // (a versão anterior deste caso) a série é esparsa em DADO e os três passam a ser marcados —
-    // que é a correção da regra do M76, não uma regressão.
-    const densa = pts(1, 2, 3, 4, 5, 6, ...Array.from({ length: 20 }, () => undefined));
-    expect(markedPoints(densa)).toEqual([]);
+  it("a point with a finite neighbour gets NO marker — the line already draws it", () => {
+    // SIX contiguous finite points: above the sparsity floor, so the dense branch answers. With
+    // three (this case's previous version) the series is sparse in DATA and all three get marked —
+    // which is M76's rule being corrected, not a regression.
+    const dense = pts(1, 2, 3, 4, 5, 6, ...Array.from({ length: 20 }, () => undefined));
+    expect(markedPoints(dense)).toEqual([]);
   });
 
-  // Series DENSAS de propósito: com 3 slots o ramo esparso responde e a lógica de vizinho — que é
-  // o que este caso diz exercitar — nunca roda. Restringir o ramo denso a `i > 0 && i < len-1`
-  // deixaria a versão anterior deste teste verde, que é a definição de teste que não mede.
-  it("ponta e isolada quando seu unico vizinho e lacuna", () => {
-    // CINCO finitos (acima do piso de esparsidade, para o ramo denso responder), todos isolados,
-    // e os das duas PONTAS entre eles. Com menos de cinco o ramo esparso devolve tudo e a lógica
-    // de vizinho nunca roda — foi assim que a mutação `i > 0 && i < len-1` sobreviveu à campanha.
-    const alternada = pts(1, undefined, 3, undefined, 5, undefined, 7, undefined, 9);
-    expect(markedPoints(alternada).map((p) => p.y)).toEqual([1, 3, 5, 7, 9]);
+  // DENSE series on purpose: with 3 slots the sparse branch answers and the neighbour logic — what
+  // this case claims to exercise — never runs. Restricting the dense branch to `i > 0 && i < len-1`
+  // would leave this test's previous version green, which is the definition of a test that measures
+  // nothing.
+  it("an edge point is isolated when its only neighbour is a gap", () => {
+    // FIVE finite points (above the sparsity floor, so the dense branch answers), all isolated, and
+    // both ENDS among them. With fewer than five the sparse branch returns everything and the
+    // neighbour logic never runs — which is how the mutation `i > 0 && i < len-1` survived the campaign.
+    const alternating = pts(1, undefined, 3, undefined, 5, undefined, 7, undefined, 9);
+    expect(markedPoints(alternating).map((p) => p.y)).toEqual([1, 3, 5, 7, 9]);
   });
 
   /**
-   * A regra do M76 chaveava no total de SLOTS. Depois da densificação um slot deixou de ser um
-   * dado: uma série de 30 dias com 3 dias contíguos de consumo tem 30 slots e 3 pontos, caía no
-   * ramo denso, e como os três são vizinhos entre si NENHUM ganhava marcador — o penhasco de 1-4
-   * baldes que o M76 existe para ancorar, desligado em silêncio pela mudança do M144. Antes do
-   * M144 essa mesma série chegava com 3 pontos e ganhava 3 marcadores.
+   * M76's rule keyed on the total number of SLOTS. After the densification a slot stopped being a
+   * datum: a 30-day series with 3 contiguous days of usage has 30 slots and 3 points, fell into the
+   * dense branch, and because all three are neighbours of one another NONE got a marker — the 1-4
+   * bucket cliff M76 exists to anchor, switched off silently by M144's change. Before M144 that same
+   * series arrived with 3 points and got 3 markers.
    *
-   * A regra passa a chavear em pontos FINITOS, que é o que "série esparsa" sempre quis dizer.
+   * The rule now keys on FINITE points, which is what "sparse series" always meant.
    */
-  it("serie esparsa segue marcando TODOS os pontos finitos — inclusive densificada", () => {
+  it("a sparse series keeps marking EVERY finite point — densified included", () => {
     expect(markedPoints(pts(1, 2, 3)).map((p) => p.y)).toEqual([1, 2, 3]);
-    // 30 slots, 3 dias contíguos de consumo: esparsa em DADO, densa em slots.
-    const densa = pts(
+    // 30 slots, 3 contiguous days of usage: sparse in DATA, dense in slots.
+    const dense = pts(
       ...Array.from({ length: 20 }, () => undefined),
       1,
       2,
       3,
       ...Array.from({ length: 7 }, () => undefined),
     );
-    expect(markedPoints(densa).map((p) => p.y)).toEqual([1, 2, 3]);
+    expect(markedPoints(dense).map((p) => p.y)).toEqual([1, 2, 3]);
   });
 
-  // A fronteira da própria constante que a função inteira chaveia. Sem estes dois casos a mutação
-  // `<` → `<=` sobrevive à suíte toda — e ela passou pela campanha de 7 mutantes sem ser vista.
-  it("a fronteira de SPARSE_MARKER_MAX: 4 finitos marcam todos, 5 finitos marcam nenhum", () => {
+  // The boundary of the very constant the whole function keys on. Without these two cases the
+  // mutation `<` → `<=` survives the entire suite — and it went through the 7-mutant campaign unseen.
+  it("the SPARSE_MARKER_MAX boundary: 4 finite points mark all, 5 mark none", () => {
     expect(markedPoints(pts(1, 2, 3, 4)).map((p) => p.y)).toEqual([1, 2, 3, 4]);
     expect(markedPoints(pts(1, 2, 3, 4, 5))).toEqual([]);
   });
@@ -317,155 +319,156 @@ describe("TrendChart — barrel", () => {
 });
 
 /**
- * M146 — o gráfico não deixava ler nem o QUANDO nem o QUANTO (`usetheodev/usetheo-ui#17`).
+ * M146 — the chart let you read neither the WHEN nor the HOW MUCH (`usetheodev/usetheo-ui#17`).
  *
- * O SVG tinha exatamente dois `<text>`, ambos no eixo Y, e a tabela acessível numerava as linhas
- * (`Point 1, 2, 3…`). Num gráfico rotulado "Custo por dia", nenhuma data aparecia — o operador via
- * que houve um pico e não tinha caminho algum para saber em que dia foi. Para quem usa leitor de
- * tela, a tabela é o ÚNICO canal, e ela dizia ordinais.
+ * The SVG had exactly two `<text>` nodes, both on the Y axis, and the accessible table numbered
+ * its rows (`Point 1, 2, 3…`). On a chart labelled "Cost per day", no date appeared — the operator
+ * saw that there had been a spike and had no path at all to learn which day it was. For anyone
+ * using a screen reader the table is the ONLY channel, and it said ordinals.
  *
- * A decisão de projeto é `xFormatter` OPCIONAL, nunca inferência. Inferir por magnitude ("`x` grande
- * ⇒ epoch-ms") funcionaria — e é a forma exata do defeito que este design system acabou de pagar: a
- * regra de marcador do M76 chaveava em `points.length` em vez de perguntar o que queria saber, e a
- * densificação do M144 a desligou em silêncio. Medido: 5 das 6 fábricas do consumidor passam ÍNDICE;
- * só uma passa epoch-ms. Sem a prop, nada muda para as outras.
+ * The design decision is an OPTIONAL `xFormatter`, never inference. Inferring by magnitude ("a big
+ * `x` ⇒ epoch-ms") would work — and it is the exact shape of the defect this design system has just
+ * paid for: M76's marker rule keyed on `points.length` instead of asking what it wanted to know,
+ * and M144's densification switched it off silently. Measured: 5 of the consumer's 6 factories pass
+ * an INDEX; only one passes epoch-ms. Without the prop, nothing changes for the others.
  */
-describe("TrendChart — o eixo X e a leitura do valor (M146)", () => {
-  const comData = (i: number) => new Date(Date.UTC(2026, 6, 20 + i)).toISOString().slice(5, 10);
+describe("TrendChart — the X axis and reading the value (M146)", () => {
+  const asDate = (i: number) => new Date(Date.UTC(2026, 6, 20 + i)).toISOString().slice(5, 10);
 
-  it("sem xFormatter, a tabela segue numerando — nenhum consumidor de índice muda", () => {
+  it("without xFormatter the table keeps numbering — no index consumer changes", () => {
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
-    const primeira = container.querySelector('[data-slot="trend-chart-table"] tbody td');
-    expect(primeira?.textContent).toBe("1");
+    const first = container.querySelector('[data-slot="trend-chart-table"] tbody td');
+    expect(first?.textContent).toBe("1");
   });
 
-  it("com xFormatter, a tabela mostra o RÓTULO no lugar do ordinal", () => {
-    const { container } = renderChart([series("custo", pts(1, 2, 3))], {
-      xFormatter: (x: number) => comData(x),
+  it("with xFormatter the table shows the LABEL in place of the ordinal", () => {
+    const { container } = renderChart([series("cost", pts(1, 2, 3))], {
+      xFormatter: (x: number) => asDate(x),
     });
-    const celulas = [...container.querySelectorAll('[data-slot="trend-chart-table"] tbody tr')].map(
+    const cells = [...container.querySelectorAll('[data-slot="trend-chart-table"] tbody tr')].map(
       (tr) => tr.querySelector("td")?.textContent,
     );
-    expect(celulas).toEqual(["07-20", "07-21", "07-22"]);
+    expect(cells).toEqual(["07-20", "07-21", "07-22"]);
   });
 
-  it("o cabeçalho da coluna acompanha — 'Point' sobre datas seria a mesma mentira em menor escala", () => {
-    const { container } = renderChart([series("custo", pts(1, 2))], {
-      xFormatter: (x: number) => comData(x),
-      xLabel: "Dia",
+  it("the column header follows — 'Point' over dates would be the same lie at smaller scale", () => {
+    const { container } = renderChart([series("cost", pts(1, 2))], {
+      xFormatter: (x: number) => asDate(x),
+      xLabel: "Day",
     });
     const th = container.querySelector('[data-slot="trend-chart-table"] thead th');
-    expect(th?.textContent).toBe("Dia");
+    expect(th?.textContent).toBe("Day");
   });
 
-  it("com xFormatter, o eixo X ganha rótulos visíveis", () => {
-    const { container } = renderChart([series("custo", pts(1, 2, 3, 4, 5))], {
-      xFormatter: (x: number) => comData(x),
+  it("with xFormatter the X axis gains visible labels", () => {
+    const { container } = renderChart([series("cost", pts(1, 2, 3, 4, 5))], {
+      xFormatter: (x: number) => asDate(x),
     });
     const ticks = container.querySelectorAll('[data-slot="trend-chart-xtick"]');
     expect(ticks.length).toBeGreaterThan(0);
-    // O primeiro e o último SEMPRE presentes: são as bordas da janela, e é o que responde
-    // "de quando até quando" mesmo quando o meio é amostrado.
-    const textos = [...ticks].map((t) => t.textContent);
-    expect(textos[0]).toBe("07-20");
-    expect(textos[textos.length - 1]).toBe("07-24");
+    // The first and the last are ALWAYS present: they are the window's edges, and they are what
+    // answers "from when to when" even when the middle is sampled.
+    const labels = [...ticks].map((t) => t.textContent);
+    expect(labels[0]).toBe("07-20");
+    expect(labels[labels.length - 1]).toBe("07-24");
   });
 
-  it("sem xFormatter, NENHUM rótulo de eixo X é desenhado", () => {
-    // Não é só cosmética: `PAD.bottom` é 4, e crescer o padding move o `yScale` e portanto TODA
-    // coordenada `y` de todo path já testado. Renderizar o eixo só quando há formatter mantém a
-    // geometria dos consumidores de índice byte a byte.
+  it("without xFormatter NO X-axis label is drawn", () => {
+    // This is not cosmetic: `PAD.bottom` is 4, and growing the padding moves the `yScale` and
+    // therefore EVERY `y` coordinate of every path already tested. Rendering the axis only when a
+    // formatter exists keeps the index consumers' geometry byte for byte.
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
     expect(container.querySelectorAll('[data-slot="trend-chart-xtick"]')).toHaveLength(0);
   });
 });
 
 /**
- * M146, segundo sub-bug — não havia como ler o VALOR de um ponto.
+ * M146, second sub-bug — there was no way to read a point's VALUE.
  *
- * Grep por `crosshair|tooltip|onMouseMove|hover` no componente retornava ZERO. Os únicos `<title>`
- * carregavam o NOME da série, nunca o valor. Para "quanto o usuário X gastou na terça" não havia
- * caminho visual algum — só a tabela `sr-only`, que por definição não está na tela.
+ * Grepping the component for `crosshair|tooltip|onMouseMove|hover` returned ZERO. The only
+ * `<title>` nodes carried the series NAME, never the value. For "how much did user X spend on
+ * Tuesday" there was no visual path at all — only the `sr-only` table, which by definition is not
+ * on screen.
  *
- * A forma segue o `span-waterfall` deste mesmo design system: overlay HTML posicionado por %,
- * `aria-hidden`, `pointer-events-none`. Radix Tooltip foi recusado — arrastaria
- * `@radix-ui/react-tooltip` e exigiria um `<Tooltip.Provider>` na app, quebrando a propriedade que
- * define este componente (`registryDependencies` = [cn, tailwind-preset], "no chart lib — keeps the
- * registry copy-pasteable"), e falharia em runtime, não em build.
+ * The shape follows this same design system's `span-waterfall`: an HTML overlay positioned by %,
+ * `aria-hidden`, `pointer-events-none`. Radix Tooltip was refused — it would drag in
+ * `@radix-ui/react-tooltip` and require a `<Tooltip.Provider>` in the app, breaking the property
+ * that defines this component (`registryDependencies` = [cn, tailwind-preset], "no chart lib —
+ * keeps the registry copy-pasteable"), and it would fail at runtime, not at build.
  *
- * O tooltip é DECORATIVO (`aria-hidden`). Isso só é legítimo porque a tabela acessível agora carrega
- * a mesma informação — antes da correção do eixo X ela numerava, e um tooltip decorativo teria
- * criado informação exclusiva para quem usa mouse.
+ * The tooltip is DECORATIVE (`aria-hidden`). That is only legitimate because the accessible table
+ * now carries the same information — before the X-axis fix it numbered, and a decorative tooltip
+ * would have created information exclusive to mouse users.
  */
-describe("TrendChart — a leitura do valor sob o cursor (M146)", () => {
-  it("sem interação, nenhum tooltip é renderizado", () => {
+describe("TrendChart — reading the value under the cursor (M146)", () => {
+  it("with no interaction, no tooltip is rendered", () => {
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
     expect(container.querySelector('[data-slot="trend-chart-tooltip"]')).toBeNull();
   });
 
-  it("o tooltip é decorativo — a tabela acessível é o canal de leitor de tela", () => {
-    // Se um dia ele deixar de ser aria-hidden sem que a tabela cubra o mesmo dado, este caso avisa.
+  it("the tooltip is decorative — the accessible table is the screen-reader channel", () => {
+    // If it ever stops being aria-hidden without the table covering the same data, this case warns.
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
-    const tabela = container.querySelector('[data-slot="trend-chart-table"]');
-    expect(tabela).not.toBeNull();
-    expect(tabela?.className).toContain("sr-only");
+    const table = container.querySelector('[data-slot="trend-chart-table"]');
+    expect(table).not.toBeNull();
+    expect(table?.className).toContain("sr-only");
   });
 
-  it("o componente expõe o gancho de hover no wrapper do gráfico", () => {
-    // O contrato mínimo: existe uma superfície que recebe o movimento do cursor. Sem ela não há
-    // onde pendurar crosshair algum, e o defeito volta em silêncio.
+  it("the component exposes the hover hook on the chart wrapper", () => {
+    // The minimum contract: a surface exists that receives cursor movement. Without it there is
+    // nowhere to hang any crosshair, and the defect returns silently.
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
     expect(container.querySelector('[data-slot="trend-chart-surface"]')).not.toBeNull();
   });
 });
 
-describe("xTicks — a densidade do eixo X (M146)", () => {
-  const eixo = (n: number) => Array.from({ length: n }, (_, i) => i);
+describe("xTicks — the X axis density (M146)", () => {
+  const axis = (n: number) => Array.from({ length: n }, (_, i) => i);
 
-  it("com poucos pontos, todos recebem rótulo", () => {
-    expect(xTicks(eixo(3), 600)).toEqual([0, 1, 2]);
+  it("with few points, all of them get a label", () => {
+    expect(xTicks(axis(3), 600)).toEqual([0, 1, 2]);
   });
 
-  it("com muitos pontos, AMOSTRA — 31 dias em 600px não cabem", () => {
-    const t = xTicks(eixo(31), 600);
+  it("with many points it SAMPLES — 31 days do not fit in 600px", () => {
+    const t = xTicks(axis(31), 600);
     expect(t.length).toBeLessThan(31);
     expect(t.length).toBeGreaterThan(2);
   });
 
-  it("o PRIMEIRO e o ÚLTIMO estão sempre lá — são as bordas da janela", () => {
-    // Sem eles o leitor não sabe de quando até quando o gráfico fala, e o arredondamento da
-    // amostragem pode perder qualquer um dos dois: com 31 pontos e passo 5, o último índice
-    // escolhido seria 30 por acidente, não por garantia.
+  it("the FIRST and the LAST are always there — they are the window edges", () => {
+    // Without them the reader does not know from when to when the chart speaks, and the sampling's
+    // rounding can lose either: with 31 points and a step of 5, the last index chosen would be 30 by
+    // accident, not by guarantee.
     for (const n of [31, 37, 61, 100]) {
-      const t = xTicks(eixo(n), 600);
+      const t = xTicks(axis(n), 600);
       expect(t[0]).toBe(0);
       expect(t[t.length - 1]).toBe(n - 1);
     }
   });
 
-  it("a densidade acompanha a largura — mais espaço, mais rótulos", () => {
-    expect(xTicks(eixo(61), 1200).length).toBeGreaterThan(xTicks(eixo(61), 400).length);
+  it("the density follows the width — more space, more labels", () => {
+    expect(xTicks(axis(61), 1200).length).toBeGreaterThan(xTicks(axis(61), 400).length);
   });
 
-  it("nunca repete posição", () => {
-    const t = xTicks(eixo(61), 600);
+  it("never repeats a position", () => {
+    const t = xTicks(axis(61), 600);
     expect(new Set(t).size).toBe(t.length);
   });
 });
 
-describe("o rodapé do gráfico só cresce quando há eixo X (M146)", () => {
+describe("the chart footer only grows when there is an X axis (M146)", () => {
   const baseY = (c: HTMLElement) => c.querySelector("svg line")?.getAttribute("y1");
 
-  it("sem xFormatter, a geometria é EXATAMENTE a de antes", () => {
-    // `PAD.bottom` é 4. Crescer o rodapé move o `yScale` e, com ele, toda coordenada `y` de todo
-    // `path` já testado nos três consumidores que passam índice. Este caso é o que garante que
-    // eles não mudam um pixel.
+  it("without xFormatter the geometry is EXACTLY what it was", () => {
+    // `PAD.bottom` is 4. Growing the footer moves the `yScale` and with it every `y` coordinate of
+    // every `path` already tested in the three consumers that pass an index. This case is what
+    // guarantees they do not move a pixel.
     const { container } = renderChart([series("p50", pts(1, 2, 3))]);
     expect(baseY(container)).toBe(String(180 - 4));
   });
 
-  it("com xFormatter, o rodapé abre espaço para o rótulo", () => {
-    const { container } = renderChart([series("custo", pts(1, 2, 3))], {
+  it("with xFormatter the footer opens space for the label", () => {
+    const { container } = renderChart([series("cost", pts(1, 2, 3))], {
       xFormatter: (x: number) => String(x),
     });
     expect(baseY(container)).toBe(String(180 - 4 - 14));
