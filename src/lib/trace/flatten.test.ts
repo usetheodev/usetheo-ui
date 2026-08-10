@@ -35,7 +35,7 @@ describe("flattenAll", () => {
     expect(flattenAll(TREE)).toHaveLength(4);
   });
 
-  it("test_flattenAll_cycle_safe_nao_stack_overflow", () => {
+  it("test_flattenAll_is_cycle_safe_without_stack_overflow", () => {
     const cyc = span({ id: "c" });
     cyc.children = [cyc]; // self-reference
     expect(flattenAll(cyc)).toHaveLength(1);

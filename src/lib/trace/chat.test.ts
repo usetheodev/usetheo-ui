@@ -27,7 +27,7 @@ describe("isRedactedThinking", () => {
       isRedactedThinking({ role: "assistant", content: [{ type: "redacted_thinking" }] }),
     ).toBe(true);
   });
-  it("test_conteudo_normal_nao_e_redacted", () => {
+  it("test_ordinary_content_is_not_redacted", () => {
     expect(isRedactedThinking({ role: "user", content: "hi" })).toBe(false);
   });
 });
