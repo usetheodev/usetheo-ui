@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { type EnvVar, EnvVarEditor } from "./env-var-editor.js";
 
 const vars: EnvVar[] = [
-  { id: "1", key: "DATABASE_URL", value: "postgres://u:p@h/db", masked: true, scope: "production" },
+  { id: "1", key: "DATABASE_URL", value: "postgres://u:p@h/db", masked: true, scope: "production" }, // trufflehog:ignore — fixture, not a live credential
   { id: "2", key: "LOG_LEVEL", value: "info", scope: "all" },
   { id: "3", key: "THEO_DEPLOY_ID", value: "dpl_abcdef", readonly: true, scope: "production" },
 ];
@@ -19,7 +19,7 @@ describe("EnvVarEditor", () => {
 
   it("masks secret values by default", () => {
     render(<EnvVarEditor vars={vars} />);
-    expect(screen.queryByText("postgres://u:p@h/db")).not.toBeInTheDocument();
+    expect(screen.queryByText("postgres://u:p@h/db")).not.toBeInTheDocument(); // trufflehog:ignore — fixture, not a live credential
     expect(screen.getByText(/•+/)).toBeInTheDocument();
   });
 
@@ -27,7 +27,7 @@ describe("EnvVarEditor", () => {
     const user = userEvent.setup();
     render(<EnvVarEditor vars={vars} />);
     await user.click(screen.getByRole("button", { name: "Reveal value" }));
-    expect(screen.getByText("postgres://u:p@h/db")).toBeInTheDocument();
+    expect(screen.getByText("postgres://u:p@h/db")).toBeInTheDocument(); // trufflehog:ignore — fixture, not a live credential
   });
 
   it("calls onRemove with the variable id", async () => {

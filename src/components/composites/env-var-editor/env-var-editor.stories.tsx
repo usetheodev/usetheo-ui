@@ -10,7 +10,7 @@ const initial: EnvVar[] = [
   {
     id: "1",
     key: "DATABASE_URL",
-    value: "postgres://acme:hunter2@db.usetheo.dev:5432/acme",
+    value: "postgres://acme:hunter2@db.usetheo.dev:5432/acme", // trufflehog:ignore — fixture, not a live credential
     masked: true,
     scope: "production",
   },
