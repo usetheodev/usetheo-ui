@@ -87,7 +87,9 @@ export function SpanTree({
 
   return (
     <div
-      // biome-ignore lint/a11y/useSemanticElements: role="tree" is the correct WAI-ARIA pattern; no native element expresses it
+      // `role="tree"` is the correct WAI-ARIA pattern here; no native element expresses it.
+      // (The `biome-ignore` this comment replaced no longer suppresses anything — Biome stopped
+      // flagging the case, and an unused suppression is itself a lint error.)
       role="tree"
       data-slot="span-tree"
       aria-label={ariaLabel}
