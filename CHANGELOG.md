@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.35.3
+
+### Patch Changes
+
+- 5ffc873: Alinha o `@changesets/cli` com a major que o `changesets/action` entende.
+
+  A release 0.35.2 publicou em npm mas não deixou tag nem GitHub Release. O CLI fez a sua parte —
+  o log diz `Successfully published` e `Created git tags` — e o action parou aí: não empurrou as
+  tags nem criou a página da release.
+
+  A causa é a major do CLI. O `changesets/action@v1.9.0` lê a SAÍDA do `changeset publish` para
+  saber o que foi publicado, e o `@changesets/cli@3.x` mudou esse formato (passou aos prompts do
+  clack: `◇ Successfully published:` em vez de `🦋 info`). O action não reconhece o novo formato,
+  conclui que nada foi publicado, e salta o resto do trabalho em silêncio — que é o pior modo de
+  falhar, porque o publish acontece na mesma e a lacuna só aparece dias depois, quando alguém
+  procura a tag.
+
+  Fixado em `^2.31.1`, a mesma versão que o `theokit-ui` e os outros repositórios publicáveis da
+  framework usam. A tag e a release do 0.35.2 foram criadas à mão; a partir daqui saem do fluxo.
+
+## 0.35.2
+
+### Patch Changes
+
+- ac40336: O pacote passa a dizer de onde vem e o que contém.
+
+  Encontrado ao construir uma app sobre a stack Theo (usetheokit/theokit-ui#73): quem procurava um
+  `Sidebar`, uma `DataTable` ou um `Select` não os encontrava e reescreveu-os à mão — estavam aqui,
+  instalados, o tempo todo.
+
+  - `package.json` passa a declarar `repository`, `homepage`, `bugs` e `keywords`. Sem eles, quem
+    descobrisse os componentes não tinha catálogo, exemplos, nem onde reportar um defeito.
+  - O README dizia "54 components (39 primitives + 15 composites)" com 87 publicados, e não listava
+    um único nome. Passa a listar todos, gerados de `src/components/` por `pnpm sync:readme`, com a
+    divisão de camadas explicada no topo: este pacote é a metade sem agente nenhum; o `@theokit/ui`
+    constrói por cima.
+  - `publishConfig` com `access: public` e `provenance: true`, para que o artefacto publicado leve
+    atestação de origem.
+
 All notable changes to `@usetheo/ui` are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
