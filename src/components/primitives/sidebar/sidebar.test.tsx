@@ -5,6 +5,40 @@ import { axe } from "vitest-axe";
 import { Sidebar } from "./sidebar.js";
 
 describe("Sidebar", () => {
+  /**
+   * usetheodev/usetheo-ui#27 — the anchor arm renders anchor attributes.
+   *
+   * The runtime already did this; the TYPES said otherwise, so no consumer could write it. A
+   * sidebar link to another site wants `target="_blank" rel="noreferrer"`, and without them it
+   * takes the reader out of the app mid-task. The compile-time half of the contract lives in
+   * `sidebar-item-as.test-d.tsx`; this is the half that proves the attributes reach the DOM.
+   */
+  it("passes anchor attributes through on the anchor arm", () => {
+    render(
+      <Sidebar>
+        <Sidebar.Item as="a" href="https://example.com" target="_blank" rel="noreferrer">
+          External
+        </Sidebar.Item>
+      </Sidebar>,
+    );
+    const link = screen.getByRole("link", { name: "External" });
+    expect(link).toHaveAttribute("href", "https://example.com");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noreferrer");
+  });
+
+  it("keeps icon and count on the anchor arm", () => {
+    render(
+      <Sidebar>
+        <Sidebar.Item as="a" href="/inbox" count={3}>
+          Inbox
+        </Sidebar.Item>
+      </Sidebar>,
+    );
+    const link = screen.getByRole("link", { name: /Inbox/ });
+    expect(link.textContent).toContain("3");
+  });
+
   it("renders header, sections and items", () => {
     render(
       <Sidebar>

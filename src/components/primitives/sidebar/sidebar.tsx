@@ -76,13 +76,49 @@ const Section = forwardRef<HTMLDivElement, SectionProps>(
 );
 Section.displayName = "Sidebar.Section";
 
-interface ItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> {
+interface ItemBaseProps {
   icon?: ElementType;
   active?: boolean;
   count?: number | string;
-  as?: "button" | "a";
-  href?: string;
 }
+
+/**
+ * The `<button>` arm. `type` is owned by the component, so it is not offered.
+ *
+ * `href?: never` is what makes the union discriminate on a mistake rather than on the `as` alone:
+ * `<Sidebar.Item href="/x">` without `as="a"` renders a button that ignores the href, and used to
+ * type-check.
+ */
+type ItemButtonProps = ItemBaseProps &
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> & {
+    as?: "button";
+    href?: never;
+  };
+
+/**
+ * The `<a>` arm — anchor attributes, and `href` REQUIRED.
+ *
+ * The requirement is not pedantry: an anchor without `href` is not keyboard focusable and not
+ * announced as a link, so `as="a"` with the href forgotten produced a nav row that a keyboard user
+ * could not reach. It type-checked before, because both fields were optional on one shape.
+ */
+type ItemAnchorProps = ItemBaseProps &
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
+    as: "a";
+    href: string;
+  };
+
+/**
+ * Props of `Sidebar.Item`.
+ *
+ * A discriminated union rather than one shape with `as?: "button" | "a"`, because the runtime has
+ * always branched on `as` — it casts to `AnchorHTMLAttributes` in the anchor path — while the type
+ * described a button in both. The consequence was that no anchor attribute could be passed:
+ * `target`, `rel`, `download`, `hrefLang` all failed to compile on an element that renders them
+ * fine. A sidebar link to another site, which almost always wants `target="_blank" rel="noreferrer"`,
+ * could not be written with this component at all (usetheodev/usetheo-ui#27).
+ */
+type ItemProps = ItemButtonProps | ItemAnchorProps;
 
 /**
  * Sidebar.Item — single nav row. Renders as <button> by default; pass `as="a"` + `href`
@@ -147,7 +183,10 @@ const Item = forwardRef<HTMLElement, ItemProps>(
         type="button"
         className={classes}
         aria-pressed={active ? "true" : undefined}
-        {...props}
+        // Symmetric to the anchor branch above. The union carries the `<a>` arm too, whose `type`
+        // is the MIME type — a plain `string`, which a `<button>` does not accept. Narrowing here
+        // is what lets the two arms share one implementation.
+        {...(props as Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type">)}
       >
         {content}
       </button>
