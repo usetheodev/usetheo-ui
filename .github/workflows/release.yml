@@ -1,0 +1,123 @@
+name: Release
+
+# usetheo-ui: `@usetheo/ui`. Changesets-driven release, matching the publishable repositories
+# in the framework (theokit-ui, theokit-sdk, -di, -plugins, -studio, -gateways).
+#
+# WHAT THIS REPLACES: nothing — which was the problem. Until now the only way to ship this
+# package was `npm publish` from someone's laptop, with the version typed by hand into the
+# manifest. That puts the version number, the git tag and the published artifact in three
+# different hands, and they drift: 0.35.1 sits on npm with no matching tag or GitHub release
+# in this repository.
+#
+# Under changesets the version is DERIVED, not typed: a contributor adds a changeset file
+# describing the change and its bump, changesets opens a "Version Packages" pull request that
+# applies them, and merging that pull request is what publishes and tags. One input, one
+# output, no third place to forget.
+#
+# AUTHENTICATION IS OIDC, NOT A TOKEN — once the connection exists. This requires a Trusted
+# Publisher on npmjs.com for `@usetheo/ui` naming THIS repository and THIS file; that is a
+# setting on the package, and it cannot be created from here. Until it is, the publish step
+# fails with `E404 Not Found - PUT`, which is npm's way of not revealing that a package exists
+# to someone who cannot publish it. The version pull request still opens and still works.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release via Changesets (usetheo-ui)
+    runs-on: ubuntu-latest
+    # A ceiling well under GitHub's 6-hour default keeps a wedged job from holding a runner.
+    timeout-minutes: 30
+    permissions:
+      # changesets opens and updates the version pull request, and pushes its tags.
+      contents: write
+      pull-requests: write
+      # The OIDC token npm exchanges for permission to publish. Without it there is no
+      # credential at all.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked]
+        with:
+          # The one checkout here that keeps its credential, and not by oversight:
+          # changesets/action pushes the version commit and the release tags with the git
+          # CLI, which authenticates from exactly this persisted token.
+          # `persist-credentials: false` breaks the release.
+          #
+          # changesets reads tags to decide what is unpublished; a shallow clone hides them.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        # No `version:` — `packageManager` in package.json is already the authority.
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            package.json
+          # NO `registry-url`. setup-node writes an npmrc declaring
+          # `_authToken=${NODE_AUTH_TOKEN}` unconditionally and exports the variable only if
+          # the caller supplied one — which, under OIDC, nobody does. The job would publish
+          # with a config naming a credential that does not exist. registry.npmjs.org is
+          # already the default, and `publishConfig.access` in the manifest covers the scope.
+
+      # THE STEP WITHOUT WHICH THE OIDC CONFIGURATION IS CORRECT AND USELESS. setup-node ships
+      # whatever npm the Node release bundles; Node 22 bundles npm 10.9.7. OIDC needs
+      # npm >= 11.5.1 — an older npm has no OIDC code at all, never presents the token,
+      # publishes unauthenticated, and the registry answers `E404 Not Found - PUT`.
+      #
+      # Pinned exactly, and NOT to 12.x: npm 12 rejects the `--no-git-checks` flag changesets
+      # passes through, and returns an ARRAY from `npm info --json` where changesets expects
+      # an object — on which the list of published versions reads empty, every package looks
+      # unpublished, and nothing errors. 11.9.0 clears the OIDC floor and avoids both.
+      - name: Install an npm that speaks OIDC (>= 11.5.1) but tolerates the publish flags
+        run: npm install -g npm@11.9.0 # zizmor: ignore[adhoc-packages] — bootstrapping npm itself; no lockfile can cover it
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # `pnpm install` runs `prepare`, which points core.hooksPath at `.githooks` — so the
+      # pre-commit secret scan is armed on this runner. changesets then runs
+      # `git commit -m "Version Packages"`, the hook fires, finds no `trufflehog` binary, and
+      # fails closed exactly as designed.
+      #
+      # The hook is right to fail closed and wrong to be armed here: it exists for the commit
+      # a PERSON makes. This one is made by a bot, from files generated out of content already
+      # in the repository, onto `changeset-release/main` — which reaches `main` only through a
+      # pull request, where this repository's own gates run.
+      #
+      # `|| true` because --unset exits 5 when the key is absent, which is already the state
+      # this step wants.
+      - name: Disarm the local pre-commit hook for the bot's version commit
+        run: git config --unset core.hooksPath || true
+
+      # THE VERSION PULL REQUEST OPENS WITH NO CHECKS RUNNING, AND THAT IS NOT A BUG.
+      # changesets opens it with `secrets.GITHUB_TOKEN`, and GitHub deliberately does not start
+      # workflow runs from GITHUB_TOKEN-authored events — otherwise a workflow could trigger
+      # itself forever. Closing and reopening the pull request re-triggers them as a
+      # human-authored event.
+      #
+      # The obvious "fix" is to hand this action a personal access token so the pull request
+      # looks human-authored; that puts a long-lived credential back into the job that
+      # publishes to npm, which is the thing OIDC was adopted to remove. One manual gesture
+      # per release is the cheaper side of that trade.
+      - name: Create Release Pull Request or Publish
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        with:
+          publish: pnpm release
+          version: pnpm version-packages
+        env:
+          # The only credential here, and it is GitHub's own: changesets uses it to open the
+          # version pull request. Nothing here authenticates to npm.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NPM_CONFIG_PROVENANCE is deliberately absent: `publishConfig.provenance` sits in
+          # package.json, beside the package it describes.
