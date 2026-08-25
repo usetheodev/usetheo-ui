@@ -25,6 +25,10 @@
     "type": "git",
     "url": "git+https://github.com/usetheodev/usetheo-ui.git"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "sideEffects": false,
   "files": [
     "dist"
@@ -54,6 +58,9 @@
     "prepublishOnly": "npm run build",
     "registry:build": "tsx scripts/build-registry.ts",
     "registry:validate": "tsx scripts/validate-registry.ts",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm run sync:readme",
+    "release": "pnpm run build && changeset publish",
     "sync:readme": "tsx scripts/sync-readme.ts",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
@@ -86,6 +93,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^3.0.1",
     "@ladle/react": "^4.1.2",
     "@tailwindcss/vite": "^4.3.2",
     "@testing-library/jest-dom": "^6.6.3",
