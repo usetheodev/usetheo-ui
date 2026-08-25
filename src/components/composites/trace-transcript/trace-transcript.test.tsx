@@ -36,7 +36,9 @@ describe("TraceTranscript", () => {
       parentId: null,
       name: "tool.call",
     };
-    const { container } = render(<TraceTranscript root={noCost} selectedId="x" onSelect={() => {}} />);
+    const { container } = render(
+      <TraceTranscript root={noCost} selectedId="x" onSelect={() => {}} />,
+    );
     expect(container.textContent).not.toContain("$0.0000");
     expect(container.textContent).toContain("—");
   });
@@ -48,7 +50,9 @@ describe("TraceTranscript", () => {
       name: "llm.call",
       costUsd: 0.0234,
     };
-    const { container } = render(<TraceTranscript root={priced} selectedId="y" onSelect={() => {}} />);
+    const { container } = render(
+      <TraceTranscript root={priced} selectedId="y" onSelect={() => {}} />,
+    );
     expect(container.textContent).toContain("$0.0234");
   });
 

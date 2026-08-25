@@ -158,7 +158,9 @@ export function markedPoints(points: TrendPoint[]): TrendPoint[] {
   if (finitePoints.length < SPARSE_MARKER_MAX) return finitePoints;
   // A missing neighbour (the edges) counts as a gap — a finite edge followed by a hole is as
   // invisible as a point in the middle.
-  return points.filter((p, i) => isFinitePoint(p) && !isFinitePoint(points[i - 1]) && !isFinitePoint(points[i + 1]));
+  return points.filter(
+    (p, i) => isFinitePoint(p) && !isFinitePoint(points[i - 1]) && !isFinitePoint(points[i + 1]),
+  );
 }
 
 export interface TrendChartProps extends HTMLAttributes<HTMLElement> {
@@ -295,7 +297,8 @@ const TrendChart = forwardRef<HTMLElement, TrendChartProps>(
             let best = 0;
             for (let i = 1; i < axisXs.length; i++) {
               if (
-                Math.abs((axisXs[i] as number) - target) < Math.abs((axisXs[best] as number) - target)
+                Math.abs((axisXs[i] as number) - target) <
+                Math.abs((axisXs[best] as number) - target)
               )
                 best = i;
             }

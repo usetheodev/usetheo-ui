@@ -5,6 +5,26 @@
   "type": "module",
   "license": "Apache-2.0",
   "description": "Violet Forge design system — generic React components + primitives (the non-AI foundation of @theokit/ui).",
+  "keywords": [
+    "react",
+    "design-system",
+    "components",
+    "ui",
+    "tailwind",
+    "radix",
+    "primitives",
+    "dashboard",
+    "theo",
+    "violet-forge"
+  ],
+  "homepage": "https://github.com/usetheodev/usetheo-ui#readme",
+  "bugs": {
+    "url": "https://github.com/usetheodev/usetheo-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usetheodev/usetheo-ui.git"
+  },
   "sideEffects": false,
   "files": [
     "dist"
@@ -34,6 +54,7 @@
     "prepublishOnly": "npm run build",
     "registry:build": "tsx scripts/build-registry.ts",
     "registry:validate": "tsx scripts/validate-registry.ts",
+    "sync:readme": "tsx scripts/sync-readme.ts",
     "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "peerDependencies": {
