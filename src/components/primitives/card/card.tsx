@@ -37,23 +37,45 @@ const useCardSize = (): CardSize => useContext(CardContext).size;
 
 interface CardRootProps extends HTMLAttributes<HTMLDivElement> {
   size?: CardSize;
+  /**
+   * Renders the child element with the Card styles applied instead of the default `<div>`
+   * (Radix Slot pattern) — the same hatch `Card.Title` already offers for its `<h3>` (issue #32).
+   *
+   * The case it exists for is the whole-card control: a choice grid, a plan picker, an agent
+   * selector. Without it the two ways to build one are both bad. A `<button>` wrapped AROUND a
+   * `<Card>` is invalid — `<button>` takes phrasing content and the card renders a `<div>`, so the
+   * browser reparents the markup. Copying the card's classes onto a `<button>` is valid but forks
+   * the design system at a place that then stops tracking it.
+   *
+   *     <Card asChild size="sm">
+   *       <button type="button" aria-pressed={selected} onClick={onSelect}>…</button>
+   *     </Card>
+   *
+   * This does NOT lift the phrasing-content restriction: choose `<button>` and everything inside
+   * still has to be phrasing content. What it gives is the choice — and `<a>`, where the
+   * restriction does not apply, becomes the better answer for anything navigable.
+   */
+  asChild?: boolean;
 }
 
 const Root = forwardRef<HTMLDivElement, CardRootProps>(
-  ({ className, size = "md", ...props }, ref) => (
-    <CardContext.Provider value={{ size }}>
-      <div
-        data-slot="card"
-        ref={ref}
-        className={cn(
-          "rounded-xl border border-border bg-card text-card-foreground shadow-md",
-          "transition-shadow duration-base ease-out-soft",
-          className,
-        )}
-        {...props}
-      />
-    </CardContext.Provider>
-  ),
+  ({ className, size = "md", asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "div";
+    return (
+      <CardContext.Provider value={{ size }}>
+        <Comp
+          data-slot="card"
+          ref={ref}
+          className={cn(
+            "rounded-xl border border-border bg-card text-card-foreground shadow-md",
+            "transition-shadow duration-base ease-out-soft",
+            className,
+          )}
+          {...props}
+        />
+      </CardContext.Provider>
+    );
+  },
 );
 Root.displayName = "Card";
 

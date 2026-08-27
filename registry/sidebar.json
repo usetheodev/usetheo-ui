@@ -4,12 +4,18 @@
   "type": "registry:ui",
   "title": "Sidebar",
   "description": "Vertical navigation shell with header, sections, items (active / count), and footer slots.",
-  "registryDependencies": ["cn", "tailwind-preset"],
+  "registryDependencies": [
+    "cn",
+    "tailwind-preset"
+  ],
   "files": [
     {
       "path": "components/primitives/sidebar/sidebar.tsx",
       "type": "registry:ui",
       "target": "components/ui/sidebar.tsx"
     }
+  ],
+  "dependencies": [
+    "@radix-ui/react-slot"
   ]
 }

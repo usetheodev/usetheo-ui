@@ -1,0 +1,223 @@
+/* Theo UI — Tailwind v4 theme aliases.
+ *
+ * Companion to `tokens.css`. The base file declares the v3-style runtime
+ * variables (`--primary`, `--background`, …) that `<ThemeProvider>` and
+ * `[data-theme]` cascades mutate at runtime. This file declares the
+ * Tailwind v4 `@theme` namespace (`--color-primary`, `--color-background`,
+ * …) by aliasing back to those runtime vars via `hsl(var(--*))`.
+ *
+ * Why two layers:
+ *   - `<ThemeProvider>` (and the 10 built-in themes) sets `--primary`
+ *     etc. at runtime — that's the theme switch surface.
+ *   - Tailwind v4 resolves color utilities exclusively through
+ *     `--color-*` tokens declared in `@theme`. Without these aliases
+ *     `bg-primary`, `text-muted-foreground`, `border-border`, etc. emit
+ *     a className with no matching CSS rule.
+ *
+ * The indirection (`--color-primary: var(--primary)`) preserves the
+ * runtime theme cascade — browsers resolve `var(--color-primary)` →
+ * `var(--primary)` → current `[data-theme]` value at paint time.
+ *
+ * See RFC 0008 follow-up.
+ */
+
+/* `@theme inline` (Tailwind v4 keyword) preserves the var() reference at
+ * runtime instead of inlining the value at build time. Without `inline`,
+ * `--color-primary: var(--primary)` would resolve to whatever `--primary`
+ * was when Tailwind compiled the CSS — breaking the theme cascade.
+ * See https://tailwindcss.com/docs/theme#using-your-theme-variables-in-arbitrary-values
+ */
+@theme inline {
+  /* Color tokens ------------------------------------------------------ */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-glow: var(--primary-glow);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Status group (D4) ------------------------------------------------- */
+  --color-status-online: var(--status-online);
+  --color-status-online-foreground: var(--status-online-foreground);
+  --color-status-offline: var(--status-offline);
+  --color-status-offline-foreground: var(--status-offline-foreground);
+  --color-status-degraded: var(--status-degraded);
+  --color-status-degraded-foreground: var(--status-degraded-foreground);
+  --color-status-info: var(--status-info);
+  --color-status-info-foreground: var(--status-info-foreground);
+
+  /* Fonts ------------------------------------------------------------- */
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  /* Violet Forge typescale -------------------------------------------- *
+   * Compound text utilities: each `--text-{name}` declares the size,
+   * with companion `--*--line-height`, `--*--letter-spacing`, and
+   * `--*--font-weight` properties Tailwind v4 picks up automatically.
+   */
+  --text-display-2xl: 64px;
+  --text-display-2xl--line-height: 1;
+  --text-display-2xl--letter-spacing: -0.0464em;
+  --text-display-2xl--font-weight: 600;
+
+  --text-display-xl: 48px;
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.05em;
+  --text-display-xl--font-weight: 600;
+
+  --text-display-lg: 40px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.05em;
+  --text-display-lg--font-weight: 600;
+
+  --text-display-md: 32px;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--letter-spacing: -0.04em;
+  --text-display-md--font-weight: 600;
+
+  --text-headline: 28px;
+  --text-headline--line-height: 1.25;
+  --text-headline--letter-spacing: -0.035em;
+  --text-headline--font-weight: 600;
+
+  --text-title-lg: 24px;
+  --text-title-lg--line-height: 1.33;
+  --text-title-lg--letter-spacing: -0.04em;
+  --text-title-lg--font-weight: 600;
+
+  --text-title-md: 20px;
+  --text-title-md--line-height: 1.4;
+  --text-title-md--letter-spacing: -0.03em;
+  --text-title-md--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.56;
+  --text-body-lg--letter-spacing: -0.01em;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 1.43;
+  --text-body-md--letter-spacing: 0;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 1.46;
+  --text-body-sm--font-weight: 400;
+
+  --text-label: 14px;
+  --text-label--line-height: 1.43;
+  --text-label--font-weight: 500;
+
+  --text-label-caps: 12px;
+  --text-label-caps--line-height: 1.33;
+  --text-label-caps--letter-spacing: 0.04em;
+  --text-label-caps--font-weight: 500;
+
+  --text-code-md: 14px;
+  --text-code-md--line-height: 1.5;
+  --text-code-md--font-weight: 400;
+
+  --text-code-sm: 13px;
+  --text-code-sm--line-height: 1.54;
+  --text-code-sm--font-weight: 500;
+
+  /* Radii — Tailwind v4 reads the value directly (no var indirection). */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows — alias to tokens.css computed values (which already use
+     * `hsl(var(--foreground) / …)` so theme-switch keeps them in step). */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-glow: var(--shadow-glow);
+  --shadow-glow-strong: var(--shadow-glow-strong);
+
+  /* Motion ------------------------------------------------------------ */
+  --ease-out-soft: var(--ease-out-soft);
+  --ease-snap: var(--ease-snap);
+
+  /* Container queries (T5.5) — Tailwind v4 native @container support.
+     * Sizes drive `@<size>:<utility>` variants for container-relative responsive
+     * design (components that adapt to their parent's width, not the viewport).
+     * Default sizes mirror Tailwind v4 defaults; declared explicitly so the
+     * preset ships consistent values.
+     */
+  --container-3xs: 16rem;
+  --container-2xs: 18rem;
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+
+  /* Animations — declare so `animate-fade-in-up` and `animate-pulse-glow`
+     * resolve. Keyframes are declared below (outside @theme — Tailwind v4
+     * picks them up via the @keyframes namespace).
+     */
+  --animate-fade-in-up: fade-in-up var(--duration-base) var(--ease-out-soft) both;
+  --animate-pulse-glow: pulse-glow 1.5s var(--ease-in-out) infinite;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 50%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}

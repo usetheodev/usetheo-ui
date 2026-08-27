@@ -1,10 +1,10 @@
 {
   "name": "@usetheo/ui",
-  "version": "0.35.3",
+  "version": "0.35.4",
   "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be",
   "type": "module",
   "license": "Apache-2.0",
-  "description": "Violet Forge design system — generic React components + primitives (the non-AI foundation of @theokit/ui).",
+  "description": "Violet Forge design system \u2014 generic React components + primitives (the non-AI foundation of @theokit/ui).",
   "keywords": [
     "react",
     "design-system",
@@ -41,7 +41,16 @@
     "./preset": {
       "types": "./dist/styles/tailwind-preset.d.ts",
       "import": "./dist/tailwind-preset.js"
-    }
+    },
+    "./styles.css": "./dist/styles.css",
+    "./styles-v3-legacy.css": "./dist/styles-v3-legacy.css",
+    "./components.css": "./dist/components.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens-v4.css": "./dist/tokens-v4.css",
+    "./preset.css": "./dist/preset.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./fonts-cdn.css": "./dist/fonts-cdn.css",
+    "./dist/fonts/*": "./dist/fonts/*"
   },
   "engines": {
     "node": ">=20"
@@ -54,7 +63,7 @@
     "format:check": "biome format src",
     "test": "vitest run",
     "test:run": "vitest run",
-    "build": "tsup && tsc -p tsconfig.dts.json",
+    "build": "tsup && tsc -p tsconfig.dts.json && pnpm run build:css",
     "prepublishOnly": "npm run build",
     "registry:build": "tsx scripts/build-registry.ts",
     "registry:validate": "tsx scripts/validate-registry.ts",
@@ -62,7 +71,8 @@
     "version-packages": "changeset version && pnpm run sync:readme",
     "release": "pnpm run build && changeset publish",
     "sync:readme": "tsx scripts/sync-readme.ts",
-    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
+    "build:css": "tsx scripts/build-css.ts"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -95,6 +105,7 @@
     "@biomejs/biome": "^1.9.4",
     "@changesets/cli": "^2.31.1",
     "@ladle/react": "^4.1.2",
+    "@tailwindcss/cli": "^4.3.3",
     "@tailwindcss/vite": "^4.3.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
