@@ -1,0 +1,45 @@
+/* Theo UI — pre-compile entry for the shipped utility CSS.
+ *
+ * Consumed at LIBRARY BUILD TIME by `scripts/build-precompiled-css.ts`, never by a consumer.
+ * Tailwind v4 reads this file, scans the `@source` globs against this repo's `src/` tree, and
+ * emits `dist/components.css` with the materialized rules for every class the components
+ * reference. `dist/styles.css` then `@import`s it, so one `@import "@usetheo/ui/styles.css"`
+ * pulls in every utility the library needs regardless of package-manager layout.
+ *
+ * ## Why this is pre-compiled rather than left to the consumer's Tailwind
+ *
+ * Tailwind v4's `@source` glob does not follow symlinks. Under pnpm,
+ * `node_modules/@usetheo/ui` is a symlink into `node_modules/.pnpm/…`, so a consumer-side
+ * `@source "node_modules/@usetheo/ui/dist/**\/*.js"` expands to ZERO matches and every
+ * hover/focus/active/data-state variant goes unemitted — components render flat. Shipping the
+ * rules as static bytes removes the filesystem dependency entirely.
+ *
+ * ## What it deliberately does NOT include
+ *
+ * No `./fonts.css` and no `@layer base`: those already ship inside `dist/styles.css`, and
+ * importing them here would emit them twice. Only utilities belong in this file.
+ *
+ * The `@theme` aliases come from `tokens-v4.css` so class resolution sees the same
+ * `--color-*` / `--text-*` namespace the consumer sees at runtime (issue #10).
+ *
+ * ## Why this file is in `biome.json`'s ignore list
+ *
+ * `@source` and `@import "tailwindcss" source(none)` are Tailwind v4 at-rules that Biome's CSS
+ * parser does not know, so it reports a parse error and a bogus `noUnknownMediaFeatureName` on
+ * line 26. The other seven stylesheets in this folder are plain CSS and are still linted — only
+ * this one is exempt, and only because the linter cannot read the dialect it is written in.
+ */
+
+@import "tailwindcss" source(none);
+@import "./tokens.css";
+@import "./tokens-v4.css";
+
+/* Paths are relative to THIS file (`src/styles/`). */
+@source "../components/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
+
+/* Tests and stories are not part of the runtime surface — a class that only a story uses is a
+ * class no consumer can render. */
+@source not "../**/*.test.{ts,tsx}";
+@source not "../**/*.test-d.{ts,tsx}";
+@source not "../**/*.stories.{ts,tsx}";
