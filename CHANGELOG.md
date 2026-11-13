@@ -1,5 +1,62 @@
 # Changelog
 
+## 0.36.0
+
+### Minor Changes
+
+- 4973612: `Card` and `Sidebar.Item` accept `asChild`.
+
+  Two issues, one question, answered the same way on purpose — answering them differently would have
+  been worse than either answer alone (usetheodev/usetheo-ui#31, #32).
+
+  **`Sidebar.Item asChild`** lets a router `Link` be the element the row renders, so the router sees
+  the link and can prefetch it. `as="a" href={to}` plus an `onClick` calling `navigate()` works and is
+  what consumers write today, but the router never sees that link — and on a sidebar, where hover
+  precedes click almost every time, prefetch is exactly what that costs. Wrapping in a `<Link>`
+  instead nests an `<a>` inside an `<a>`. The icon, the count and `aria-current` still come from the
+  component: `Slottable` marks which child becomes the host element, and the rest render inside it.
+
+  **`Card asChild`** lets the whole card be a control — choice grid, plan picker, agent selector. The
+  two ways to build one without it were both bad: a `<button>` wrapped around a `<Card>` is invalid
+  (a button takes phrasing content and the card renders a `<div>`, so the browser reparents it), and
+  copying the card's classes onto a `<button>` forks the design system at a place that stops tracking
+  it. This does not lift the phrasing-content restriction — choose `<button>` and everything inside is
+  still limited — but it gives the choice, and `<a>` becomes the better answer for anything navigable.
+
+  Both are additive: `as` still serves the router-less cases, and omitting `asChild` renders exactly
+  what it rendered before.
+
+- c16e0b0: `Stepper` and `Dialog.Content` let an app translate the text they write for screen readers.
+
+  `Stepper` takes `stateLabels` (`{ done, failed, pending }`): the state spoken after each step's label.
+  A state left out keeps its English text. `Dialog.Content` takes `closeLabel`, the name of the corner
+  close button, which defaults to "Close". Until now both were fixed English strings, so an app in
+  another language announced them in English (#37).
+
+### Patch Changes
+
+- 4973612: The public CSS assets are published again: `styles.css`, `styles-v3-legacy.css`, `components.css`,
+  `tokens.css`, `tokens-v4.css`, `preset.css`, `fonts.css`, `fonts-cdn.css`, and the self-hosted Geist
+  woff2 files.
+
+  The seed that created this repository brought `src/styles/tailwind-preset.ts` across but not the CSS
+  pipeline around it, so from 0.14.0 the tarball contained zero `.css` files while consumers kept
+  importing `@usetheo/ui/preset.css`, `/components.css` and `/fonts-cdn.css`. A clean `vite build`
+  against those versions fails to resolve them; the deployed dashboard only kept working because it had
+  been built back in the 0.13.x era.
+
+  `components.css` is COMPILED rather than restored — the Tailwind v4 CLI runs against
+  `src/styles/components-entry.css`, which scans this repo's own `src/`, so the shipped utility rules
+  match the classes the components reference today. The static stylesheets come from `@usetheo/ui@0.13.2`,
+  the last release that published them; every token the current preset references is declared there.
+
+  The library pre-compiles those utilities instead of leaving them to the consumer's Tailwind because
+  `@source` globs do not follow symlinks — under pnpm the consumer-side pattern expands to zero files and
+  every hover/focus/data-state variant goes unemitted.
+
+  `./preset` still resolves to the JS preset, which is what it has meant since the seed. The CSS preset
+  gets its own explicit `./preset.css` rather than reclaiming that key (usetheodev/usetheo-ui#10).
+
 ## 0.35.4
 
 ### Patch Changes
