@@ -1,3 +1,4 @@
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import { forwardRef } from "react";
 import type {
   AnchorHTMLAttributes,
@@ -93,6 +94,9 @@ type ItemButtonProps = ItemBaseProps &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type"> & {
     as?: "button";
     href?: never;
+    // Declared on every arm, like `href`: a discriminated union only narrows on a field all of
+    // its members carry, and `{...props}` below has to see it removed in every branch.
+    asChild?: never;
   };
 
 /**
@@ -106,6 +110,34 @@ type ItemAnchorProps = ItemBaseProps &
   AnchorHTMLAttributes<HTMLAnchorElement> & {
     as: "a";
     href: string;
+    asChild?: never;
+  };
+
+/**
+ * The `asChild` arm — the component renders whatever element the child is (issue #31).
+ *
+ * The case it exists for is a router link. `as="a" href={to}` plus an `onClick` that calls
+ * `navigate()` works, and it is what consumers write today, but the router never sees the link, so
+ * it cannot prefetch it. On a sidebar — where hover precedes click almost every time — that is
+ * exactly where prefetch paid. Wrapping the item in a `<Link>` instead nests an `<a>` inside an
+ * `<a>`, which is invalid.
+ *
+ *     <Sidebar.Item asChild icon={Home} active>
+ *       <Link to="/feedback" prefetch="intent">Feedback</Link>
+ *     </Sidebar.Item>
+ *
+ * `as` and `href` are `never` here because the child owns the element and its href. Offering both
+ * would let `<Sidebar.Item asChild as="a" href="/x">` type-check while the `as` silently did
+ * nothing — the same class of defect the `href?: never` on the button arm exists to prevent.
+ *
+ * The icon, the count and `aria-current` still come from the component: `Slottable` marks which
+ * child becomes the host element, and the rest render inside it.
+ */
+type ItemAsChildProps = ItemBaseProps &
+  HTMLAttributes<HTMLElement> & {
+    asChild: true;
+    as?: never;
+    href?: never;
   };
 
 /**
@@ -118,14 +150,17 @@ type ItemAnchorProps = ItemBaseProps &
  * fine. A sidebar link to another site, which almost always wants `target="_blank" rel="noreferrer"`,
  * could not be written with this component at all (usetheodev/usetheo-ui#27).
  */
-type ItemProps = ItemButtonProps | ItemAnchorProps;
+type ItemProps = ItemButtonProps | ItemAnchorProps | ItemAsChildProps;
 
 /**
  * Sidebar.Item — single nav row. Renders as <button> by default; pass `as="a"` + `href`
  * to render an anchor for routing.
  */
 const Item = forwardRef<HTMLElement, ItemProps>(
-  ({ className, icon: Icon, active, count, as = "button", href, children, ...props }, ref) => {
+  (
+    { className, icon: Icon, active, count, as = "button", href, asChild, children, ...props },
+    ref,
+  ) => {
     const classes = cn(
       "group flex w-full items-center gap-3 rounded-lg px-2 py-2",
       "font-medium font-sans text-body-sm",
@@ -160,6 +195,41 @@ const Item = forwardRef<HTMLElement, ItemProps>(
         ) : null}
       </>
     );
+
+    if (asChild === true) {
+      // `Slottable` marks WHICH child becomes the host element. Without it the child would replace
+      // the whole subtree and the icon and count would vanish — the component would style a link
+      // and drop everything else it promises.
+      return (
+        <Slot
+          data-slot="sidebar-item"
+          ref={ref}
+          className={classes}
+          aria-current={active ? "page" : undefined}
+          {...props}
+        >
+          {Icon ? (
+            <Icon
+              className={cn(
+                "size-4 shrink-0",
+                active ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
+              )}
+            />
+          ) : null}
+          <Slottable>{children}</Slottable>
+          {count !== undefined ? (
+            <span
+              className={cn(
+                "ml-auto rounded-full px-1.5 py-0.5 font-mono text-label",
+                active ? "bg-primary text-primary-foreground" : "bg-muted-foreground/15",
+              )}
+            >
+              {count}
+            </span>
+          ) : null}
+        </Slot>
+      );
+    }
 
     if (as === "a") {
       return (

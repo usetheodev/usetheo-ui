@@ -45,10 +45,12 @@ Overlay.displayName = "Dialog.Overlay";
 
 interface ContentProps extends ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   hideCloseButton?: boolean;
+  /** The name a screen reader gives the corner close button, for an app that is not in English. @default "Close" */
+  closeLabel?: string;
 }
 
 const Content = forwardRef<ElementRef<typeof DialogPrimitive.Content>, ContentProps>(
-  ({ className, children, hideCloseButton, ...props }, ref) => (
+  ({ className, children, hideCloseButton, closeLabel = "Close", ...props }, ref) => (
     <DialogPrimitive.Portal>
       <Overlay />
       <DialogPrimitive.Content
@@ -75,7 +77,7 @@ const Content = forwardRef<ElementRef<typeof DialogPrimitive.Content>, ContentPr
             )}
           >
             <X className="size-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{closeLabel}</span>
           </DialogPrimitive.Close>
         ) : null}
       </DialogPrimitive.Content>

@@ -255,3 +255,27 @@ describe("Stepper — barrel", () => {
     expect(barrel.deriveSteps).toBe(deriveSteps);
   });
 });
+
+describe("Stepper: state text for screen readers", () => {
+  it("test_stepper_state_labels_replace_the_spoken_state_of_each_step", () => {
+    const { container } = renderStepper(withStates("done", "failed", "pending", "active"), {
+      stateLabels: { done: "concluído", failed: "falhou", pending: "não iniciado" },
+    });
+    const labels = [...slots(container, "stepper-label")].map((el) => el.textContent);
+    expect(labels).toEqual(["s0 — concluído", "s1 — falhou", "s2 — não iniciado", "s3"]);
+  });
+
+  it("test_stepper_state_labels_keep_english_for_a_state_left_out", () => {
+    const { container } = renderStepper(withStates("done", "pending"), {
+      stateLabels: { done: "concluído" },
+    });
+    const labels = [...slots(container, "stepper-label")].map((el) => el.textContent);
+    expect(labels).toEqual(["s0 — concluído", "s1 — not started"]);
+  });
+
+  it("test_stepper_without_state_labels_speaks_english", () => {
+    const { container } = renderStepper(withStates("done", "failed", "pending"));
+    const labels = [...slots(container, "stepper-label")].map((el) => el.textContent);
+    expect(labels).toEqual(["s0 — completed", "s1 — failed", "s2 — not started"]);
+  });
+});

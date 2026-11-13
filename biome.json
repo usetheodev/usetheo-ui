@@ -14,7 +14,8 @@
       "docs/audit",
       ".ladle/dist",
       "tests/fixture-shadcn-app/src",
-      "playground/dist"
+      "playground/dist",
+      "src/styles/components-entry.css"
     ]
   },
   "formatter": {
@@ -57,8 +58,15 @@
           "level": "warn",
           "fix": "safe",
           "options": {
-            "attributes": ["className"],
-            "functions": ["clsx", "cn", "cva", "tw"]
+            "attributes": [
+              "className"
+            ],
+            "functions": [
+              "clsx",
+              "cn",
+              "cva",
+              "tw"
+            ]
           }
         }
       }
