@@ -73,4 +73,35 @@ describe("Dialog", () => {
     expect(Dialog.Title.displayName).toBe("Dialog.Title");
     expect(Dialog.Description.displayName).toBe("Dialog.Description");
   });
+
+  it("names the corner close button with closeLabel, and with Close when none is given", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <Dialog>
+        <Dialog.Trigger asChild>
+          <Button>Open</Button>
+        </Dialog.Trigger>
+        <Dialog.Content closeLabel="Fechar">
+          <Dialog.Title>Projeto</Dialog.Title>
+        </Dialog.Content>
+      </Dialog>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    expect(screen.getByRole("button", { name: "Fechar" })).toBeDefined();
+    expect(screen.queryByRole("button", { name: "Close" })).toBeNull();
+    unmount();
+
+    render(
+      <Dialog>
+        <Dialog.Trigger asChild>
+          <Button>Open</Button>
+        </Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Title>Project</Dialog.Title>
+        </Dialog.Content>
+      </Dialog>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    expect(screen.getByRole("button", { name: "Close" })).toBeDefined();
+  });
 });

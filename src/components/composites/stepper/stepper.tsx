@@ -43,6 +43,12 @@ export interface StepperProps extends HTMLAttributes<HTMLOListElement> {
   steps: StepperStepData[];
   /** @default "vertical" — both production cases (build/ingest) are vertical. */
   orientation?: "vertical" | "horizontal";
+  /**
+   * The state a screen reader hears after a step's label, for an app that is not in English. A state left
+   * out keeps its English text ("completed", "failed", "not started"). The active step has none: it is
+   * announced by `aria-current="step"`.
+   */
+  stateLabels?: Partial<Record<Exclude<StepStatus, "active">, string>>;
 }
 
 /**
@@ -83,15 +89,14 @@ const LABEL_TONE: Record<StepStatus, string> = {
 
 // F-dom-1: every non-active state is spoken, not just colored; the active
 // step is announced by aria-current="step" instead of a text suffix.
-const SR_STATE_TEXT: Record<StepStatus, string | null> = {
-  done: " — completed",
-  active: null,
-  failed: " — failed",
-  pending: " — not started",
+const SR_STATE_TEXT: Record<Exclude<StepStatus, "active">, string> = {
+  done: "completed",
+  failed: "failed",
+  pending: "not started",
 };
 
 const Stepper = forwardRef<HTMLOListElement, StepperProps>(
-  ({ label, steps, orientation = "vertical", className, ...props }, ref) => (
+  ({ label, steps, orientation = "vertical", stateLabels, className, ...props }, ref) => (
     <ol
       data-slot="stepper"
       data-orientation={orientation}
@@ -111,6 +116,8 @@ const Stepper = forwardRef<HTMLOListElement, StepperProps>(
         // visuals never diverge (F-arch-2).
         const status: StepStatus = Object.hasOwn(ICON, s.status) ? s.status : "pending";
         const Icon = ICON[status];
+        const spoken =
+          status === "active" ? null : (stateLabels?.[status] ?? SR_STATE_TEXT[status]);
         return (
           <li
             key={s.id}
@@ -133,7 +140,7 @@ const Stepper = forwardRef<HTMLOListElement, StepperProps>(
                 className={cn("truncate text-body-sm", LABEL_TONE[status])}
               >
                 {s.label}
-                {SR_STATE_TEXT[status] && <span className="sr-only">{SR_STATE_TEXT[status]}</span>}
+                {spoken && <span className="sr-only"> — {spoken}</span>}
               </p>
               {s.description && <p className="text-label text-muted-foreground">{s.description}</p>}
               {s.timestamp && (
